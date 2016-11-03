@@ -2,6 +2,7 @@ module.exports = function () {
   const Carts  = require("./../models/cart").Cart;
   const helper = require("./../services/helpers.js");
 
+
   const methods = {
     all: (req, res) => {
       Carts.find({}, (err, carts) => {

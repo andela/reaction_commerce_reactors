@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt-nodejs");
 
-
 const Helpers = {
   validateInput: (input) => {
     if (input) {

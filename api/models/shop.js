@@ -43,7 +43,8 @@ const ShopSchema = new Schema({
   },
   "locales": {
     type: Object,
-    myJsonProperty: Object
+    myJsonProperty: Object,
+    required: false
   },
   "language": {
     type: String,
@@ -67,7 +68,8 @@ const ShopSchema = new Schema({
     default: "OZ"
   },
   "unitsOfMeasure": {
-    type: [Object]
+    type: [Object],
+    required: false
   },
   "unitsOfMeasure.$.uom": {
     type: String,

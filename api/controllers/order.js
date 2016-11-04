@@ -6,7 +6,7 @@ module.exports = function () {
     all: (req, res) => {
       Orders.find({}, (err, orders) => {
         if (err) {
-          helper.handleError(res, err);
+          return helper.handleError(res, err);
         }
         res.json(orders);
       });
@@ -22,7 +22,7 @@ module.exports = function () {
           documents: req.body.documents
         }, (err, order) => {
           if (err) {
-            helper.handleError(res, err);
+            return helper.handleError(res, err);
           }
           res.json(order);
         });
@@ -36,7 +36,7 @@ module.exports = function () {
         Orders.findByIdAndUpdate(req.params.id, {$set: req.body}, { new: true },
         (err) => {
           if (err) {
-            helper.handleError(res, err);
+            return helper.handleError(res, err);
           }
 
           helper.sendMessage(res, 200, "updated successfully");

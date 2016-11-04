@@ -5,10 +5,10 @@ const api = supertest("http://localhost:3030");
 
 describe("Cart end point", () => {
   'use strict';
-  
+
   let id;
-  it("should respond with an array of emails", (done) => {
-    api.get("/api/emails")
+  it("should respond with an array of carts", (done) => {
+    api.get("/api/carts")
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
@@ -19,17 +19,15 @@ describe("Cart end point", () => {
     });
   });
 
-  it("create a new email", (done) => {
-    api.post("/api/emails")
+  it("create a new cart", (done) => {
+    api.post("/api/carts")
     .set("Accept", "application/json")
     .send({
-      to: "anemai@lhost.com",
-      from: "another@host.com",
-      subject: "the subject",
-      text: "text part of the email",
-      html: "<h1>still a text fields<h1>",
-      jobId: "2rDBGETYUwr77nn",
-      status: "Delieverd"
+      sessionId: "Tbgv568grEG78b",
+      email: "admin@host.com",
+      items: "Green",
+      tax: 67,
+      taxes: "vat",
     })
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -39,8 +37,8 @@ describe("Cart end point", () => {
     });
   });
 
-  it("should get a single email", (done) => {
-    api.get("/api/emails/"+id)
+  it("should get a single cart", (done) => {
+    api.get("/api/carts/" + id)
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
@@ -53,30 +51,30 @@ describe("Cart end point", () => {
     });
   });
 
-  it("should update an email", (done) => {
-    api.put("/api/emails/"+id)
+  it("should update a cart", (done) => {
+    api.put("/api/carts/")
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .send({
-      text: "an updated Email text"
+      tax: 50
     })
     .end((err, res) => {
-      console.log(id);
+      console.log(res.body);
       expect(res.status).to.equal(200);
       expect(res.body.message).to.equal("updated successfully");
       done();
     });
   });
 
-  it("should delete an email", (done) => {
-    api.delete("/api/emails/"+id)
+  it("should delete cart", (done) => {
+    api.delete("/api/carts/"+id)
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .end((err, res) => {
     expect(res.status).to.equal(200);
-    expect(res.body.message).to.equal("Email deleted successfully");
+    expect(res.body.message).to.equal("Cart deleted successfully");
       done();
     });
   });

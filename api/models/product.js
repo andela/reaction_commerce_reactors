@@ -221,4 +221,188 @@ ProductSchema.pre("save", function (next) {
   next();
 });
 
+<<<<<<< ef734a59b2f8f90a7ea6b967a73a3350c0d7d409
+=======
+exports.ProductVariant = mongoose.model("ProductVariant", ProductVariantSchema);
+
+/**
+ * ProductPosition Schema
+ */
+const ProductPositionSchema = new Schema({
+  _id: {
+    type: String
+  },
+  tag: {
+    type: String,
+    required: false
+  },
+  position: {
+    type: Number,
+    required: false
+  },
+  pinned: {
+    type: Boolean,
+    required: false
+  },
+  weight: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  updatedAt: {
+    type: Date
+  }
+});
+
+/**
+ * Product Schema
+ */
+const ProductSchema = new Schema({
+  ancestors: {
+    type: [String],
+    default: []
+  },
+  shopId: {
+    type: String
+  },
+  title: {
+    type: String,
+    default: "",
+    required: false
+
+  },
+  pageTitle: {
+    type: String,
+    required: false
+
+  },
+  description: {
+    type: String,
+    required: false
+  },
+  type: {
+    type: String,
+    default: "simple"
+  },
+  vendor: {
+    type: String,
+    required: false
+  },
+  metafields: {
+    type: [String],
+    required: false
+  },
+  positions: {
+    type: Object, // ProductPosition
+    myJsonProperty: Object,
+    required: false
+  },
+  price: {
+    type: Number,
+    required: false
+  },
+  // Denormalized field: Indicates when at least one of variants
+  // `inventoryQuantity` are lower then their `lowInventoryWarningThreshold`.
+  // This is some kind of marketing course.
+  isLowQuantity: {
+    type: Boolean,
+    required: false
+  },
+  // Denormalized field: Indicates when all variants `inventoryQuantity` is zero
+  isSoldOut: {
+    type: Boolean,
+    required: false
+  },
+  // Denormalized field. It is `true` if product not in stock, but customers
+  // anyway could order it.
+  isBackorder: {
+    type: Boolean,
+    required: false
+  },
+  requiresShipping: {
+    type: Boolean,
+    default: true,
+    required: false
+  },
+  parcel: {
+    type: String,
+    required: false
+  },
+  hashtags: {
+    type: [String],
+    required: false
+  },
+  twitterMsg: {
+    type: String,
+    required: false
+  },
+  facebookMsg: {
+    type: String,
+    required: false
+  },
+  googleplusMsg: {
+    type: String,
+    required: false,
+    max: 255
+  },
+  pinterestMsg: {
+    type: String,
+    required: false,
+    max: 255
+  },
+  metaDescription: {
+    type: String,
+    required: false
+  },
+  handle: {
+    type: String,
+    required: false
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
+  isVisible: {
+    type: Boolean,
+    default: false
+  },
+  templateSuffix: {
+    type: String,
+    required: false
+  },
+  createdAt: {
+    type: Date
+  },
+  updatedAt: {
+    type: Date,
+    required: false
+  },
+  publishedAt: {
+    type: Date,
+    required: false
+  },
+  publishedScope: {
+    type: String,
+    required: false
+  },
+  workflow: {
+    type: Object,
+    required: false,
+    myJsonProperty: Object
+  }
+});
+
+ProductSchema.pre("save", function (next) {
+  now = new Date();
+  this.updatedAt = now;
+  if (!this.createdAt) {
+    this.createdAt = now;
+  }
+  if (!this.publishedAt) {
+    this.publishedAt = now;
+  }
+  next();
+});
+
+>>>>>>> feature: Add CRUD endpoints for product resource
 exports.Products = mongoose.model("Products", ProductSchema, "Products");

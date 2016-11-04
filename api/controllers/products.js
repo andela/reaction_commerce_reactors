@@ -47,7 +47,11 @@ module.exports = function () {
           return res.json(product);
         });
       } else {
+<<<<<<< ef734a59b2f8f90a7ea6b967a73a3350c0d7d409
         return helper.sendMessage(res, 400, "Feilds cannot be empty");
+=======
+        helper.sendMessage(res, 400, "Feilds cannot be empty");
+>>>>>>> feature: Add CRUD endpoints for product resource
       }
     },
 
@@ -55,6 +59,7 @@ module.exports = function () {
       if (helper.validateRequestBody(req.body)) {
         Products.update({_id: req.params.id}, {$set: req.body}, function (err) {
           if (err) {
+<<<<<<< ef734a59b2f8f90a7ea6b967a73a3350c0d7d409
             return helper.handleError(res, err);
           }
 
@@ -62,6 +67,15 @@ module.exports = function () {
         });
       } else {
         return helper.sendMessage(res, 400, "Fields cannot be empty");
+=======
+            helper.handleError(res, err);
+          }
+
+          helper.sendMessage(res, 200, "updated successfully");
+        });
+      } else {
+        helper.sendMessage(res, 400, "Fields cannot be empty");
+>>>>>>> feature: Add CRUD endpoints for product resource
       }
     },
 
@@ -69,15 +83,23 @@ module.exports = function () {
       Products.findByIdAndRemove(req.params.id)
       .exec((err) => {
         if (err) {
+<<<<<<< ef734a59b2f8f90a7ea6b967a73a3350c0d7d409
           return helper.handleError(res, err);
         }
         return helper.sendMessage(res, 200, "Product deleted successfully");
+=======
+          helper.handleError(res, err);
+        } else {
+          helper.sendMessage(res, 200, "Product deleted successfully");
+        }
+>>>>>>> feature: Add CRUD endpoints for product resource
       });
     },
     getProduct: (req, res) => {
       if (helper.validateRequestBody(req.body)) {
         Products.findOne({_id: req.params.id}, function (err, product) {
           if (err) {
+<<<<<<< ef734a59b2f8f90a7ea6b967a73a3350c0d7d409
             return helper.handleError(res, err);
           }
           if (!product) {
@@ -87,6 +109,18 @@ module.exports = function () {
         });
       } else {
         return helper.sendMessage(res, 400, "Fields cannot be empty");
+=======
+            helper.handleError(res, err);
+          }
+          if (!product) {
+            helper.sendMessage(res, 200, "Product does not exist");
+          } else {
+            res.json(product);
+          }
+        });
+      } else {
+        helper.sendMessage(res, 400, "Fields cannot be empty");
+>>>>>>> feature: Add CRUD endpoints for product resource
       }
     }
 

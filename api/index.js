@@ -23,6 +23,7 @@ export default function () {
   const router = express.Router();
   require("./routes/email")(router);
   require("./routes/cart")(router);
+  require("./routes/products")(router);
   app.use("/api/", router);
 
 

@@ -84,18 +84,15 @@
     "react-textarea-autosize": "^4.0.5",
     "sortablejs": "^1.4.2",
     "stripe": "^4.11.0",
-<<<<<<< 08e3086e8130f62d137219c118db84a336410dae
-    "sweetalert2": "^5.3.8",
-    "swiper": "^3.4.0",
-=======
+
     "supertest": "^2.0.1",
     "sweetalert2": "^4.3.3",
     "swiper": "^3.3.1",
->>>>>>> feature: Add CRUD endpoints for product resource
     "tether-drop": "^1.4.2",
     "tether-tooltip": "^1.2.0",
-    "transliteration": "^1.1.11",
-    "url": "^0.11.0"
+    "transliteration": "^1.1.9",
+    "url": "^0.11.0",
+    "winston": "^2.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.0.0",

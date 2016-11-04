@@ -12,23 +12,30 @@ module.exports = function () {
         res.json(users);
       });
     },
+
     add: (req, res) => {
-      if (emailService.validateEmailRequest(req, res)) {
-        Emails.create({
-          to: req.body.to,
-          from: req.body.from,
-          subject: req.body.subject,
-          text: req.body.text,
-          html: req.body.html,
-          jobId: req.body.jobId,
-          status: req.body.status
-        }, (err, email) => {
-          if (err) {
-            res.status(500).json(err);
-          }
-          res.json(email);
-        });
+      if (!helper.validateRequestBody(req.body)) {
+        return helper.sendMessage(res, 400, "Fields cannot be empty");
       }
+      if (!(helper.isValidEmail(req.body.to))
+       && (helper.isValidEmail(req.body.from))) {
+        return helper.sendMessage(res, 400,
+          "Enter valid emails for to and from");
+      }
+      Emails.create({
+        to: req.body.to,
+        from: req.body.from,
+        subject: req.body.subject,
+        text: req.body.text,
+        html: req.body.html,
+        jobId: req.body.jobId,
+        status: req.body.status
+      }, (err, email) => {
+        if (err) {
+          return res.status(500).json(err);
+        }
+        return res.json(email);
+      });
     },
 
     edit: (req, res) => {

@@ -45,7 +45,7 @@ module.exports = function () {
           helper.sendMessage(res, 200, "updated successfully");
         });
       } else {
-        helper.sendMessage(res, 200, "Fields cannot be empty");
+        helper.sendMessage(res, 400, "Fields cannot be empty");
       }
     },
 

@@ -2,18 +2,19 @@ export default function () {
   const mongoose = require("mongoose");
   const express = require("express");
   const app = express();
-  const port = 3030;
+  const port = process.env.METEOR_SETTINGS.port || 3030;
   const bodyParser = require("body-parser");
+  const logger = require("winston");
 
-  mongoose.connect("mongodb://127.0.0.1:3001/meteor", (err) => {
+  mongoose.connect(process.env.MONGO_URL, (err) => {
     if (err) {
-      console.log(err);
+      logger.info(err);
     }
   });
 
   app.get("/", function (req, res) {
     res.json({
-      message: "root reoute"
+      message: " root reoute"
     });
   });
 
@@ -30,6 +31,6 @@ export default function () {
 
 
   app.listen(port, function () {
-    console.log("app started on " + port);
+    logger.info("app started on " + port);
   });
 }

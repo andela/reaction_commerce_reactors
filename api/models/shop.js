@@ -150,7 +150,6 @@ const ShopSchema = new Schema({
   "theme": ShopTheme,
 
   "brandAssets": [BrandAsset],
-
   "createdAt": {
     type: Date
   },

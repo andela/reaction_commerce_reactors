@@ -218,10 +218,10 @@ const ProductSchema = new Schema({
     type: String,
     required: false
   },
-  metafields: {
-    type: [String],
+  metafields: [{
+    type: String,
     required: false
-  },
+  }],
   positions: {
     type: Object, // ProductPosition
     myJsonProperty: Object,

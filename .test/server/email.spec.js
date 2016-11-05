@@ -7,7 +7,7 @@ describe("Email end points", () => {
   'use strict';
   let id;
 
-  it("should respond with an array of carts", (done) => {
+  it("should respond with an array of emails", (done) => {
     api.get("/api/emails")
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
@@ -15,13 +15,14 @@ describe("Email end points", () => {
     .end((err, res) => {
       expect(res.status).to.equal(200);
       expect(Array.isArray(res.body)).to.equal(true);
-      id = res.body[0]
       done();
     });
   });
 
   it("create a new email", (done) => {
     api.post("/api/emails")
+    .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
+    .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .send({
       to: "anemai@lhost.com",
@@ -46,7 +47,6 @@ describe("Email end points", () => {
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .end((err, res) => {
-      console.log("in");
       expect(res.status).to.equal(200);
       expect(typeof(res.body)).to.equal('object');
       expect(res.body._id).to.equal(id);
@@ -63,7 +63,6 @@ describe("Email end points", () => {
       text: "an updated Email text"
     })
     .end((err, res) => {
-      console.log(id);
       expect(res.status).to.equal(200);
       expect(res.body.message).to.equal("updated successfully");
       done();

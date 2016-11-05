@@ -6,9 +6,9 @@ module.exports = function () {
     all: (req, res) => {
       Carts.find({}, (err, carts) => {
         if (err) {
-          helper.handleError(res, err);
+          return helper.handleError(res, err);
         }
-        res.json(carts);
+        return res.json(carts);
       });
     },
     add: (req, res) => {
@@ -26,12 +26,12 @@ module.exports = function () {
           workflow: req.body.workflow
         }, (err, cart) => {
           if (err) {
-            helper.handleError(res, err);
+            return helper.handleError(res, err);
           }
-          res.json(cart);
+          return res.json(cart);
         });
       } else {
-        helper.sendMessage(res, 400, "Feilds cannot be empty");
+        return helper.sendMessage(res, 400, "Feilds cannot be empty");
       }
     },
 
@@ -39,13 +39,13 @@ module.exports = function () {
       if (helper.validateRequestBody(req.body)) {
         Carts.update({userId: req.headers["x-user-id"]}, {$set: req.body}, function (err) {
           if (err) {
-            helper.handleError(res, err);
+            return helper.handleError(res, err);
           }
 
-          helper.sendMessage(res, 200, "updated successfully");
+          return helper.sendMessage(res, 200, "updated successfully");
         });
       } else {
-        helper.sendMessage(res, 400, "Fields cannot be empty");
+        return helper.sendMessage(res, 400, "Fields cannot be empty");
       }
     },
 
@@ -53,22 +53,20 @@ module.exports = function () {
       Carts.findByIdAndRemove(req.params.id)
       .exec((err) => {
         if (err) {
-          helper.handleError(res, err);
-        } else {
-          helper.sendMessage(res, 200, "Cart deleted successfully");
+          return helper.handleError(res, err);
         }
+        return helper.sendMessage(res, 200, "Cart deleted successfully");
       });
     },
     getCart: (req, res) => {
       Carts.findOne({_id: req.params.id}, function (err, cart) {
         if (err) {
-          helper.handleError(res, err);
+          return helper.handleError(res, err);
         }
         if (!cart) {
-          helper.sendMessage(res, 200, "Cart does not exist");
-        } else {
-          res.json(cart);
+          return helper.sendMessage(res, 200, "Cart does not exist");
         }
+        return res.json(cart);
       });
     }
 

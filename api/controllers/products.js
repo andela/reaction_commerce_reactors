@@ -6,9 +6,9 @@ module.exports = function () {
     all: (req, res) => {
       Products.find({}, (err, products) => {
         if (err) {
-          helper.handleError(res, err);
+          return helper.handleError(res, err);
         }
-        res.json(products);
+        return res.json(products);
       });
     },
     add: (req, res) => {
@@ -47,7 +47,7 @@ module.exports = function () {
           return res.json(product);
         });
       } else {
-        helper.sendMessage(res, 400, "Feilds cannot be empty");
+        return helper.sendMessage(res, 400, "Feilds cannot be empty");
       }
     },
 
@@ -55,13 +55,13 @@ module.exports = function () {
       if (helper.validateRequestBody(req.body)) {
         Products.update({_id: req.params.id}, {$set: req.body}, function (err) {
           if (err) {
-            helper.handleError(res, err);
+            return helper.handleError(res, err);
           }
 
-          helper.sendMessage(res, 200, "updated successfully");
+          return helper.sendMessage(res, 200, "updated successfully");
         });
       } else {
-        helper.sendMessage(res, 400, "Fields cannot be empty");
+        return helper.sendMessage(res, 400, "Fields cannot be empty");
       }
     },
 
@@ -69,26 +69,24 @@ module.exports = function () {
       Products.findByIdAndRemove(req.params.id)
       .exec((err) => {
         if (err) {
-          helper.handleError(res, err);
-        } else {
-          helper.sendMessage(res, 200, "Product deleted successfully");
+          return helper.handleError(res, err);
         }
+        return helper.sendMessage(res, 200, "Product deleted successfully");
       });
     },
     getProduct: (req, res) => {
       if (helper.validateRequestBody(req.body)) {
         Products.findOne({_id: req.params.id}, function (err, product) {
           if (err) {
-            helper.handleError(res, err);
+            return helper.handleError(res, err);
           }
           if (!product) {
-            helper.sendMessage(res, 200, "Product does not exist");
-          } else {
-            res.json(product);
+            return helper.sendMessage(res, 200, "Product does not exist");
           }
+          return res.json(product);
         });
       } else {
-        helper.sendMessage(res, 400, "Fields cannot be empty");
+        return helper.sendMessage(res, 400, "Fields cannot be empty");
       }
     }
 

@@ -3,12 +3,12 @@ const supertest = require("supertest");
 const api = supertest("http://localhost:3030");
 
 
-describe("Cart end point", () => {
+describe("Shop end points", () => {
   'use strict';
-
   let id;
-  it("should respond with an array of carts", (done) => {
-    api.get("/api/carts")
+
+  it("should respond with an array of shops", (done) => {
+    api.get("/api/shops")
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
@@ -19,15 +19,27 @@ describe("Cart end point", () => {
     });
   });
 
-  it("create a new cart", (done) => {
-    api.post("/api/carts")
+  it("create a new shop", (done) => {
+    api.post("/api/shops")
+    .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
+    .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .send({
-      sessionId: "Tbgv568grEG78b",
-      email: "admin@host.com",
-      items: "Green",
-      tax: 67,
-      taxes: "vat",
+      name: "Test shop",
+      description: "We sell Gold and Gucci",
+      keywords: "Glitter",
+      addressBook: [
+        {
+          address: "2/4 funsho street",
+          town: "yaba"
+        },
+        {
+          address: "55 moleye",
+          town: "yaba"
+        }
+      ],
+      domains: "yahoo",
+      emails: "2rDBGETYUwr77nn"
     })
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -37,8 +49,8 @@ describe("Cart end point", () => {
     });
   });
 
-  it("should get a single cart", (done) => {
-    api.get("/api/carts/" + id)
+  it("should get a single shops", (done) => {
+    api.get("/api/shops/"+id)
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
@@ -50,13 +62,14 @@ describe("Cart end point", () => {
     });
   });
 
-  it("should update a cart", (done) => {
-    api.put("/api/carts/")
+  it("should update a shop", (done) => {
+    api.put("/api/shops/"+id)
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .send({
-      tax: 50
+      domains: "gmail",
+      emails: "3hrbh4n6JiJ78"
     })
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -65,14 +78,14 @@ describe("Cart end point", () => {
     });
   });
 
-  it("should delete cart", (done) => {
-    api.delete("/api/carts/"+id)
+  it("should delete a shop", (done) => {
+    api.delete("/api/shops/"+id)
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .end((err, res) => {
     expect(res.status).to.equal(200);
-    expect(res.body.message).to.equal("Cart deleted successfully");
+    expect(res.body.message).to.equal("Shop deleted successfully");
       done();
     });
   });

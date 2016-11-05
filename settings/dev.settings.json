@@ -6,6 +6,7 @@
     "REACTION_AUTH": "12345",
     "REACTION_EMAIL": "demiladebamgbose@gmail.com",
     "port": "3030",
+    "secret": "secret",
     "API_URL": "http://localhost:3030/",
     "DB_HOST": "127.0.0.1:3001"
   },

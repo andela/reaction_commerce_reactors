@@ -1,3 +1,6 @@
+const bcrypt = require("bcrypt-nodejs");
+
+
 const Helpers = {
   validateInput: (input) => {
     if (input) {
@@ -30,6 +33,15 @@ const Helpers = {
       success: false,
       message: message
     });
+  },
+
+  comparePasswords: (string, hashed) => {
+    const result = bcrypt.compareSync(string, hashed);
+    return result;
+  },
+
+  hashPassword: (password) => {
+    return bcrypt.hashSync(password);
   }
 };
 

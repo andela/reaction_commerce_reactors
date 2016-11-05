@@ -27,6 +27,7 @@ export default function () {
   require("./routes/products")(router);
   require("./routes/order")(router);
   require("./routes/shop")(router);
+  require("./routes/account")(router);
   app.use("/api/", router);
 
 

@@ -15,14 +15,14 @@ const ShopSchema = new Schema({
   "keywords": {
     type: String
   },
-  "addressBook": {
-    type: [Object],
-    required: false
-  },
-  "domains": {
-    type: [String],
+  "addressBook": [{
+    address: String,
+    town: String
+  }],
+  "domains": [{
+    type: String,
     default: ["localhost"]
-  },
+  }],
   "emails": {
     type: String,
     ref: Email,
@@ -67,10 +67,10 @@ const ShopSchema = new Schema({
     required: false,
     default: "OZ"
   },
-  "unitsOfMeasure": {
-    type: [Object],
+  "unitsOfMeasure": [{
+    type: Object,
     required: false
-  },
+  }],
   "unitsOfMeasure.$.uom": {
     type: String,
     default: "OZ"
@@ -83,30 +83,30 @@ const ShopSchema = new Schema({
     type: Boolean,
     default: false
   },
-  "metafields": {
-    type: [Object],
+  "metafields": [{
+    type: Object,
     required: false
-  },
-  "defaultVisitorRole": {
-    type: [String],
+  }],
+  "defaultVisitorRole": [{
+    type: String,
     default: ["anonymous", "guest", "product", "tag", "index", "cart/checkout", "cart/completed"]
-  },
-  "defaultRoles": {
-    type: [String],
+  }],
+  "defaultRoles": [{
+    type: String,
     default: ["guest", "account/profile", "product", "tag", "index", "cart/checkout", "cart/completed"]
-  },
-  "layout": {
-    type: [Object],
+  }],
+  "layout": [{
+    type: Object,
     required: false
-  },
+  }],
   "theme": {
     type: Object,
     required: false
   },
-  "brandAssets": {
-    type: [Object],
+  "brandAssets": [{
+    type: Object,
     required: false
-  },
+  }],
   "createdAt": {
     type: Date
   },

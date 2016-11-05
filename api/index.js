@@ -31,6 +31,6 @@ export default function () {
 
 
   app.listen(port, function () {
-    logger.info("app started on " + port);
+    logger.info("API running at: http://localhost " + port);
   });
 }

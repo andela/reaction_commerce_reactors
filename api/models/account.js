@@ -1,25 +1,49 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Address = require("./address").AddressObject;
+const Metafield = require("./metafield").Metafield;
+
+const Profile = {
+  addressBook: [Address],
+  name: String,
+  picture: String
+};
+
+const Email = {
+  provides: {
+    type: String,
+    default: "default"
+  },
+  address: String,
+  verified: {
+    type: Boolean,
+    default: false
+  }
+};
+
+exports.Email = Email;
 
 const UserSchema = new Schema({
   createdAt: {
     type: Date
   },
   services: {
-    type: [Object],
-    required: false
+    password: {
+      bcrypt: String
+    }
   },
-  emails: {
-    type: [Object],
-    required: false
-  },
-  profile: {
-    type: Object,
-    required: false
-  },
-  roles: {
-    type: String
+  username: String,
+  emails: [Email],
+  profile: Profile,
+  roles: String
+});
+
+UserSchema.pre("save", function (next) {
+  now = new Date();
+  if (!this.createdAt) {
+    this.createdAt = now;
   }
+  next();
 });
 
 const Users = mongoose.model("Users", UserSchema, "users");
@@ -30,39 +54,20 @@ const AccountSchema = new Schema({
     type: String,
     ref: Users
   },
-  sessions: {
-    type: [String],
-    required: false
-  },
-  shopId: {
-    type: String
-  },
-  emails: {
-    type: [Object],
-    required: false
-  },
+  sessions: [String],
+  shopId: String,
+  emails: [Email],
   acceptsMarketing: {
     type: Boolean,
-    default: false,
-    required: false
+    default: false
   },
   state: {
     type: String,
-    default: "new",
-    required: false
+    default: "new"
   },
-  note: {
-    type: String,
-    required: false
-  },
-  profile: {
-    type: Object,
-    required: false
-  },
-  metafields: {
-    type: [Object],
-    required: false
-  },
+  note: String,
+  profile: Profile,
+  metafields: [Metafield],
   createdAt: {
     type: Date
   },

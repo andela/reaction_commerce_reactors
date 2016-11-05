@@ -1,6 +1,69 @@
-const Email = require("./email");
+const Email = require("./account").Email;
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Layout = require("./layout").Layout;
+const Metafield = require("./metafield").Metafield;
+const Address = require("./address").AddressObject;
+
+const BrandAsset = {
+  mediaId: {
+    type: String,
+    required: false
+  },
+  type: {
+    type: String,
+    required: false
+  }
+};
+
+const Locale = {
+  continents: Object,
+  countries: Object
+};
+
+const Languages = {
+  label: String,
+  i18n: String,
+  enabled: {
+    type: Boolean,
+    default: true
+  }
+};
+
+const ShopTheme = {
+  themeId: String,
+  styles: {
+    type: String,
+    required: false
+  }
+};
+
+const Currency = {
+  symbol: {
+    type: String,
+    defaultValue: "$"
+  },
+  format: {
+    type: String,
+    defaultValue: "%s%v"
+  },
+  scale: {
+    type: Number,
+    defaultValue: 2
+  },
+  decimal: {
+    type: String,
+    defaultValue: "."
+  },
+  thousand: {
+    type: String,
+    defaultValue: ","
+  },
+  rate: {
+    type: Number
+  }
+};
+
 const ShopSchema = new Schema({
   "status": {
     type: String,
@@ -15,19 +78,12 @@ const ShopSchema = new Schema({
   "keywords": {
     type: String
   },
-  "addressBook": [{
-    address: String,
-    town: String
-  }],
+  "addressBook": [Address],
   "domains": [{
     type: String,
     default: ["localhost"]
   }],
-  "emails": {
-    type: String,
-    ref: Email,
-    required: false
-  },
+  "emails": [Email],
   "defaultPaymentMethod": {
     type: String,
     default: "none"
@@ -37,21 +93,15 @@ const ShopSchema = new Schema({
     default: "USD"
   },
   "currencies": {
-    type: Object, // Schemas.Currency
-    myJsonProperty: Object,
-    required: false
+    type: Object // Schemas.Currency
   },
-  "locales": {
-    type: Object,
-    myJsonProperty: Object,
-    required: false
-  },
+  "locales": Locale,
   "language": {
     type: String,
     default: "en"
   },
   "languages": {
-    type: [Object],
+    type: [Languages],
     required: false
   },
   "public": {
@@ -83,30 +133,24 @@ const ShopSchema = new Schema({
     type: Boolean,
     default: false
   },
-  "metafields": [{
-    type: Object,
-    required: false
-  }],
+  "metafields": [Metafield],
   "defaultVisitorRole": [{
     type: String,
     default: ["anonymous", "guest", "product", "tag", "index", "cart/checkout", "cart/completed"]
   }],
   "defaultRoles": [{
-    type: String,
+    type: [String],
     default: ["guest", "account/profile", "product", "tag", "index", "cart/checkout", "cart/completed"]
   }],
-  "layout": [{
-    type: Object,
-    required: false
-  }],
-  "theme": {
-    type: Object,
+  "layout": {
+    type: [Layout],
     required: false
   },
-  "brandAssets": [{
-    type: Object,
-    required: false
-  }],
+
+  "theme": ShopTheme,
+
+  "brandAssets": [BrandAsset],
+
   "createdAt": {
     type: Date
   },

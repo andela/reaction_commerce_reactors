@@ -36,7 +36,7 @@ module.exports = function () {
     },
 
     edit: (req, res) => {
-      if (helper.validateRequestBody(req.body)) {
+      if (helper.validateRequestBody(req.body)) { // chage to decoded
         Carts.update({userId: req.headers["x-user-id"]}, {$set: req.body}, function (err) {
           if (err) {
             return helper.handleError(res, err);

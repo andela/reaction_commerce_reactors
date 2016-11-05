@@ -30,16 +30,34 @@ describe("Shop end points", () => {
       keywords: "Glitter",
       addressBook: [
         {
-          address: "2/4 funsho street",
-          town: "yaba"
+          fullName: "2/4 funsho street",
+          address1: "yaba",
+          city: "lagos",
+          phone: "789-098-899",
+          region: "Africa",
+          country: "Nigeria",
+          isCommercial: "true"
         },
         {
-          address: "55 moleye",
-          town: "yaba"
+          fullName: "55 moleye street",
+          address1: "yaba",
+          city: "lagos",
+          phone: "789-098-899",
+          region: "Africa",
+          country: "Nigeria",
+          isCommercial: "true"
         }
       ],
-      domains: "yahoo",
-      emails: "2rDBGETYUwr77nn"
+      domains: ["yahoo"],
+      emails: [
+        {
+          address: "demi@gmail.com",
+          verified: "true"
+        },
+        {
+          address: "lade@gmail.com"
+        },
+      ]
     })
     .end((err, res) => {
       expect(res.status).to.equal(200);

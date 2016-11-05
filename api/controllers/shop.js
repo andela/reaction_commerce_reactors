@@ -44,7 +44,7 @@ module.exports = function () {
           return res.json(shop);
         });
       } else {
-        helper.sendMessage(res, 400, "Feilds cannot be empty");
+        return helper.sendMessage(res, 400, "Feilds cannot be empty");
       }
     },
 

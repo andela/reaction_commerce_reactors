@@ -3,14 +3,13 @@ const supertest = require("supertest");
 const api = supertest("http://localhost:3030");
 
 
-describe("Cart end point", () => {
+describe("Product end points", () => {
   'use strict';
 
   let id;
-  it("should respond with an array of carts", (done) => {
-    api.get("/api/carts")
-    .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
-    .set("x-user-id", "K54okcMXiPvuzrFeg")
+
+  it("should respond with an array of products", (done) => {
+    api.get("/api/products")
     .set("Accept", "application/json")
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -19,15 +18,23 @@ describe("Cart end point", () => {
     });
   });
 
-  it("create a new cart", (done) => {
-    api.post("/api/carts")
+  it("create a new Product", (done) => {
+    api.post("/api/products")
+    .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
+    .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .send({
-      sessionId: "Tbgv568grEG78b",
-      email: "admin@host.com",
-      items: "Green",
-      tax: 67,
-      taxes: "vat",
+      title: "This",
+      pageTitle: "new realese",
+      description: "2016 model",
+      vendor: "admin",
+      price: "567",
+      status: "Delieverd",
+      isLowQuantity: "true",
+      isSoldOut: "false",
+      parcel:"box",
+      templateSuffix: "latest",
+      publishedScope: "shop"
     })
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -37,8 +44,8 @@ describe("Cart end point", () => {
     });
   });
 
-  it("should get a single cart", (done) => {
-    api.get("/api/carts/" + id)
+  it("should get a single product", (done) => {
+    api.get("/api/products/"+id)
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
@@ -50,13 +57,14 @@ describe("Cart end point", () => {
     });
   });
 
-  it("should update a cart", (done) => {
-    api.put("/api/carts/")
+  it("should update a product", (done) => {
+    api.put("/api/products/"+id)
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .send({
-      tax: 50
+      isBackorder: "false",
+      isSoldOut: "true"
     })
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -65,14 +73,14 @@ describe("Cart end point", () => {
     });
   });
 
-  it("should delete cart", (done) => {
-    api.delete("/api/carts/"+id)
+  it("should delete an product", (done) => {
+    api.delete("/api/products/"+id)
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .end((err, res) => {
-    expect(res.status).to.equal(200);
-    expect(res.body.message).to.equal("Cart deleted successfully");
+    //expect(res.status).to.equal(200);
+    expect(res.body.message).to.equal("Product deleted successfully");
       done();
     });
   });

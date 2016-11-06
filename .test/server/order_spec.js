@@ -27,17 +27,30 @@ describe("Orders end points", () => {
     .send({
       cartId: "ypZADYnw2SovGbTZq",
        history: [{
-         "day": "today",
-         "month": "november"
+         "event": "today",
+         "userId": "Fvkuy79hbhtTt"
          },
          {
-           "day": "tomorrow",
-           "month": "december"
+           "event": "gross",
+           "userId": "Fvkuy79hbhtTt"
          }],
         documents: [{
-          "title": "blaa",
-          "body": "another blaa"
-        }]
+          "docId": "67",
+          "docType": "reciept"
+        }],
+        items: [
+          {
+            "additionalField": "none",
+            history: [{
+              "event": "today",
+              "userId": "Fvkuy79hbhtTt"
+              },
+              {
+                "event": "gross",
+                "userId": "Fvkuy79hbhtTt"
+              }]
+          }
+        ]
     })
     .end((err, res) => {
       expect(res.status).to.equal(200);

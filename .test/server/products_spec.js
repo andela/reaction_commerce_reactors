@@ -24,15 +24,18 @@ describe("Product end points", () => {
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")
     .send({
+      ancestors: ["green tomato"],
       title: "This",
       pageTitle: "new realese",
       description: "2016 model",
       vendor: "admin",
-      price: "567",
-      status: "Delieverd",
+      price: {
+        "range": "89 - 67",
+        "min": "67",
+        "max": "89"
+      },
       isLowQuantity: "true",
       isSoldOut: "false",
-      parcel:"box",
       templateSuffix: "latest",
       publishedScope: "shop"
     })

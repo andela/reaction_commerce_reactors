@@ -25,9 +25,8 @@ describe("Cart end point", () => {
     .send({
       sessionId: "Tbgv568grEG78b",
       email: "admin@host.com",
-      items: "Green",
-      tax: 67,
-      taxes: "vat",
+      items: ["Gold", "Gucci"],
+      tax: 67
     })
     .end((err, res) => {
       expect(res.status).to.equal(200);

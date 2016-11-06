@@ -1,45 +1,24 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const ProductVariant = require("./product").ProductVariant;
+const Shipment = require("./shipping").ShipmentObject;
+const Workflow = require("./workflow").Workflow;
+const Payment = require("./payment").Payment;
 
-const CartItemSchema = new Schema({
-  productId: {
-    type: String
-  },
-  shopId: {
-    type: String,
-    required: false
-  },
-  quantity: {
-    type: Number
-  },
-  variants: {
-    type: String,
-    ref: ProductVariant,
-    required: false
-  },
-  title: {
-    type: String
-  },
-  type: {
-    type: String,
-    required: false
-  },
-  cartItemId: { // Seems strange here but has to be here since we share schemas between cart and order
-    type: String,
-    required: false
-  }
-});
 
-const CartItem = mongoose.model("CartItem", CartItemSchema);
+const CartItem = {
+  productId: String,
+  shopId: String,
+  quantity: Number,
+  variants: ProductVariant,
+  title: String,
+  type: String,
+  cartItemId: String
+};
 
-const CartItemsSchema = new Schema({
-  items: [{
-    type: String,
-    ref: CartItem,
-    required: false
-  }]
-});
+exports.CartItems = {
+  items: [CartItem]
+};
 
 const CartSchema = new Schema({
   shopId: {
@@ -52,34 +31,22 @@ const CartSchema = new Schema({
     type: String
   },
   email: {
-    type: String,
-    required: false
+    type: String
   },
-  items: [{
-    type: String,
-    required: false
-  }],
-  shipping: {
-    type: String,
-    required: false
+  items: {
+    type: [CartItem]
   },
-  billing: {
-    type: String,
-    required: false
-  },
+  shipping: [Shipment],
+  billing: [Payment],
   tax: {
     type: Number,
     required: false
   },
   taxes: {
-    type: String,
+    type: [Object],
     required: false
   },
-  workflow: {
-    status: {type: String},
-    workflow: {type: String},
-    required: false
-  },
+  workflow: Workflow,
   createdAt: {
     type: Date
   },
@@ -97,5 +64,4 @@ CartSchema.pre("save", function (next) {
   next();
 });
 
-const CartItems = mongoose.model("CartItems", CartItemsSchema);
 exports.Cart = mongoose.model("Cart", CartSchema, "Cart");

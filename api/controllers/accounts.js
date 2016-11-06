@@ -60,14 +60,15 @@ module.exports = () => {
 
     delete: (req, res) => {
       methods.deleteAccount(req, res, (err, account) => {
-        Users.findByIdAndRemove(account.userId, (errors, response) => {
+        Users.findByIdAndRemove(account.userId, (errors) => {
           if (!errors) {
             Accounts.findByIdAndRemove(req.params.id)
             .exec((error) => {
               if (error) {
                 return helper.handleError(res, err);
               }
-              return helper.sendMessage(res, 200, "Account deleted successfully");
+              return helper.sendMessage(res, 200,
+                "Account deleted successfully");
             });
           }
         });

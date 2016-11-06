@@ -5,7 +5,7 @@ const Metafield = require("./metafield").Metafield;
 
 const AddressObject = {
   fullName: {
-    type: String,
+    type: String
   },
   address1: {
     type: String

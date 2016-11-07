@@ -24,21 +24,22 @@ export default class SortnFilter extends TrackerReact(React.Component) {
   render() {
     return (
       <div style={{ 'float': 'left', 'height': '350px', 'width': 200, 'margin': '0 20px', 'bottom': 0, 'position': 'fixed', 'zIndex': 2000, 'overflowY': 'scroll' }}>
-        <h4>Sort</h4>
-        <input type="radio" value="-1" name="upOrDown" defaultChecked />A-Z
-        <input type="radio" value="1" name="upOrDown" style={{'margin-left': '5px'}}/>Z-A <br />
-        <select style={{ "clear": "both" }}>
-          <option value="title">Product Title</option>
-          <option value="price">Product Price</option>
-          <option value="rating">Product Rating</option>
-          <option value="quantity">Quantity Sold</option>
-        </select>
-        <hr/>
+        <div id="sort">
+          <h4>Sort</h4>
+          <input type="radio" value="1" name="upOrDown" defaultChecked />A-Z
+          <input type="radio" value="-1" name="upOrDown" style={{ 'marginLeft': '5px' }} />Z-A <br />
+          <select style={{ "clear": "both" }}>
+            <option value="title">Product Title</option>
+            <option value="price">Product Price</option>
+            <option value="rating">Product Rating</option>
+          </select>
+        </div>
+        <hr />
         <h4>Filter</h4>
         <hr />
         <h5>Brands</h5>
-        <div style={{'overflowY' : 'scroll', 'maxHeight' : '100px'}}>
-        {this.renderVendors()}
+        <div style={{ 'overflowY': 'scroll', 'maxHeight': '100px' }}>
+          {this.renderVendors()}
         </div>
         <hr />
         <div id="score" name="scoreName">

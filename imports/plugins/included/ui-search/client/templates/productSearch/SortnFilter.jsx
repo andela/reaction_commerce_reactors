@@ -24,12 +24,14 @@ export default class SortnFilter extends TrackerReact(React.Component) {
   render() {
     return (
       <div style={{ 'float': 'left', 'height': '350px', 'width': 200, 'margin': '0 20px', 'bottom': 0, 'position': 'fixed', 'zIndex': 2000, 'overflowY': 'scroll' }}>
-        <h5> Sort By:</h5>
-        <select name="sort">
-          <option value="lowToHigh"> Lowest - Highest Price</option>
-          <option value="lowToHigh"> Highest - Lowest Price</option>
-          <option value="lowToHigh"> Lowest - Highest Ratings</option>
-          <option value="lowToHigh"> Highest - Lowest Ratings</option>
+        <h4>Sort</h4>
+        <input type="radio" value="-1" name="upOrDown" defaultChecked />A-Z
+        <input type="radio" value="1" name="upOrDown" style={{'margin-left': '5px'}}/>Z-A <br />
+        <select style={{ "clear": "both" }}>
+          <option value="title">Product Title</option>
+          <option value="price">Product Price</option>
+          <option value="rating">Product Rating</option>
+          <option value="quantity">Quantity Sold</option>
         </select>
         <hr/>
         <h4>Filter</h4>

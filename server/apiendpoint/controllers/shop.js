@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = () => {
   const Shops  = require("./../models/shop").Shops;
   const helper = require("./../services/helpers.js");
 
@@ -44,7 +44,7 @@ module.exports = function () {
           return res.json(shop);
         });
       } else {
-        return helper.sendMessage(res, 400, "Feilds cannot be empty");
+        return helper.sendMessage(res, false, 400, "Feilds cannot be empty");
       }
     },
 
@@ -56,10 +56,10 @@ module.exports = function () {
             return helper.handleError(res, err);
           }
 
-          return helper.sendMessage(res, 200, "updated successfully");
+          return helper.sendMessage(res, true, 200, "updated successfully");
         });
       } else {
-        helper.sendMessage(res, 400, "Fields cannot be empty");
+        helper.sendMessage(res, false, 400, "Fields cannot be empty");
       }
     },
 
@@ -69,7 +69,7 @@ module.exports = function () {
         if (err) {
           return helper.handleError(res, err);
         }
-        return helper.sendMessage(res, 200, "Shop deleted successfully");
+        return helper.sendMessage(res, true, 200, "Shop deleted successfully");
       });
     },
 
@@ -79,7 +79,7 @@ module.exports = function () {
           helper.handleError(res, err);
         }
         if (!shop) {
-          return helper.sendMessage(res, 404, "shop does not exist");
+          return helper.sendMessage(res, false, 404, "shop does not exist");
         }
         return res.json(shop);
       });

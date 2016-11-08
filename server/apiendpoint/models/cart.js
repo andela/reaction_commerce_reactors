@@ -56,7 +56,7 @@ const CartSchema = new Schema({
   }
 });
 
-CartSchema.pre("save", function (next) {
+CartSchema.pre("save", (next) => {
   now = new Date();
   this.updatedAt = now;
   if (!this.createdAt) {

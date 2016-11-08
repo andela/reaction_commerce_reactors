@@ -51,10 +51,10 @@ module.exports = () => {
             return helper.handleError(res, err);
           }
 
-          return helper.sendMessage(res, 200, "updated successfully");
+          return helper.sendMessage(res, true, 200, "updated successfully");
         });
       } else {
-        return helper.sendMessage(res, 400, "Fields cannot be empty");
+        return helper.sendMessage(res, false, 404, "Fields cannot be empty");
       }
     },
 
@@ -67,7 +67,7 @@ module.exports = () => {
               if (error) {
                 return helper.handleError(res, err);
               }
-              return helper.sendMessage(res, 200,
+              return helper.sendMessage(res, true, 200,
                 "Account deleted successfully");
             });
           }
@@ -88,7 +88,7 @@ module.exports = () => {
           return helper.handleError(res, err);
         }
         if (!account) {
-          return helper.sendMessage(res, 200, "Account does not exist");
+          return helper.sendMessage(res, false, 400, "Account does not exist");
         }
         return res.json(account);
       });

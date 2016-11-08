@@ -12,7 +12,7 @@ export default function () {
     }
   });
 
-  app.get("/", function (req, res) {
+  app.get("/", (req, res) => {
     res.json({
       message: " root reoute"
     });
@@ -31,7 +31,7 @@ export default function () {
   app.use("/api/", router);
 
 
-  app.listen(port, function () {
+  app.listen(port, () => {
     logger.info("API running at: http://localhost " + port);
   });
 }

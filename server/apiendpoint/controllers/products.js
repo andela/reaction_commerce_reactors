@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = () => {
   const Products  = require("./../models/product").Products;
   const helper = require("./../services/helpers.js");
 
@@ -47,21 +47,21 @@ module.exports = function () {
           return res.json(product);
         });
       } else {
-        return helper.sendMessage(res, 400, "Feilds cannot be empty");
+        return helper.sendMessage(res, false, 400, "Feilds cannot be empty");
       }
     },
 
     edit: (req, res) => {
       if (helper.validateRequestBody(req.body)) {
-        Products.update({_id: req.params.id}, {$set: req.body}, function (err) {
+        Products.update({_id: req.params.id}, {$set: req.body}, (err) => {
           if (err) {
             return helper.handleError(res, err);
           }
 
-          return helper.sendMessage(res, 200, "updated successfully");
+          return helper.sendMessage(res, true, 200, "updated successfully");
         });
       } else {
-        return helper.sendMessage(res, 400, "Fields cannot be empty");
+        return helper.sendMessage(res, false, 400, "Fields cannot be empty");
       }
     },
 
@@ -71,22 +71,22 @@ module.exports = function () {
         if (err) {
           return helper.handleError(res, err);
         }
-        return helper.sendMessage(res, 200, "Product deleted successfully");
+        return helper.sendMessage(res, true, 200, "Product deleted successfully");
       });
     },
     getProduct: (req, res) => {
       if (helper.validateRequestBody(req.body)) {
-        Products.findOne({_id: req.params.id}, function (err, product) {
+        Products.findOne({_id: req.params.id}, (err, product) => {
           if (err) {
             return helper.handleError(res, err);
           }
           if (!product) {
-            return helper.sendMessage(res, 200, "Product does not exist");
+            return helper.sendMessage(res, false, 404, "Product does not exist");
           }
           return res.json(product);
         });
       } else {
-        return helper.sendMessage(res, 400, "Fields cannot be empty");
+        return helper.sendMessage(res, false, 400, "Fields cannot be empty");
       }
     }
 

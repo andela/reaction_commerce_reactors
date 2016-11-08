@@ -27,9 +27,9 @@ const Helpers = {
     res.status(500).json(error);
   },
 
-  sendMessage: (res, status, message) => {
+  sendMessage: (res, success, status, message) => {
     res.status(status).json({
-      success: false,
+      success: success,
       message: message
     });
   },

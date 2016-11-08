@@ -79,6 +79,13 @@
         </div>
       </div>
 
+      {{#if showCanceled}}
+        <div class="row cancel-order">
+          <div class="col-xs-12">
+            {{>React CancelOrderButton}}
+          </div>
+        </div>
+      {{/if}}
       <div class="row order-group-title">
         <div class="col-xs-12">
           <strong>

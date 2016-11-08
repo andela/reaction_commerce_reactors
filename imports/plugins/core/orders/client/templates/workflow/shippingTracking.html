@@ -41,8 +41,16 @@
           </div>
         </div>
       {{/if}}
-      <div class="cancel-panel">
-        <div style="padding: 10px 0">
+      <div class="row cancel-panel">
+        <div class="col-xs-6 col-sm12">
+          <select id="cancelation-reason" name="cancelation-reason" class="form-control">
+            <option value="failed-delivery" selected>Failed delivery</option>
+            <option value="wrong-item">Wrong Item</option>
+            <option value="damaged">Damaged in transit</option>
+            <option value="out-of-stock">Item out of stock</option>
+          </select>
+        </div>
+        <div class="col-xs-6 col-sm12">
           {{> React CancelOrderButton}}
         </div>
       </div>

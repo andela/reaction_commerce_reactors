@@ -91,7 +91,6 @@ Template.coreOrderShippingTracking.helpers({
     });
     return shippedItems;
   },
-
   isCompleted() {
     const currentData = Template.currentData();
     const order = Template.instance().order;
@@ -108,7 +107,6 @@ Template.coreOrderShippingTracking.helpers({
 
     return completedItems;
   },
-
   editTracking() {
     const template = Template.instance();
     if (!template.order.shipping[0].tracking || template.showTrackingEditForm.get()) {
@@ -146,7 +144,8 @@ Template.coreOrderShippingTracking.helpers({
       className: "btn-danger btn-block",
       label: "Cancel order",
       onClick() {
-        Meteor.call("orders/cancelOrder", order._id, function (error) {
+        const reason = document.querySelector("#cancelation-reason").value;
+        Meteor.call("orders/cancelOrder", order._id, reason, function (error) {
           if (error) {
             console.log("error", error);
           }

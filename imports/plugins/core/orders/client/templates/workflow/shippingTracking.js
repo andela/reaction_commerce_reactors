@@ -136,17 +136,36 @@ Template.coreOrderShippingTracking.helpers({
     return (order.workflow.status === "coreOrderWorkflow/canceled");
   },
 
-  // Create a helper to import in the FlatButton react component
+  // Create a helper to import in the FlatButton react component for
+  // cancelOrder button
   CancelOrderButton() {
     const order = Template.instance().order;
     return  {
       component: FlatButton,
-      icon: "fa fa-times",
       kind: "flat",
       className: "btn-danger btn-block",
       label: "Cancel order",
       onClick() {
-        Meteor.call("orders/cancelOrder", order._id, function(error, result){
+        Meteor.call("orders/cancelOrder", order._id, function (error) {
+          if (error) {
+            console.log("error", error);
+          }
+        });
+      }
+    };
+  },
+
+  // Create a helper to import in the FlatButton react component for
+  // complete order button
+  CompleteOrderButton() {
+    const order = Template.instance().order;
+    return  {
+      component: FlatButton,
+      kind: "flat",
+      className: "btn-success btn-block",
+      label: "Complete order",
+      onClick() {
+        Meteor.call("orders/orderCompleted", order, function (error) {
           if (error) {
             console.log("error", error);
           }

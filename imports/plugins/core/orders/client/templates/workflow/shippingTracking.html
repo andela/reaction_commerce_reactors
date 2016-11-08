@@ -34,6 +34,13 @@
     {{/unless}}
     <br/>
     {{#unless isCompleted}}
+      {{#if isShipped}}
+        <div class="complete-panel">
+          <div style="padding: 10px 0">
+            {{> React CompleteOrderButton}}
+          </div>
+        </div>
+      {{/if}}
       <div class="cancel-panel">
         <div style="padding: 10px 0">
           {{> React CancelOrderButton}}

@@ -536,7 +536,7 @@ Meteor.methods({
     return true;
   },
 
-  // mark orders completed
+  // mark orders completed might not be needed
   /**
    * orders/orderCompleted
    *
@@ -552,6 +552,10 @@ Meteor.methods({
     }
 
     this.unblock();
+    const shipment = order.shipping[0];
+    const itemIds = shipment.items.map((item) => {
+      return item._id;
+    });
 
     // Move to completed status for items
     completedItemsResult = Meteor.call("workflow/pushItemWorkflow", "coreOrderItemWorkflow/completed", order, itemIds);
@@ -560,8 +564,8 @@ Meteor.methods({
       // Then try to mark order as completed.
       completedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "completed", order);
     }
-
-    return this.orderCompleted(order);
+    // TODO: send an email that the order has been delivered
+    // return this.orderCompleted(order);
   },
 
   /**

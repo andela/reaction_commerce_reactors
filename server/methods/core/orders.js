@@ -961,12 +961,14 @@ Meteor.methods({
   /**
    * orders/cancelOrder
    *
-   * @summary Cancel an order that hasn't been shipped
+   * @summary Cancel an order for the admin
    * @param {String} orderId - order object
+   * @param {String} cancelationReason - cancelation reason
    * @return {null} no return value
    */
-  "orders/cancelOrder": function (orderId) {
+  "orders/cancelOrder": function (orderId, cancelationReason) {
     check(orderId, String);
+    check(cancelationReason, String);
 
     if (!Reaction.hasPermission("orders")) {
       throw new Meteor.Error(403, "Access Denied");
@@ -978,11 +980,80 @@ Meteor.methods({
     const paymentStatus = paymentMethod.status;
     const amount = paymentMethod.amount;
     const shipment = order.shipping[0];
+    const shipmentAmount = order.billing[0].invoice.shipping;
+    let amendedAmount = amount;
+
+    // if the delivery failed (buyers fault)
+    if (cancelationReason === "failed-delivery") {
+      amendedAmount = amount - shipmentAmount;
+    }
 
     // if payment has been captured
     if (paymentStatus === "completed") {
       // Refund money
-      Meteor.call("orders/refunds/create", orderId, paymentMethod, amount, (error) => {
+      Meteor.call("orders/refunds/create", orderId, paymentMethod, amendedAmount, (error) => {
+        if (error) {
+          Alerts.alert(error.reason);
+        } else {
+          // send an email to the user
+          Meteor.call("orders/sendCancelNotification", order, (err) => {
+            if (err) {
+              Logger.error(error, "orders/orderCanceled: Failed to send notification");
+            }
+          });
+        }
+      });
+    } else {
+      // send an email to the user
+      Meteor.call("orders/sendCancelNotification", order, (err) => {
+        if (err) {
+          Logger.error(error, "orders/orderCanceled: Failed to send notification");
+        }
+      });
+    }
+
+    // change the shipping status to canceled
+    Meteor.call("orders/shipmentCanceled", order, shipment);
+    // Change status of the order to canceled
+    completedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "canceled", order);
+
+    // TODO: Restock the inventory
+
+    return null;
+  },
+
+  // important (added to deal with customer cancelling orders)
+  /**
+   * orders/customerCancelOrder
+   *
+   * @summary Cancel an order that hasn't been shipped
+   * @param {String} orderId - order object
+   * @return {null} no return value
+   */
+  "orders/customerCancelOrder": function (orderId) {
+    check(orderId, String);
+
+    if (!Reaction.hasPermission("orders")) {
+      throw new Meteor.Error(403, "Access Denied");
+    }
+
+    // order and billing information
+    const order = Orders.findOne(orderId);
+    const orderStatus = order.workflow.status;
+    const paymentMethod = order.billing[0].paymentMethod;
+    const paymentStatus = paymentMethod.status;
+    const amount = paymentMethod.amount;
+    const shipment = order.shipping[0];
+    const shipmentAmount = order.billing[0].invoice.shipping;
+    let amendedAmount = amount;
+
+    if (orderStatus === "coreOrderWorkflow/shipped") {
+      amendedAmount = amount - shipmentAmount;
+    }
+    // if payment has been captured
+    if (paymentStatus === "completed") {
+      // Refund money
+      Meteor.call("orders/refunds/create", orderId, paymentMethod, amendedAmount, (error) => {
         if (error) {
           Alerts.alert(error.reason);
         } else {

@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 const Metafield = require("./metafield").Metafield;
 
 
@@ -44,7 +42,3 @@ const AddressObject = {
 };
 
 exports.AddressObject = AddressObject;
-
-const AddressSchema = new Schema(AddressObject);
-
-exports.Address = mongoose.model("Address", AddressSchema, "Address");

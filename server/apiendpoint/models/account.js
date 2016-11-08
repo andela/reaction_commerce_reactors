@@ -85,5 +85,6 @@ AccountSchema.pre("save", function (next) {
   next();
 });
 
+console.log(mongoose);
 const Accounts = mongoose.model("Accounts", AccountSchema, "Accounts");
 exports.Accounts = Accounts;

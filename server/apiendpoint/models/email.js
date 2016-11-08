@@ -45,7 +45,7 @@ const emailSchema = new mongoose.Schema({
   }
 });
 
-emailSchema.pre("save", function (next) {
+emailSchema.pre("save", (next) => {
   now = new Date();
   this.updatedAt = now;
   if (!this.createdAt) {

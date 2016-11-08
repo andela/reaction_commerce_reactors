@@ -159,7 +159,7 @@ const ShopSchema = new Schema({
   }
 });
 
-ShopSchema.pre("save", function (next) {
+ShopSchema.pre("save", (next) => {
   now = new Date();
   this.updatedAt = now;
   if (!this.createdAt) {

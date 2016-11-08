@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = () => {
   const Emails  = require("./../models/email");
   const helper = require("./../services/helpers.js");
 
@@ -14,11 +14,11 @@ module.exports = function () {
 
     add: (req, res) => {
       if (!helper.validateRequestBody(req.body)) {
-        return helper.sendMessage(res, 400, "Fields cannot be empty");
+        return helper.sendMessage(res, false, 400, "Fields cannot be empty");
       }
       if (!(helper.isValidEmail(req.body.to))
        && (helper.isValidEmail(req.body.from))) {
-        return helper.sendMessage(res, 400,
+        return helper.sendMessage(res, false, 400,
           "Enter valid emails for to and from");
       }
       Emails.create({
@@ -41,19 +41,19 @@ module.exports = function () {
       if (helper.validateRequestBody(req.body)) {
         Emails.findOne({_id: req.params.id}, (err, email) => {
           if (email) {
-            Emails.update({_id: req.params.id}, {$set: req.body}, function (error) {
+            Emails.update({_id: req.params.id}, {$set: req.body}, (error) => {
               if (error) {
                 return helper.handleError(res, error);
               }
 
-              return helper.sendMessage(res, 200, "updated successfully");
+              return helper.sendMessage(res, true, 200, "updated successfully");
             });
           } else {
-            return helper.sendMessage(res, 200, "Email not found");
+            return helper.sendMessage(res, false, 404, "Email not found");
           }
         });
       } else {
-        return helper.sendMessage(res, 200, "Feilds cannot be empty");
+        return helper.sendMessage(res, false, 400, "Feilds cannot be empty");
       }
     },
 
@@ -63,17 +63,17 @@ module.exports = function () {
         if (err) {
           return helper.handleError(res, err);
         }
-        return helper.sendMessage(res, 200, "Email deleted successfully");
+        return helper.sendMessage(res, true, 200, "Email deleted successfully");
       });
     },
 
     getEmail: (req, res) => {
-      Emails.findOne({_id: req.params.id}, function (err, email) {
+      Emails.findOne({_id: req.params.id}, (err, email) => {
         if (err) {
           return helper.handleError(res, err);
         }
         if (!email) {
-          return helper.sendMessage(res, 200, "Email does not exist");
+          return helper.sendMessage(res, false, 404, "Email does not exist");
         }
         return res.json(email);
       });

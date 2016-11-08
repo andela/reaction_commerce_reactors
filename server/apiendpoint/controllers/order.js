@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = () => {
   const Orders  = require("./../models/order").Orders;
   const helper = require("./../services/helpers.js");
 
@@ -27,7 +27,7 @@ module.exports = function () {
           res.json(order);
         });
       } else {
-        helper.sendMessage(res, 400, "Feilds cannot be empty");
+        helper.sendMessage(res, false, 400, "Feilds cannot be empty");
       }
     },
 
@@ -39,10 +39,10 @@ module.exports = function () {
             return helper.handleError(res, err);
           }
 
-          helper.sendMessage(res, 200, "updated successfully");
+          helper.sendMessage(res, true, 200, "updated successfully");
         });
       } else {
-        helper.sendMessage(res, 400, "Fields cannot be empty");
+        helper.sendMessage(res, false, 400, "Fields cannot be empty");
       }
     },
 
@@ -52,17 +52,17 @@ module.exports = function () {
         if (err) {
           helper.handleError(res, err);
         } else {
-          helper.sendMessage(res, 200, "Order deleted successfully");
+          helper.sendMessage(res, true, 200, "Order deleted successfully");
         }
       });
     },
     getOrder: (req, res) => {
-      Orders.findOne({_id: req.params.id}, function (err, order) {
+      Orders.findOne({_id: req.params.id}, (err, order) => {
         if (err) {
           helper.handleError(res, err);
         }
         if (!order) {
-          helper.sendMessage(res, 404, "order does not exist");
+          helper.sendMessage(res, false, 404, "order does not exist");
         } else {
           res.json(order);
         }

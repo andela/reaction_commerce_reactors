@@ -209,7 +209,7 @@ const ProductSchema = new Schema({
   workflow: Workflow
 });
 
-ProductSchema.pre("save", function (next) {
+ProductSchema.pre("save", (next) => {
   now = new Date();
   this.updatedAt = now;
   if (!this.createdAt) {

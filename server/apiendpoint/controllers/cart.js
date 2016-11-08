@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = () => {
   const Carts  = require("./../models/cart").Cart;
   const helper = require("./../services/helpers.js");
 
@@ -31,21 +31,21 @@ module.exports = function () {
           return res.json(cart);
         });
       } else {
-        return helper.sendMessage(res, 400, "Feilds cannot be empty");
+        return helper.sendMessage(res, false, 400, "Feilds cannot be empty");
       }
     },
 
     edit: (req, res) => {
       if (helper.validateRequestBody(req.body)) { // chage to decoded
-        Carts.update({userId: req.headers["x-user-id"]}, {$set: req.body}, function (err) {
+        Carts.update({userId: req.headers["x-user-id"]}, {$set: req.body}, (err) =>  {
           if (err) {
             return helper.handleError(res, err);
           }
 
-          return helper.sendMessage(res, 200, "updated successfully");
+          return helper.sendMessage(res, true, 200, "updated successfully");
         });
       } else {
-        return helper.sendMessage(res, 400, "Fields cannot be empty");
+        return helper.sendMessage(res, false, 400, "Fields cannot be empty");
       }
     },
 
@@ -55,16 +55,16 @@ module.exports = function () {
         if (err) {
           return helper.handleError(res, err);
         }
-        return helper.sendMessage(res, 200, "Cart deleted successfully");
+        return helper.sendMessage(res, true, 200, "Cart deleted successfully");
       });
     },
     getCart: (req, res) => {
-      Carts.findOne({_id: req.params.id}, function (err, cart) {
+      Carts.findOne({_id: req.params.id}, (err, cart) => {
         if (err) {
           return helper.handleError(res, err);
         }
         if (!cart) {
-          return helper.sendMessage(res, 200, "Cart does not exist");
+          return helper.sendMessage(res, false, 404, "Cart does not exist");
         }
         return res.json(cart);
       });

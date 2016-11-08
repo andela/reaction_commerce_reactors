@@ -229,8 +229,8 @@ Meteor.methods({
 
     this.unblock();
 
-    let completedItemsResult;
-    let completedOrderResult;
+    // let completedItemsResult;
+    let shippedOrderResult;
 
     const itemIds = shipment.items.map((item) => {
       return item._id;
@@ -240,13 +240,8 @@ Meteor.methods({
     const workflowResult = Meteor.call("workflow/pushItemWorkflow", "coreOrderItemWorkflow/shipped", order, itemIds);
 
     if (workflowResult === 1) {
-      // Move to completed status for items
-      completedItemsResult = Meteor.call("workflow/pushItemWorkflow", "coreOrderItemWorkflow/completed", order, itemIds);
-
-      if (completedItemsResult === 1) {
-        // Then try to mark order as completed.
-        completedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "completed", order);
-      }
+      // Mark order as shipped.
+      shippedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "shipped", order);
     }
 
     if (order.email) {
@@ -261,8 +256,8 @@ Meteor.methods({
 
     return {
       workflowResult: workflowResult,
-      completedItems: completedItemsResult,
-      completedOrder: completedOrderResult
+      // completedItems: completedItemsResult,
+      shippedOrder: shippedOrderResult
     };
   },
 
@@ -541,6 +536,7 @@ Meteor.methods({
     return true;
   },
 
+  // mark orders completed
   /**
    * orders/orderCompleted
    *
@@ -557,7 +553,13 @@ Meteor.methods({
 
     this.unblock();
 
-    Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "coreOrderCompleted", order._id);
+    // Move to completed status for items
+    completedItemsResult = Meteor.call("workflow/pushItemWorkflow", "coreOrderItemWorkflow/completed", order, itemIds);
+
+    if (completedItemsResult === 1) {
+      // Then try to mark order as completed.
+      completedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "completed", order);
+    }
 
     return this.orderCompleted(order);
   },

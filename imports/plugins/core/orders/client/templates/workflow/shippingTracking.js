@@ -48,7 +48,7 @@ Template.coreOrderShippingTracking.events({
     });
   },
 
-  "click [data-event-action=shipmentPacked]": () => {
+  "click [data-event-action=shipmentPacked]": () => { // TODO: look into this
     const template = Template.instance();
 
     Meteor.call("orders/shipmentPacked", template.order, template.order.shipping[0], true);
@@ -87,10 +87,8 @@ Template.coreOrderShippingTracking.helpers({
           return true;
         }
       });
-
-      return _.includes(fullItem.workflow.workflow, "coreOrderItemWorkflow/shipped");
+      return fullItem.workflow.status === "coreOrderItemWorkflow/shipped";
     });
-
     return shippedItems;
   },
 
@@ -105,7 +103,7 @@ Template.coreOrderShippingTracking.helpers({
         }
       });
 
-      return _.includes(fullItem.workflow.workflow, "coreOrderItemWorkflow/completed");
+      return fullItem.workflow.status === "coreOrderItemWorkflow/completed";
     });
 
     return completedItems;

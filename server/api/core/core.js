@@ -138,6 +138,25 @@ export default {
     }
   },
 
+  setHasTakenAdminTour() {
+    let userId = Meteor.userId();
+    Accounts.update({_id: userId}, {$set: {hasTakenAdminTour: true}}, function (err, account) {
+      console.log('done', err, account);
+    });
+  },
+
+  hasTakenAdminTour() {
+    let userId = Meteor.userId();
+    let account = Accounts.findOne({
+      userId: userId
+    });
+    if (account && account.hasTakenAdminTour) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   getSellerShopId() {
     return Roles.getGroupsForUser(this.userId, "admin");
   },

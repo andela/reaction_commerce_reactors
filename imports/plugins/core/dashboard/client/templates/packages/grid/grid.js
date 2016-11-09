@@ -208,7 +208,7 @@ Template.packagesGrid.onCreated(function () {
 
 Template.packagesGrid.onRendered(function () {
   function setHasTakenAdminTour() {
-    Reaction.setHasTakenTour();
+    Reaction.setHasTakenAdminTour();
   }
 
   if (!Reaction.hasTakenAdminTour()) {

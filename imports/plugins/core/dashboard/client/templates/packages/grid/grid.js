@@ -96,100 +96,101 @@ Template.packagesGrid.onCreated(function () {
     const attribs = {};
     attribs.appearance = [
       {
-        "data-intro": "This allows you customize the layout of your store.",
-        "data-position": "auto"
+        dataIntro: "This allows you customize the layout of your store.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you customize the look and feel of your store.",
-        "data-position": "auto"
+        dataIntro: "This allows you customize the look and feel of your store.",
+        dataPosition: "auto"
       }
     ];
     attribs.connect = [
       {
-        "data-intro": "This allows you add social integrations.",
-        "data-position": "auto"
+        dataIntro: "This allows you add social integrations.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you add analytics integrations.",
-        "data-position": "auto"
+        dataIntro: "This allows you add analytics integrations.",
+        dataPosition: "auto"
       }
     ];
     attribs.utilities = [
       {
-        "data-intro": "This allows you configure routing for your store.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure routing for your store.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you set internationalization settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you set internationalization settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you connect reaction as a deployed service.",
-        "data-position": "auto"
+        dataIntro: "This allows you connect reaction as a deployed service.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you customize inventory settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you customize inventory settings.",
+        dataPosition: "auto"
       }
     ];
     attribs.paymentMethod = [
       {
-        "data-intro": "This allows you configure Braintree payment settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure Braintree payment settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure Authorize.net payment settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure Authorize.net payment settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure Stripe payment settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure Stripe payment settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure PayPal payment settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure PayPal payment settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure Example payment settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure Example payment settings.",
+        dataPosition: "auto"
       }
     ];
     attribs.core = [
       {
-        "data-intro": "This allows you configure store settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure store settings.",
+        dataPosition: "auto",
+        useId: true
       },
       {
-        "data-intro": "This allows you configure order settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure order settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure shipping settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure shipping settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you view, edit and configure user accounts.",
-        "data-position": "auto"
+        dataIntro: "This allows you view, edit and configure user accounts.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure email settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure email settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure revisions.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure revisions.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure catalog settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure catalog settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure search settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure search settings.",
+        dataPosition: "auto"
       },
       {
-        "data-intro": "This allows you configure tax settings.",
-        "data-position": "auto"
+        dataIntro: "This allows you configure tax settings.",
+        dataPosition: "auto"
       }
     ];
     let _groupedApps = {};
@@ -203,6 +204,19 @@ Template.packagesGrid.onCreated(function () {
     this.state.set("appsByGroup", _groupedApps);
     this.state.set("groups", Object.keys(_groupedApps));
   });
+});
+
+Template.packagesGrid.onRendered(function () {
+  function setHasTakenAdminTour() {
+    Reaction.setHasTakenTour();
+  }
+
+  if (!Reaction.hasTakenAdminTour()) {
+    const introJS = introJs();
+    introJS.start();
+    introJS.onexit(setHasTakenAdminTour);
+    introJS.oncomplete(setHasTakenAdminTour);
+  }
 });
 
 /**

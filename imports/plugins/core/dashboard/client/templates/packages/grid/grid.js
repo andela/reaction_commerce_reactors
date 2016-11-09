@@ -93,6 +93,7 @@ Template.packagesGrid.onCreated(function () {
     const groupedApps = _.groupBy(apps, (app) => {
       return app.container || "misc";
     });
+    console.log(groupedApps);
     this.state.set("apps", apps);
     this.state.set("appsByGroup", groupedApps);
     this.state.set("groups", Object.keys(groupedApps));

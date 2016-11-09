@@ -93,10 +93,115 @@ Template.packagesGrid.onCreated(function () {
     const groupedApps = _.groupBy(apps, (app) => {
       return app.container || "misc";
     });
-    console.log(groupedApps);
+    const attribs = {};
+    attribs.appearance = [
+      {
+        "data-intro": "This allows you customize the layout of your store.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you customize the look and feel of your store.",
+        "data-position": "auto"
+      }
+    ];
+    attribs.connect = [
+      {
+        "data-intro": "This allows you add social integrations.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you add analytics integrations.",
+        "data-position": "auto"
+      }
+    ];
+    attribs.utilities = [
+      {
+        "data-intro": "This allows you configure routing for your store.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you set internationalization settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you connect reaction as a deployed service.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you customize inventory settings.",
+        "data-position": "auto"
+      }
+    ];
+    attribs.paymentMethod = [
+      {
+        "data-intro": "This allows you configure Braintree payment settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure Authorize.net payment settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure Stripe payment settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure PayPal payment settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure Example payment settings.",
+        "data-position": "auto"
+      }
+    ];
+    attribs.core = [
+      {
+        "data-intro": "This allows you configure store settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure order settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure shipping settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you view, edit and configure user accounts.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure email settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure revisions.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure catalog settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure search settings.",
+        "data-position": "auto"
+      },
+      {
+        "data-intro": "This allows you configure tax settings.",
+        "data-position": "auto"
+      }
+    ];
+    let _groupedApps = {};
+    _.each(groupedApps, (groupedApp, key) => {
+      _groupedApps[key] = [];
+      _.each(groupedApp, (app, index) => {
+        _groupedApps[key].push(_.assign(app, attribs[key][index]));
+      });
+    });
     this.state.set("apps", apps);
-    this.state.set("appsByGroup", groupedApps);
-    this.state.set("groups", Object.keys(groupedApps));
+    this.state.set("appsByGroup", _groupedApps);
+    this.state.set("groups", Object.keys(_groupedApps));
   });
 });
 

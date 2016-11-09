@@ -132,8 +132,7 @@ Template.loginForm.events({
    * @param  {Template} template Blaze Template instance
    * @return {void}
    */
-  "click [data-event-action=retakeTour]": (event, template) => {
-    console.log(event, template);
+  "click [data-event-action=retakeTour]": (event) => {
     event.preventDefault();
     event.stopPropagation();
 

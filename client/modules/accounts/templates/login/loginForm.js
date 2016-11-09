@@ -124,6 +124,20 @@ Template.loginForm.events({
     };
 
     template.loginFormCurrentView.set("loginFormResetPasswordView");
+  },
+
+  /**
+   * Event: Show the password reset view
+   * @param  {Event}    event    jQuery Event
+   * @param  {Template} template Blaze Template instance
+   * @return {void}
+   */
+  "click [data-event-action=retakeTour]": (event, template) => {
+    console.log(event, template);
+    event.preventDefault();
+    event.stopPropagation();
+
+    introJs().start();
   }
 });
 

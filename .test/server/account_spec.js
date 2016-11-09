@@ -11,18 +11,22 @@ describe("Account end points", () => {
 
   'use strict';
   let id;
+  let seed_id;
 
-  before(() => {
-    users.forEach((seed) => {
-      api.post("/api/accounts")
-        .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
-        .set("Accept", "application/json")
-        .send({
-          email: seed.email,
-          password: seed.password
-        })
-    });
+  before((done) => {
+    api.post("/api/accounts")
+      .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
+      .set("Accept", "application/json")
+      .send({
+        email: users.email,
+        password: users.password
+      })
+      .end((err, res) => {
+        seed_id = res.body.account._id;
+        done();
+      });
   });
+
 
   it("should respond with an array of accounts", (done) => {
     api.get("/api/accounts")
@@ -95,4 +99,13 @@ describe("Account end points", () => {
       });
   });
 
+  after((done) => {
+    api.delete("/api/accounts/" + seed_id)
+      .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
+      .set("x-user-id", "K54okcMXiPvuzrFeg")
+      .set("Accept", "application/json")
+      .end((err, res) => {
+        done();
+      });
+  });
 });

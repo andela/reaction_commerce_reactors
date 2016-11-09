@@ -81,7 +81,6 @@ module.exports = () => {
       });
     },
 
-
     getAccount: (req, res) => {
       Accounts.findOne({_id: req.params.id}, function (err, account) {
         if (err) {

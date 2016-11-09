@@ -86,7 +86,6 @@
     "react-textarea-autosize": "^4.0.5",
     "sortablejs": "^1.4.2",
     "stripe": "^4.11.0",
-
     "supertest": "^2.0.1",
     "sweetalert2": "^4.3.3",
     "swiper": "^3.3.1",

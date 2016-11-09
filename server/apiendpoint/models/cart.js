@@ -20,7 +20,6 @@ exports.CartItems = {
   items: [CartItem]
 };
 
-
 const CartSchema = new Schema({
   shopId: {
     type: String

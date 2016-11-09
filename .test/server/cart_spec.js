@@ -38,7 +38,6 @@ describe("Cart end point", () => {
 
   it("should get a single cart", (done) => {
     api.get("/api/carts/" + id)
-
     .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
     .set("x-user-id", "K54okcMXiPvuzrFeg")
     .set("Accept", "application/json")

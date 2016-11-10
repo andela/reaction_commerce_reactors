@@ -11,7 +11,6 @@ describe("Account end points", () => {
 
   'use strict';
   let id;
-<<<<<<< HEAD
   let seed_id;
 
   before((done) => {
@@ -28,22 +27,6 @@ describe("Account end points", () => {
       });
   });
 
-
-=======
-
-  before(() => {
-    users.forEach((seed) => {
-      api.post("/api/accounts")
-        .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")
-        .set("Accept", "application/json")
-        .send({
-          email: seed.email,
-          password: seed.password
-        })
-    });
-  });
-
->>>>>>> 27540f326910b53546675e5be49938098a7acbb2
   it("should respond with an array of accounts", (done) => {
     api.get("/api/accounts")
       .set("x-shop-id", "J8Bhq3uTtdgwZx3rz")

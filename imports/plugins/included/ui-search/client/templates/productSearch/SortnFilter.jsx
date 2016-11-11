@@ -39,7 +39,7 @@ export default class SortnFilter extends TrackerReact(React.Component) {
     const products = this.getProducts();
     const prices = [];
     let vendors = products.map((product) => {
-      prices.push(product.price.max);
+      product.price ? prices.push(product.price.max) : prices.push(0);
       return product.vendor;
     });
     priceMax = parseInt(Math.max(...prices).toFixed(), 10) ? Math.max(...prices) : 0;

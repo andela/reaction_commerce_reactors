@@ -8,11 +8,11 @@ import { IconButton, SortableTable } from "/imports/plugins/core/ui/client/compo
 
 
 
- // filterItems = [{vendor: []}, {min: 0}, {max: 9999999}, {score: false}];
-function filterResult() {
+// filterItems = [{vendor: []}, {min: 0}, {max: 9999999}, {score: false}];
+function filterResult(sortKey, sortStyle) {
   const result = [];
   if (JSON.stringify(filterItems) === "[{\"vendor\":[]},{},{},{}]") {
-    return getProducts();
+    return getProducts(sortKey, sortStyle);
   }
   const tempFilter = [];
   filterItems.filter((item) => {
@@ -20,7 +20,7 @@ function filterResult() {
       tempFilter.push(Object.keys(item)[0]);
     }
   });
-  getProducts().filter((product) => {
+  getProducts(sortKey, sortStyle).filter((product) => {
     let match = false;
     let count = 0;
     filterItems.forEach(item => {
@@ -43,7 +43,7 @@ function filterResult() {
           match = false;
       }
       if (match) {
-        count ++;
+        count++;
         if (count === tempFilter.length) {
           result.push(product);
         }
@@ -87,8 +87,10 @@ function vendorMatch(itemKey, productKey) {
 }
 
 // format of items {location: item} e.g {vendor: china}
-function getProducts() {
-  return ProductSearch.find().fetch();
+function getProducts(sortKey, sortStyle) {
+  const keyObj = {};
+  keyObj[sortKey] = sortStyle;
+  return ProductSearch.find({}, { sort: keyObj }).fetch();
 }
 
 
@@ -107,8 +109,10 @@ function tagToggle(arr, val) {
  */
 Template.searchModal.onCreated(function () {
   this.state = new ReactiveDict();
-  filterItems = [{vendor: []}, {min: undefined}, {max: undefined}, {score: undefined}];
-  emptyFilter = [{vendor: []}, {min: undefined}, {max: undefined}, {score: undefined}];
+  filterItems = [{ vendor: [] }, { min: undefined }, { max: undefined }, { score: undefined }];
+  emptyFilter = [{ vendor: [] }, { min: undefined }, { max: undefined }, { score: undefined }];
+  sortType = "title";
+  sortAZ = 1;
   this.state.setDefault({
     initialLoad: true,
     slug: "",
@@ -145,7 +149,6 @@ Template.searchModal.onCreated(function () {
       if (searchCollection === "products") {
         const productResults = ProductSearch.find().fetch();
         const productResultsCount = productResults.length;
-        // console.log(productResults[0]);
         this.state.set("productSearchResults", productResults);
         this.state.set("productSearchCount", productResultsCount);
 
@@ -255,22 +258,31 @@ Template.searchModal.events({
     }
   },
   "change [data-event-action=filterSearch]": (event) => {
-    // {vendor: [China, ireland]}
     const key = event.target.parentNode.id;
     const value = event.target.value;
-    this.filterItems.forEach((item) => {
-      let itemKey = Object.keys(item).toString();
-      if (itemKey === key) {
-        if (key === "vendor" && !item[itemKey].includes(value)) {
-          item[itemKey].push(value);
-        } else if (key === "vendor") {
-          item[itemKey].splice(item[itemKey].indexOf(value), 1);
-        } else {
-          item[itemKey] = value;
-        }
+    let result;
+    if (key === "sort") {
+      if (!parseInt(value, 10)) {
+        sortType = value;
+      } else {
+        sortAZ = value;
       }
-    });
-    const result = filterResult();
+      result = filterResult(sortType, sortAZ);
+    } else {
+      this.filterItems.forEach((item) => {
+        const itemKey = Object.keys(item).toString();
+        if (itemKey === key) {
+          if (key === "vendor" && !item[itemKey].includes(value)) {
+            item[itemKey].push(value);
+          } else if (key === "vendor") {
+            item[itemKey].splice(item[itemKey].indexOf(value), 1);
+          } else {
+            item[itemKey] = value;
+          }
+        }
+      });
+      result = filterResult(sortType, sortAZ);
+    }
     setSearchResults(result);
   },
   "click [data-event-action=filter]": function (event, templateInstance) {

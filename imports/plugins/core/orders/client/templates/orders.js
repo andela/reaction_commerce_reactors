@@ -11,6 +11,9 @@ const orderFilters = [{
   name: "processing",
   label: "Processing"
 }, {
+  name: "cancel-request",
+  label: "Cancel request"
+}, {
   name: "shipped",
   label: "Shipped"
 }, {
@@ -63,6 +66,12 @@ const OrderHelper =  {
         query = {
           "billing.paymentMethod.status": "completed",
           "shipping.shipped": false
+        };
+        break;
+
+      case "cancel-request":
+        query = {
+          "workflow.status": "coreOrderWorkflow/cancel-request"
         };
         break;
 

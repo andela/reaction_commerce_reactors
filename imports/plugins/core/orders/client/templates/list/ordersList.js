@@ -11,8 +11,8 @@ import FlatButton from "/imports/plugins/core/ui/client/components/button/flatBu
  */
 Template.dashboardOrdersList.helpers({
   orderStatus() {
-    if (this.workflow.status === "coreOrderWorkflow/cancel-request") {
-      return "Processing Cancel request";
+    if (this.workflow.status === "new") {
+      return "submitted";
     }
     return this.workflow.status.split("/")[1];
   },

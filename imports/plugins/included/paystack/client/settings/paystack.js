@@ -1,3 +1,6 @@
+/**
+ * Created by bolorundurowb on 11/14/16.
+ */
 import {Template} from "meteor/templating";
 import {Reaction} from "/client/api";
 import {Packages} from "/lib/collections";

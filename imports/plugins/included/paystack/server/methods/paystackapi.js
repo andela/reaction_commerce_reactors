@@ -1,4 +1,3 @@
-
 // You should not implement ThirdPartyAPI. It is supposed to represent your third party API
 // And is called so that it can be stubbed out for testing. This would be a library
 // like Stripe or Authorize.net usually just included with a NPM.require

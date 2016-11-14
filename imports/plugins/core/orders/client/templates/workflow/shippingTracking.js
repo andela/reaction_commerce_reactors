@@ -144,7 +144,11 @@ Template.coreOrderShippingTracking.helpers({
       className: "btn-danger btn-block",
       label: "Cancel order",
       onClick() {
-        const reason = document.querySelector("#cancelation-reason").value;
+        let reason = document.querySelector("#cancelation-reason").value;
+
+        if (reason === "others") {
+          reason = document.querySelector(".other-reasons").value;
+        }
         Meteor.call("orders/cancelOrder", order._id, reason, function (error) {
           if (error) {
             console.log("error", error);

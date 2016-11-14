@@ -256,7 +256,6 @@ Meteor.methods({
 
     return {
       workflowResult: workflowResult,
-      // completedItems: completedItemsResult,
       shippedOrder: shippedOrderResult
     };
   },

@@ -9,7 +9,7 @@ import {PaystackPackageConfig} from "../../lib/collections/schemas";
 import "./paystack.html";
 
 
-Template.exampleSettings.helpers({
+Template.paystackSettings.helpers({
   PaystackPackConfig() {
     return PaystackPackageConfig;
   },
@@ -22,7 +22,7 @@ Template.exampleSettings.helpers({
 });
 
 
-Template.example.helpers({
+Template.paystack.helpers({
   packageData: function () {
     return Packages.findOne({
       name: "paystack-paymentmethod",
@@ -31,7 +31,7 @@ Template.example.helpers({
   }
 });
 
-Template.example.events({
+Template.paystack.events({
   "click [data-event-action=showPaystackSettings]": function () {
     Reaction.showActionView();
   }

@@ -140,7 +140,6 @@ describe("Capture payment", function () {
 
     const captureStub = sandbox.stub(PaystackApi.methods.capture, "call", () => captureResults);
     const results = Meteor.call("paystack/payment/capture", paymentMethod);
-=======
     expect(captureStub).to.have.been.calledWith({
       authorizationId: authorizationId,
       amount: 19.99

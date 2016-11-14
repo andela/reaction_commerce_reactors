@@ -1,3 +1,6 @@
+/**
+ * Created by bolorundurowb on 11/14/16.
+ */
 /* eslint camelcase: 0 */
 import {Reaction} from "/server/api";
 

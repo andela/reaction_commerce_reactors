@@ -1,6 +1,3 @@
-/**
- * Created by bolorundurowb on 11/14/16.
- */
 import {Template} from "meteor/templating";
 import {Reaction} from "/client/api";
 import {Packages} from "/lib/collections";
@@ -9,29 +6,29 @@ import {PaystackPackageConfig} from "../../lib/collections/schemas";
 import "./paystack.html";
 
 
-Template.exampleSettings.helpers({
-  PaystackPackConfig() {
+Template.paystackSettings.helpers({
+  PaystackPackageConfig() {
     return PaystackPackageConfig;
   },
   packageData() {
     return Packages.findOne({
-      name: "paystack-paymentmethod",
+      name: "reaction-paystack",
       shopId: Reaction.getShopId()
     });
   }
 });
 
 
-Template.example.helpers({
+Template.paystack.helpers({
   packageData: function () {
     return Packages.findOne({
-      name: "paystack-paymentmethod",
+      name: "reaction-paystack",
       shopId: Reaction.getShopId()
     });
   }
 });
 
-Template.example.events({
+Template.paystack.events({
   "click [data-event-action=showPaystackSettings]": function () {
     Reaction.showActionView();
   }
@@ -49,4 +46,3 @@ AutoForm.hooks({
     }
   }
 });
-

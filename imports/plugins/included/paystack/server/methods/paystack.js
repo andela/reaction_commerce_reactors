@@ -63,7 +63,7 @@ Meteor.methods({
    * @param  {Object} paymentData The details of the Payment Needed
    * @return {Object} results normalized
    */
-  "exampleSubmit": function (transactionType, cardData, paymentData) {
+  "paystackSubmit": function (transactionType, cardData, paymentData) {
     check(transactionType, String);
     check(cardData, {
       name: String,
@@ -114,7 +114,7 @@ Meteor.methods({
    * @param {Object} paymentData Object containing data about the transaction to capture
    * @return {Object} results normalized
    */
-  "example/payment/capture": function (paymentData) {
+  "paystack/payment/capture": function (paymentData) {
     check(paymentData, Reaction.Schemas.PaymentMethod);
     const authorizationId = paymentData.transactionId;
     const amount = paymentData.amount;
@@ -135,7 +135,7 @@ Meteor.methods({
    * @param  {Number} amount The amount to be refunded
    * @return {Object} result
    */
-  "example/refund/create": function (paymentMethod, amount) {
+  "paystack/refund/create": function (paymentMethod, amount) {
     check(paymentMethod, Reaction.Schemas.PaymentMethod);
     check(amount, Number);
     const {transactionId} = paymentMethod;
@@ -155,7 +155,7 @@ Meteor.methods({
    * @param  {Object} paymentMethod Object containing the pertinant data
    * @return {Object} result
    */
-  "example/refund/list": function (paymentMethod) {
+  "paystack/refund/list": function (paymentMethod) {
     check(paymentMethod, Reaction.Schemas.PaymentMethod);
     const {transactionId} = paymentMethod;
     const response = PaystackApi.methods.refunds.call({

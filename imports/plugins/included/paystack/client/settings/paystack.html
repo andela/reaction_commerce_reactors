@@ -1,15 +1,13 @@
 <template name="paystackSettings">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <div class="panel-title">
-        <p>Don't have a paystack key? Get them <a href="https://dashboard.paystack.co/#/login">here</a></p>
-      </div>
+      <div class="panel-title"><p>Don't have a Paystack account? Sign up <a
+          href="https://dashboard.paystack.co/#/login">here</a></p></div>
     </div>
     <div class="panel-body">
       {{#autoForm collection=Collections.Packages schema=PaystackPackageConfig doc=packageData type="update"
                   id="paystack-update-form"}}
         {{>afQuickField name='settings.apiPublicKey'}}
-        {{>afQuickField name='settings.apiSecretKey'}}
         <button type="submit" class="btn btn-primary pull-right">Update</button>
       {{/autoForm}}
     </div>
@@ -23,21 +21,14 @@
     <div class="flex-item">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <div class="panel-title">Paystack</div>
+          <div class="panel-title">Paystack Payments</div>
         </div>
         <div class="list-group">
           <div class="list-group-item">
-            {{#if packageData.settings.apiPublicKey}}
-              <span>API Public Key: <button type="button" class="btn btn-link" data-event-action="showPaystackSettings">**********</button></span>
-            {{else}}
-              <span>API Public Key: <button type="button" class="btn btn-link" data-event-action="showPaystackSettings">Configure Now</button></span>
-            {{/if}}
-          </div>
-          <div class="list-group-item">
             {{#if packageData.settings.apiSecretKey}}
-              <span>API Secret Key: <button type="button" class="btn btn-link" data-event-action="showPaystackSettings">**********</button></span>
+              <span>API Client ID: <button type="button" class="btn btn-link" data-event-action="showPaystackSettings">**********</button></span>
             {{else}}
-              <span>API Secret Key: <button type="button" class="btn btn-link" data-event-action="showPaystackSettings">Configure Now</button></span>
+              <span>API Client ID: <button type="button" class="btn btn-link" data-event-action="showPaystackSettings">Configure Now</button></span>
             {{/if}}
           </div>
         </div>
@@ -45,13 +36,6 @@
           <div class="left"></div>
           <div class="right">
 
-            <div class="panel-footer-item">
-              {{#if packageData.settings.apiPublicKey}}
-                <i class="fa fa-check-circle fa-2x text-success"></i>
-              {{else}}
-                <i class="fa fa-minus-circle fa-2x text-muted"></i>
-              {{/if}}
-            </div>
             <div class="panel-footer-item">
               {{#if packageData.settings.apiSecretKey}}
                 <i class="fa fa-check-circle fa-2x text-success"></i>

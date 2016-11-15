@@ -20,11 +20,11 @@
     <div class="flex-item">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <div class="panel-title">Paystack Payment Method</div>
+          <div class="panel-title">Paystack Payments</div>
         </div>
         <div class="list-group">
           <div class="list-group-item">
-            {{#if packageData.settings.apiKey}}
+            {{#if packageData.settings.apiSecretKey}}
               <span>API Client ID: <button type="button" class="btn btn-link" data-event-action="showPaystackSettings">**********</button></span>
             {{else}}
               <span>API Client ID: <button type="button" class="btn btn-link" data-event-action="showPaystackSettings">Configure Now</button></span>
@@ -36,7 +36,7 @@
           <div class="right">
 
             <div class="panel-footer-item">
-              {{#if packageData.settings.apiKey}}
+              {{#if packageData.settings.apiSecretKey}}
                 <i class="fa fa-check-circle fa-2x text-success"></i>
               {{else}}
                 <i class="fa fa-minus-circle fa-2x text-muted"></i>

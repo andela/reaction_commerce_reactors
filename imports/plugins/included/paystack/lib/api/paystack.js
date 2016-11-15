@@ -5,10 +5,10 @@ export const Paystack = {
     const settings = Packages.findOne({
       name: "reaction-paymentmethod"
     }).settings;
-    if (!settings.apiSecretKey) {
+    if (!settings.apiKey) {
       throw new Meteor.Error("403", "Invalid Credentials");
     }
-    return settings.apiSecretKey;
+    return settings.apiKey;
   },
 
   authorize: function (cardInfo, paymentInfo, callback) {

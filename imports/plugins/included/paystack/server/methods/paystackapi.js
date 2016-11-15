@@ -1,3 +1,4 @@
+
 // You should not implement ThirdPartyAPI. It is supposed to represent your third party API
 // And is called so that it can be stubbed out for testing. This would be a library
 // like Stripe or Authorize.net usually just included with a NPM.require
@@ -70,7 +71,7 @@ paymentDataSchema = new SimpleSchema({
 
 
 PaystackApi.methods.authorize = new ValidatedMethod({
-  name: "ExampleApi.methods.authorize",
+  name: "PaystackApi.methods.authorize",
   validate: new SimpleSchema({
     transactionType: {type: String},
     cardData: {type: cardSchema},
@@ -84,7 +85,7 @@ PaystackApi.methods.authorize = new ValidatedMethod({
 
 
 PaystackApi.methods.capture = new ValidatedMethod({
-  name: "ExampleApi.methods.capture",
+  name: "PaystackApi.methods.capture",
   validate: new SimpleSchema({
     authorizationId: {type: String},
     amount: {type: Number, decimal: true}
@@ -99,7 +100,7 @@ PaystackApi.methods.capture = new ValidatedMethod({
 
 
 PaystackApi.methods.refund = new ValidatedMethod({
-  name: "ExampleApi.methods.refund",
+  name: "PaystackApi.methods.refund",
   validate: new SimpleSchema({
     transactionId: {type: String},
     amount: {type: Number, decimal: true}
@@ -114,7 +115,7 @@ PaystackApi.methods.refund = new ValidatedMethod({
 
 
 PaystackApi.methods.refunds = new ValidatedMethod({
-  name: "ExampleApi.methods.refunds",
+  name: "PaystackApi.methods.refunds",
   validate: new SimpleSchema({
     transactionId: {type: String}
   }).validator(),

@@ -7,9 +7,9 @@ export const PaystackPackageConfig = new SimpleSchema([
       type: Boolean,
       defaultValue: true
     },
-    "settings.apiKey": {
+    "settings.apiPublicKey": {
       type: String,
-      label: "API Key",
+      label: "API Public Key",
       optional: true
     }
   }

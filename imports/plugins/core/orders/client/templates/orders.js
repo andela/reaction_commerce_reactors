@@ -11,6 +11,12 @@ const orderFilters = [{
   name: "processing",
   label: "Processing"
 }, {
+  name: "cancel-request",
+  label: "Cancel request"
+}, {
+  name: "shipped",
+  label: "Shipped"
+}, {
   name: "completed",
   label: "Completed"
 }, {
@@ -40,7 +46,8 @@ const OrderHelper =  {
       // Orders that have been shipped, based on if the items have been shipped
       case "shipped":
         query = {
-          "items.workflow.status": "coreOrderItemWorkflow/shipped"
+          // "items.workflow.status": "coreOrderItemWorkflow/shipped"
+          "workflow.status": "coreOrderWorkflow/shipped"
         };
         break;
 
@@ -59,6 +66,12 @@ const OrderHelper =  {
         query = {
           "billing.paymentMethod.status": "completed",
           "shipping.shipped": false
+        };
+        break;
+
+      case "cancel-request":
+        query = {
+          "workflow.status": "coreOrderWorkflow/cancel-request"
         };
         break;
 
@@ -314,7 +327,18 @@ Template.orderStatusDetail.helpers({
         if (fullItem._id === shipmentItem._id) {
           if (fullItem.workflow) {
             if (_.isArray(fullItem.workflow.workflow)) {
-              return _.includes(fullItem.workflow.workflow, "coreOrderItemWorkflow/completed");
+              return fullItem.workflow.status === "coreOrderItemWorkflow/shipped";
+            }
+          }
+        }
+      }
+    });
+    const completed = _.every(shipment.items, (shipmentItem) => {
+      for (const fullItem of self.items) {
+        if (fullItem._id === shipmentItem._id) {
+          if (fullItem.workflow) {
+            if (_.isArray(fullItem.workflow.workflow)) {
+              return fullItem.workflow.status === "coreOrderItemWorkflow/completed";
             }
           }
         }
@@ -333,7 +357,7 @@ Template.orderStatusDetail.helpers({
     if (shipped) {
       return {
         shipped: true,
-        status: "success",
+        status: "info",
         label: i18next.t("orderShipping.shipped")
       };
     } else if (canceled) {
@@ -342,11 +366,17 @@ Template.orderStatusDetail.helpers({
         status: "danger",
         label: i18next.t("orderShipping.canceled")
       };
+    } else if (completed) {
+      return {
+        shipped: true,
+        status: "success",
+        label: "Delivered"
+      };
     }
 
     return {
       shipped: false,
-      status: "info",
+      status: "warning",
       label: i18next.t("orderShipping.notShipped")
     };
   }

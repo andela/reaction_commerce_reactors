@@ -229,8 +229,8 @@ Meteor.methods({
 
     this.unblock();
 
-    let completedItemsResult;
-    let completedOrderResult;
+    // let completedItemsResult;
+    let shippedOrderResult;
 
     const itemIds = shipment.items.map((item) => {
       return item._id;
@@ -240,13 +240,8 @@ Meteor.methods({
     const workflowResult = Meteor.call("workflow/pushItemWorkflow", "coreOrderItemWorkflow/shipped", order, itemIds);
 
     if (workflowResult === 1) {
-      // Move to completed status for items
-      completedItemsResult = Meteor.call("workflow/pushItemWorkflow", "coreOrderItemWorkflow/completed", order, itemIds);
-
-      if (completedItemsResult === 1) {
-        // Then try to mark order as completed.
-        completedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "completed", order);
-      }
+      // Mark order as shipped.
+      shippedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "shipped", order);
     }
 
     if (order.email) {
@@ -261,8 +256,7 @@ Meteor.methods({
 
     return {
       workflowResult: workflowResult,
-      completedItems: completedItemsResult,
-      completedOrder: completedOrderResult
+      shippedOrder: shippedOrderResult
     };
   },
 
@@ -541,6 +535,7 @@ Meteor.methods({
     return true;
   },
 
+  // mark orders completed might not be needed
   /**
    * orders/orderCompleted
    *
@@ -556,10 +551,20 @@ Meteor.methods({
     }
 
     this.unblock();
+    const shipment = order.shipping[0];
+    const itemIds = shipment.items.map((item) => {
+      return item._id;
+    });
 
-    Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "coreOrderCompleted", order._id);
+    // Move to completed status for items
+    completedItemsResult = Meteor.call("workflow/pushItemWorkflow", "coreOrderItemWorkflow/completed", order, itemIds);
 
-    return this.orderCompleted(order);
+    if (completedItemsResult === 1) {
+      // Then try to mark order as completed.
+      completedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "completed", order);
+    }
+    // TODO: send an email that the order has been delivered
+    // return this.orderCompleted(order);
   },
 
   /**
@@ -955,12 +960,14 @@ Meteor.methods({
   /**
    * orders/cancelOrder
    *
-   * @summary Cancel an order that hasn't been shipped
+   * @summary Cancel an order for the admin
    * @param {String} orderId - order object
+   * @param {String} cancelationReason - cancelation reason
    * @return {null} no return value
    */
-  "orders/cancelOrder": function (orderId) {
+  "orders/cancelOrder": function (orderId, cancelationReason) {
     check(orderId, String);
+    check(cancelationReason, String);
 
     if (!Reaction.hasPermission("orders")) {
       throw new Meteor.Error(403, "Access Denied");
@@ -972,11 +979,18 @@ Meteor.methods({
     const paymentStatus = paymentMethod.status;
     const amount = paymentMethod.amount;
     const shipment = order.shipping[0];
+    const shipmentAmount = order.billing[0].invoice.shipping;
+    let amendedAmount = amount;
+
+    // if the delivery failed (buyers fault)
+    if (cancelationReason === "failed-delivery") {
+      amendedAmount = amount - shipmentAmount;
+    }
 
     // if payment has been captured
     if (paymentStatus === "completed") {
       // Refund money
-      Meteor.call("orders/refunds/create", orderId, paymentMethod, amount, (error) => {
+      Meteor.call("orders/refunds/create", orderId, paymentMethod, amendedAmount, (error) => {
         if (error) {
           Alerts.alert(error.reason);
         } else {
@@ -1003,6 +1017,29 @@ Meteor.methods({
     completedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "canceled", order);
 
     // TODO: Restock the inventory
+
+    return null;
+  },
+
+  // important (added to deal with customer cancelling orders)
+  /**
+   * orders/customerCancelOrder
+   *
+   * @summary Cancel an order that hasn't been shipped
+   * @param {String} orderId - order object
+   * @return {null} no return value
+   */
+  "orders/customerCancelOrder": function (orderId) {
+    check(orderId, String);
+
+    Orders.update({
+      _id: orderId
+    }, {
+      $set: {
+        "workflow.status": "coreOrderWorkflow/cancel-request"
+      }
+    });
+
 
     return null;
   }

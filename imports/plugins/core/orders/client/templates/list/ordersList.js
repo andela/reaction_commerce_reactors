@@ -43,6 +43,13 @@ Template.dashboardOrdersList.helpers({
     const shop = Shops.findOne(this.shopId);
     return shop !== null ? shop.name : void 0;
   },
+  getClassName(orders) {
+    order = orders || Template.instance().data;
+    if (order.workflow.status === "coreOrderWorkflow/cancel-request") {
+      return true;
+    }
+    return false;
+  },
   // Create a helper to import in the FlatButton react component for
   // cancelOrder button
   CancelOrderButton() {
@@ -52,6 +59,7 @@ Template.dashboardOrdersList.helpers({
       kind: "flat",
       className: "btn-danger btn-sm",
       label: "Cancel order",
+      disabled: Template.dashboardOrdersList.__helpers.get("getClassName").call(this, order),
       onClick() {
         Alerts.alert({
           title: "Cancel order",

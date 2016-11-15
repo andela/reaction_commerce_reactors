@@ -80,10 +80,10 @@ Meteor.methods({
         "_id": order._id,
         "shipping._id": shipment._id
       }, {
-        $set: {
-          "shipping.$.packed": packed
-        }
-      });
+          $set: {
+            "shipping.$.packed": packed
+          }
+        });
 
       // Set the status of the items as shipped
       const itemIds = shipment.items.map((item) => {
@@ -96,10 +96,10 @@ Meteor.methods({
           "_id": order._id,
           "shipping._id": shipment._id
         }, {
-          $set: {
-            "shipping.$.packed": packed
-          }
-        });
+            $set: {
+              "shipping.$.packed": packed
+            }
+          });
       }
       return result;
     }
@@ -245,6 +245,8 @@ Meteor.methods({
     }
 
     if (order.email) {
+      // set mail subject
+      order.mailSubject = "Your Order has been Shipped.";
       Meteor.call("orders/sendNotification", order, (err) => {
         if (err) {
           Logger.error(err, "orders/shipmentShipped: Failed to send notification");
@@ -309,7 +311,9 @@ Meteor.methods({
 
     const shipment = order.shipping[0];
 
+    // USE this block to call emails.
     if (order.email) {
+      order.mailSubject = "Your Order Has Been Delivered.";
       Meteor.call("orders/sendNotification", order, (err) => {
         if (err) {
           Logger.error(err, "orders/shipmentShipped: Failed to send notification");
@@ -454,14 +458,16 @@ Meteor.methods({
     // email templates can be customized in Templates collection
     // loads defaults from /private/email/templates
     const tpl = `orders/${order.workflow.status}`;
+    console.log("The name of the template is", tpl);
+    console.log("workflow status is", order.workflow.status);
     SSR.compileTemplate(tpl, Reaction.Email.getTemplate(tpl));
 
     Reaction.Email.send({
       to: order.email,
       from: `${shop.name} <${shop.emails[0].address}>`,
-      subject: `Your order is confirmed`,
+      subject: order.mailSubject || "Your order is confirmed",
       // subject: `Order update from ${shop.name}`,
-      html: SSR.render(tpl,  dataForOrderEmail)
+      html: SSR.render(tpl, dataForOrderEmail)
     });
 
     return true;
@@ -529,7 +535,7 @@ Meteor.methods({
       to: order.email,
       from: `${shop.name} <${shop.emails[0].address}>`,
       subject: "Your order has been canceled",
-      html: SSR.render(tpl,  dataForOrderCancelEmail)
+      html: SSR.render(tpl, dataForOrderCancelEmail)
     });
 
     return true;
@@ -565,6 +571,18 @@ Meteor.methods({
     }
     // TODO: send an email that the order has been delivered
     // return this.orderCompleted(order);
+    // send notification for completed order here
+    if (order.email) {
+      order.mailSubject = "Your Order Has Been Completed.";
+      Meteor.call("orders/sendNotification", order, (err) => {
+        if (err) {
+          Logger.error(err, "orders/shipmentShipped: Failed to send notification");
+        }
+      });
+    } else {
+      Logger.warn("No order email found. No notification sent.");
+    }
+    return this.orderCompleted(order);
   },
 
   /**
@@ -593,11 +611,12 @@ Meteor.methods({
     return Orders.update({
       "_id": orderId,
       "shipping._id": shippingId
-    }, {
-      $addToSet: {
-        "shipping.shipments": data
-      }
-    });
+    },
+      {
+        $addToSet: {
+          "shipping.shipments": data
+        }
+      });
   },
 
   /**
@@ -622,10 +641,10 @@ Meteor.methods({
       "_id": order._id,
       "shipping._id": shipment._id
     }, {
-      $set: {
-        ["shipping.$.tracking"]: tracking
-      }
-    });
+        $set: {
+          ["shipping.$.tracking"]: tracking
+        }
+      });
   },
 
   /**
@@ -650,10 +669,10 @@ Meteor.methods({
       "_id": orderId,
       "shipping._id": shipmentId
     }, {
-      $push: {
-        "shipping.$.items": item
-      }
-    });
+        $push: {
+          "shipping.$.items": item
+        }
+      });
   },
 
   "orders/updateShipmentItem": function (orderId, shipmentId, item) {
@@ -669,10 +688,10 @@ Meteor.methods({
       "_id": orderId,
       "shipments._id": shipmentId
     }, {
-      $addToSet: {
-        "shipment.$.items": shipmentIndex
-      }
-    });
+        $addToSet: {
+          "shipment.$.items": shipmentIndex
+        }
+      });
   },
 
   /**
@@ -723,7 +742,7 @@ Meteor.methods({
       throw new Meteor.Error(403, "Access Denied. You are not connected.");
     }
 
-    return Orders.update({cartId: cartId}, {
+    return Orders.update({ cartId: cartId }, {
       $set: {
         email: email
       }
@@ -803,10 +822,10 @@ Meteor.methods({
       Products.update({
         _id: item.variants._id
       }, {
-        $inc: {
-          inventoryQuantity: -item.quantity
-        }
-      }, { selector: { type: "variant" } });
+          $inc: {
+            inventoryQuantity: -item.quantity
+          }
+        }, { selector: { type: "variant" } });
     });
   },
 
@@ -849,16 +868,29 @@ Meteor.methods({
             Orders.update({
               "_id": orderId,
               "billing.paymentMethod.transactionId": transactionId
-            }, {
-              $set: {
-                "billing.$.paymentMethod.mode": "capture",
-                "billing.$.paymentMethod.status": "completed",
-                "billing.$.paymentMethod.metadata": metadata
-              },
-              $push: {
-                "billing.$.paymentMethod.transactions": result
-              }
-            });
+            },
+              {
+                $set: {
+                  "billing.$.paymentMethod.mode": "capture",
+                  "billing.$.paymentMethod.status": "completed",
+                  "billing.$.paymentMethod.metadata": metadata
+                },
+                $push: {
+                  "billing.$.paymentMethod.transactions": result
+                }
+              });
+
+            // call send notification for payment
+            if (order.email) {
+              order.mailSubject = "Your Payment Has Been Captured";
+              Meteor.call("orders/sendNotification", order, (err) => {
+                if (err) {
+                  Logger.error(err, "orders/shipmentShipped: Failed to send notification");
+                }
+              });
+            } else {
+              Logger.warn("No order email found. No notification sent.");
+            }
           } else {
             if (result && result.error) {
               Logger.fatal("Failed to capture transaction.", order, paymentMethod.transactionId, result.error);
@@ -869,17 +901,18 @@ Meteor.methods({
             Orders.update({
               "_id": orderId,
               "billing.paymentMethod.transactionId": transactionId
-            }, {
-              $set: {
-                "billing.$.paymentMethod.mode": "capture",
-                "billing.$.paymentMethod.status": "error"
-              },
-              $push: {
-                "billing.$.paymentMethod.transactions": result
-              }
-            });
+            },
+              {
+                $set: {
+                  "billing.$.paymentMethod.mode": "capture",
+                  "billing.$.paymentMethod.status": "error"
+                },
+                $push: {
+                  "billing.$.paymentMethod.transactions": result
+                }
+              });
 
-            return {error: "orders/capturePayments: Failed to capture transaction"};
+            return { error: "orders/capturePayments: Failed to capture transaction" };
           }
         });
       }
@@ -943,10 +976,10 @@ Meteor.methods({
       "_id": orderId,
       "billing.paymentMethod.transactionId": transactionId
     }, {
-      $push: {
-        "billing.$.paymentMethod.transactions": result
-      }
-    });
+        $push: {
+          "billing.$.paymentMethod.transactions": result
+        }
+      });
 
     if (result.saved === false) {
       Logger.fatal("Attempt for refund transaction failed", order._id, paymentMethod.transactionId, result.error);

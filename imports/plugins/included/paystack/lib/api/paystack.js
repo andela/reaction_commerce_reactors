@@ -3,12 +3,12 @@ import {Packages} from "/lib/collections";
 export const Paystack = {
   accountOptions: function () {
     const settings = Packages.findOne({
-      name: "reaction-paymentmethod"
+      name: "reaction-paystack"
     }).settings;
-    if (!settings.apiKey) {
+    if (!settings.apiPublicKey) {
       throw new Meteor.Error("403", "Invalid Credentials");
     }
-    return settings.apiKey;
+    return settings.apiPublicKey;
   },
 
   authorize: function (cardInfo, paymentInfo, callback) {

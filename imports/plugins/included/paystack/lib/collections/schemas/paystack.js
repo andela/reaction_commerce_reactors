@@ -1,6 +1,3 @@
-/**
- * Created by bolorundurowb on 11/14/16.
- */
 import {SimpleSchema} from "meteor/aldeed:simple-schema";
 import {PackageConfig} from "/lib/collections/schemas/registry";
 
@@ -10,14 +7,9 @@ export const PaystackPackageConfig = new SimpleSchema([
       type: Boolean,
       defaultValue: true
     },
-    "settings.apiSecretKey": {
+    "settings.apiKey": {
       type: String,
-      label: "API Secret Key",
-      optional: true
-    },
-    "settings.apiPublicKey": {
-      type: String,
-      label: "API Public Key",
+      label: "API Key",
       optional: true
     }
   }

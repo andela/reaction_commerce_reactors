@@ -1,6 +1,3 @@
-/**
- * Created by bolorundurowb on 11/14/16.
- */
 /* eslint camelcase: 0 */
 import {Reaction} from "/server/api";
 
@@ -11,8 +8,7 @@ Reaction.registerPackage({
   autoEnable: true,
   settings: {
     mode: false,
-    apiPublicKey: "",
-    apiSecretKey: ""
+    apiKey: ""
   },
   registry: [
     // Dashboard card
@@ -27,7 +23,7 @@ Reaction.registerPackage({
 
     // Settings panel
     {
-      label: "Paystack Settings", // this key (minus spaces) is used for translations
+      label: "Paystack Payment Settings", // this key (minus spaces) is used for translations
       route: "/dashboard/paystack",
       provides: "settings",
       container: "dashboard",

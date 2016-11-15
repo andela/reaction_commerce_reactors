@@ -55,37 +55,38 @@ AutoForm.addHooks("paystack-payment-form", {
     };
     const storedCard = form.type.charAt(0).toUpperCase() + form.type.slice(1) + " " + doc.cardNumber.slice(-4);
 
+    console.log(form);
     Paystack.authorize(form, {
-      total: Cart.findOne().cartTotal(),
-      currency: Shops.findOne().currency
-    }, function (error, transaction) {
-      submitting = false;
-      let paymentMethod;
-      if (error) {
-        handlePaystackSubmitError(error);
-        uiEnd(template, "Resubmit payment");
-      } else {
-        if (transaction.saved === true) {
-          submitting = false;
-          paymentMethod = {
-            processor: "Paystack",
-            storedCard: storedCard,
-            method: "Paystack Payment",
-            transactionId: transaction.transactionId,
-            currency: transaction.currency,
-            amount: transaction.amount,
-            status: transaction.status,
-            mode: "authorize",
-            createdAt: new Date(),
-            transactions: []
-          };
-          paymentMethod.transactions.push(transaction.response);
-          Meteor.call("cart/submitPayment", paymentMethod);
-        } else {
-          handlePaystackSubmitError(transaction.error);
-          uiEnd(template, "Resubmit payment");
-        }
-      }
+      //   total: Cart.findOne().cartTotal(),
+      //   currency: Shops.findOne().currency
+      // }, function (error, transaction) {
+      //   submitting = false;
+      //   let paymentMethod;
+      //   if (error) {
+      //     handlePaystackSubmitError(error);
+      //     uiEnd(template, "Resubmit payment");
+      //   } else {
+      //     if (transaction.saved === true) {
+      //       submitting = false;
+      //       paymentMethod = {
+      //         processor: "Paystack",
+      //         storedCard: storedCard,
+      //         method: "Paystack Payment",
+      //         transactionId: transaction.transactionId,
+      //         currency: transaction.currency,
+      //         amount: transaction.amount,
+      //         status: transaction.status,
+      //         mode: "authorize",
+      //         createdAt: new Date(),
+      //         transactions: []
+      //       };
+      //       paymentMethod.transactions.push(transaction.response);
+      //       Meteor.call("cart/submitPayment", paymentMethod);
+      //     } else {
+      //       handlePaystackSubmitError(transaction.error);
+      //       uiEnd(template, "Resubmit payment");
+      //     }
+      //   }
     });
     return false;
   },

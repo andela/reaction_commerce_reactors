@@ -16,7 +16,7 @@ Reaction.registerPackage({
       provides: "dashboard",
       label: "Paystack",
       description: "Paystack payments",
-      icon: "fa fa-credit-card-alt",
+      icon: "fa fa-cc-mastercard",
       priority: 3,
       container: "paymentMethod"
     },

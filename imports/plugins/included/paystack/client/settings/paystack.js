@@ -1,6 +1,3 @@
-/**
- * Created by bolorundurowb on 11/14/16.
- */
 import {Template} from "meteor/templating";
 import {Reaction} from "/client/api";
 import {Packages} from "/lib/collections";
@@ -10,7 +7,7 @@ import "./paystack.html";
 
 
 Template.paystackSettings.helpers({
-  PaystackPackConfig() {
+  PaystackPackageConfig() {
     return PaystackPackageConfig;
   },
   packageData() {
@@ -41,12 +38,11 @@ AutoForm.hooks({
   "paystack-update-form": {
     onSuccess: function () {
       Alerts.removeSeen();
-      return Alerts.add("Paystack settings saved.", "success");
+      return Alerts.add("Paystack Payment Method settings saved.", "success");
     },
     onError: function (operation, error) {
       Alerts.removeSeen();
-      return Alerts.add("Paystack settings update failed. " + error, "danger");
+      return Alerts.add("Paystack Payment Method settings update failed. " + error, "danger");
     }
   }
 });
-

@@ -1,28 +1,48 @@
 <template name="paystackPaymentForm">
-  {{#autoForm schema=PaystackPayment id="paystack-payment-form"}}
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <form>
     <div class="row">
-      <div class="form-group{{#if afFieldIsInvalid name='payerEmail'}} has-error{{/if}}">
-        <label class="control-label">{{afFieldLabelText name='payerEmail'}}</label>
-        {{>afFieldInput name="payerEmail" value=cartPayerName}}
-        {{#if afFieldIsInvalid name="payerEmail"}}
-          <span class="help-block">{{afFieldMessage name="payerEmail"}}</span>
-        {{/if}}
+      <div class="form-group">
+        <label class="control-label">Email</label>
+        <input type="email" value="{{doc.payerEmail}}"/>
       </div>
     </div>
 
     <div class="row">
-      <div class="form-group{{#if afFieldIsInvalid name='payerNumber'}} has-error{{/if}}">
-        <label class="control-label">{{afFieldLabelText name='payerNumber'}}</label>
-        {{>afFieldInput name="payerNumber" value=cartPayerName}}
-        {{#if afFieldIsInvalid name="payerNumber"}}
-          <span class="help-block">{{afFieldMessage name="payerNumber"}}</span>
-        {{/if}}
+      <div class="form-group">
+        <label class="control-label">Mobile Number:</label>
+        <input type="text" value="{{doc.payerNumber}}"/>
       </div>
     </div>
 
-    <div class="alert alert-danger hidden">Oh! Snap!</div>
-    <button type="submit" class="btn btn-lg btn-success btn-block btn-complete-order">
-      <span id="btn-complete-order">Pay with Paystack</span>
+    <button type="button" class="btn btn-lg btn-success btn-block" onclick="payWithPaystack()">Pay with Paystack
     </button>
-  {{/autoForm}}
+  </form>
+
+  <script>
+    function payWithPaystack() {
+      var handler = PaystackPop.setup({
+        key: "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3",
+        email: {{doc.payerEmail}},
+        amount: 10000,
+        ref: {{getTransactionId}},
+        metadata: {
+          custom_fields: [
+            {
+              display_name: "Mobile Number",
+              variable_name: "mobile_number",
+              value: {{doc.payerNumber}}
+            }
+          ]
+        },
+        callback: function (response) {
+          alert('success. transaction ref is ' + response.reference);
+        },
+        onClose: function () {
+          alert('window closed');
+        }
+      });
+      handler.openIframe();
+    }
+  </script>
 </template>

@@ -118,7 +118,6 @@ export default {
   hasDashboardAccess() {
     return this.hasPermission(["owner", "admin", "dashboard"]);
   },
-
   setHasTakenTour() {
     let userId = Meteor.userId();
     Accounts.update({_id: userId}, {$set: {hasTakenTour: true}}, function (err, account) {

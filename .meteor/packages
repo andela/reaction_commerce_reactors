@@ -19,7 +19,7 @@ standard-minifier-js@1.2.0    # a minifier plugin used for Meteor apps by defaul
 session@1.1.6                 # ReactiveDict whose contents are preserved across Hot Code Push
 tracker@1.1.0                 # Meteor transparent reactive programming library
 mongo@1.1.11
-random@1.0.10
+random
 reactive-var@1.0.11
 reactive-dict@1.1.8
 check@1.2.3

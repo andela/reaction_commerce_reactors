@@ -1,10 +1,13 @@
 /* eslint camelcase: 0 */
 import {Meteor} from "meteor/meteor";
+import {Random} from "meteor/random";
 import {Template} from "meteor/templating";
 import {Reaction} from "/client/api";
 import {Cart, Shops} from "/lib/collections";
 import {Paystack} from "../../lib/api";
 import {PaystackPayment} from "../../lib/collections/schemas";
+import oxr from "open-exchange-rates";
+import fx from "money";
 
 import "./paystack.html";
 
@@ -42,52 +45,68 @@ Template.paystackPaymentForm.helpers({
 
 AutoForm.addHooks("paystack-payment-form", {
   onSubmit: function (doc) {
-    submitting = true;
-    const template = this.template;
-    hidePaymentAlert();
-    const form = {
-      name: doc.payerName,
-      number: doc.cardNumber,
-      expireMonth: doc.expireMonth,
-      expireYear: doc.expireYear,
-      cvv2: doc.cvv,
-      type: Reaction.getCardType(doc.cardNumber)
-    };
-    const storedCard = form.type.charAt(0).toUpperCase() + form.type.slice(1) + " " + doc.cardNumber.slice(-4);
-
-    console.log(form);
-    Paystack.authorize(form, {
-      //   total: Cart.findOne().cartTotal(),
-      //   currency: Shops.findOne().currency
-      // }, function (error, transaction) {
-      //   submitting = false;
-      //   let paymentMethod;
-      //   if (error) {
-      //     handlePaystackSubmitError(error);
-      //     uiEnd(template, "Resubmit payment");
-      //   } else {
-      //     if (transaction.saved === true) {
-      //       submitting = false;
-      //       paymentMethod = {
-      //         processor: "Paystack",
-      //         storedCard: storedCard,
-      //         method: "Paystack Payment",
-      //         transactionId: transaction.transactionId,
-      //         currency: transaction.currency,
-      //         amount: transaction.amount,
-      //         status: transaction.status,
-      //         mode: "authorize",
-      //         createdAt: new Date(),
-      //         transactions: []
-      //       };
-      //       paymentMethod.transactions.push(transaction.response);
-      //       Meteor.call("cart/submitPayment", paymentMethod);
-      //     } else {
-      //       handlePaystackSubmitError(transaction.error);
-      //       uiEnd(template, "Resubmit payment");
-      //     }
-      //   }
-    });
+    // submitting = true;
+    // const template = this.template;
+    // hidePaymentAlert();
+    //
+    let call = Meteor.call("shop/getCurrencyRates", "USD");
+    console.log(call);
+    // console.log(Paystack.accountOptions());
+    // console.log({
+    //   total: Cart.findOne().cartTotal(),
+    //   currency: Shops.findOne().currency
+    // });
+    // const transactionId = Random.Id();
+    // const cost = Cart.findOne().cartTotal();
+    // const currency = Shops.findOne().currency;
+    // console.log(cost, currency);
+    // const costInNaira = fx.convert(cost, {from: currency, to: "NGN"});
+    // console.log(cost, costInNaira);
+    // //
+    // const handler = PaystackPop.setup({
+    //   key: Paystack.accountOptions(),
+    //   email: doc.payerEmail,
+    //   amount: costInNaira,
+    //   ref: transactionId,
+    //   metadata: {
+    //     custom_fields: [
+    //       {
+    //         display_name: "Mobile Number",
+    //         variable_name: "mobile_number",
+    //         value: doc.payerNumber
+    //       }
+    //     ]
+    //   },
+    //   callback: function (response) {
+    //     alert("success. transaction ref is " + response.reference);
+    //     //
+    //     submitting = false;
+    //     const paymentMethod = {
+    //       processor: "Paystack",
+    //       storedCard: "",
+    //       method: "Paystack Payment",
+    //       transactionId: transactionId,
+    //       currency: currency,
+    //       amount: costInNaira,
+    //       status: transaction.status,
+    //       mode: "authorize",
+    //       createdAt: new Date(),
+    //       transactions: []
+    //     };
+    //     paymentMethod.transactions.push(transaction.response);
+    //     Meteor.call("cart/submitPayment", paymentMethod);
+    //     return false;
+    //   },
+    //   onClose: function () {
+    //     alert("window closed");
+    //     //
+    //     submitting = false;
+    //     handlePaystackSubmitError(error);
+    //     uiEnd(template, "Resubmit payment");
+    //     return false;
+    //   }
+    // });
+    // handler.openIframe();
     return false;
   },
   beginSubmit: function () {

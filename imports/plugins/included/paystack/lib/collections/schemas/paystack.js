@@ -19,5 +19,9 @@ export const PaystackPayment = new SimpleSchema({
   payerEmail: {
     type: String,
     label: "Email Address"
+  },
+  payerNumber: {
+    type: String,
+    label: "Mobile Number"
   }
 });

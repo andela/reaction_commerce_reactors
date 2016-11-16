@@ -10,6 +10,16 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="form-group{{#if afFieldIsInvalid name='payerNumber'}} has-error{{/if}}">
+        <label class="control-label">{{afFieldLabelText name='payerNumber'}}</label>
+        {{>afFieldInput name="payerNumber" value=cartPayerName}}
+        {{#if afFieldIsInvalid name="payerNumber"}}
+          <span class="help-block">{{afFieldMessage name="payerNumber"}}</span>
+        {{/if}}
+      </div>
+    </div>
+
     <div class="alert alert-danger hidden">Oh! Snap!</div>
     <button type="submit" class="btn btn-lg btn-success btn-block btn-complete-order">
       <span id="btn-complete-order">Pay with Paystack</span>

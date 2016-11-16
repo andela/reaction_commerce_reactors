@@ -89,6 +89,7 @@ juliancwirko:s-alert-stackslide@3.1.3
 kadira:blaze-layout@2.3.0
 kadira:dochead@1.5.0
 kadira:flow-router-ssr@3.13.0
+krstffr:fb-feed-getter@1.0.2
 launch-screen@1.0.12
 less@2.7.6
 livedata@1.0.18
@@ -158,7 +159,7 @@ templating-tools@1.0.5
 tmeasday:check-npm-versions@0.3.1
 tmeasday:publish-counts@0.8.0
 tracker@1.1.1
-twitter@1.1.13
+twitter@1.1.14
 ui@1.0.12
 ultimatejs:tracker-react@1.0.5
 underscore@1.0.10

@@ -3,16 +3,26 @@
   <form>
     <div class="row">
       <div class="form-group">
+<<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
         <label class="control-label" for="payerEmailAddress">Email</label>
         <input type="email" id="payerEmailAddress" value="{{getEmailAddress}}" required aria-describedby="email-desc"/>
         <span id="email-desc" class="help-block">This is a required field</span>
+=======
+        <label class="control-label">Email</label>
+        <input type="email" value="{{doc.payerEmail}}"/>
+>>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
       </div>
     </div>
 
     <div class="row">
       <div class="form-group">
+<<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
         <label class="control-label" for="payerMobileNumber">Mobile Number</label>
         <input type="text" id="payerMobileNumber" value="{{getPhoneNumber}}"/>
+=======
+        <label class="control-label">Mobile Number:</label>
+        <input type="text" value="{{doc.payerNumber}}"/>
+>>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
       </div>
     </div>
 
@@ -22,6 +32,7 @@
 
   <script>
     function payWithPaystack() {
+<<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
       var email = document.getElementById("payerEmailAddress").value;
       const phoneNumber = document.getElementById("payerMobileNumber").value;
 
@@ -30,20 +41,38 @@
         email: email,
         amount: {{getAmount}},
         ref: "{{getTransactionId}}",
+=======
+      var handler = PaystackPop.setup({
+        key: "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3",
+        email: {{doc.payerEmail}},
+        amount: 10000,
+        ref: {{getTransactionId}},
+>>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
         metadata: {
           custom_fields: [
             {
               display_name: "Mobile Number",
               variable_name: "mobile_number",
+<<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
               value: phoneNumber
+=======
+              value: {{doc.payerNumber}}
+>>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
             }
           ]
         },
         callback: function (response) {
+<<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
           Template.paystackPaymentForm.__helpers.get('paymentSuccessful')(response);
         },
         onClose: function () {
           Template.paystackPaymentForm.__helpers.get('windowClosed').call();
+=======
+          alert('success. transaction ref is ' + response.reference);
+        },
+        onClose: function () {
+          alert('window closed');
+>>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
         }
       });
       handler.openIframe();

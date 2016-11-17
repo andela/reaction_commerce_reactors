@@ -64,20 +64,6 @@ Meteor.methods({
    * @return {Object} results normalized
    */
   "paystackSubmit": function (transactionType, cardData, paymentData) {
-    check(transactionType, String);
-    check(cardData, {
-      name: String,
-      number: ValidCardNumber,
-      expireMonth: ValidExpireMonth,
-      expireYear: ValidExpireYear,
-      cvv2: ValidCVV,
-      type: String
-    });
-
-    check(paymentData, {
-      total: String,
-      currency: String
-    });
     const total = parseFloat(paymentData.total);
     let result;
     try {

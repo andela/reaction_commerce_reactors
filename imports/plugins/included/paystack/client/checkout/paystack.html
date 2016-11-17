@@ -4,14 +4,15 @@
     <div class="row">
       <div class="form-group">
         <label class="control-label" for="payerEmailAddress">Email</label>
-        <input type="email" id="payerEmailAddress"/>
+        <input type="email" id="payerEmailAddress" value="{{getEmailAddress}}" required aria-describedby="email-desc"/>
+        <span id="email-desc" class="help-block">This is a required field</span>
       </div>
     </div>
 
     <div class="row">
       <div class="form-group">
         <label class="control-label" for="payerMobileNumber">Mobile Number</label>
-        <input type="text" id="payerMobileNumber"/>
+        <input type="text" id="payerMobileNumber" value="{{getPhoneNumber}}"/>
       </div>
     </div>
 
@@ -39,10 +40,10 @@
           ]
         },
         callback: function (response) {
-          Template.paystackPaymentForm.__helpers.get('paymentSuccessful').call(response);
+          Template.paystackPaymentForm.__helpers.get('paymentSuccessful')(response);
         },
         onClose: function () {
-          console.log("Paystack popup window closed.");
+          Template.paystackPaymentForm.__helpers.get('windowClosed').call();
         }
       });
       handler.openIframe();

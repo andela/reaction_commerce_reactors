@@ -35,6 +35,5 @@ Meteor.methods({
     return userWallet;
   },
   "wallet/creditWalletOnRefund": function () {
-    
   }
 });

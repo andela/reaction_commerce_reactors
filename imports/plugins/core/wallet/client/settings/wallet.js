@@ -1,32 +1,31 @@
 import { Template } from "meteor/templating";
 import { Reaction } from "/client/api";
 import { Packages } from "/lib/collections";
-import { WalletPackageConfig } from "../../lib/collections/schemas";
 
 import "./wallet.html";
 
 
-Template.walletSettings.helpers({
-  WalletPackageConfig() {
-    return WalletPackageConfig;
-  },
-  packageData() {
-    return Packages.findOne({
-      name: "wallet-paymentmethod",
-      shopId: Reaction.getShopId()
-    });
-  }
-});
-
-
-Template.wallet.helpers({
-  packageData: function () {
-    return Packages.findOne({
-      name: "wallet-paymentmethod",
-      shopId: Reaction.getShopId()
-    });
-  }
-});
+// Template.walletSettings.helpers({
+//   WalletPackageConfig() {
+//     return WalletPackageConfig;
+//   },
+//   packageData() {
+//     return Packages.findOne({
+//       name: "wallet-paymentmethod",
+//       shopId: Reaction.getShopId()
+//     });
+//   }
+// });
+//
+//
+// Template.wallet.helpers({
+//   packageData: function () {
+//     return Packages.findOne({
+//       name: "wallet-paymentmethod",
+//       shopId: Reaction.getShopId()
+//     });
+//   }
+// });
 
 Template.wallet.events({
   "click [data-event-action=showWalletSettings]": function () {

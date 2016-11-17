@@ -3,12 +3,13 @@ import {Reaction} from "/server/api";
 
 Reaction.registerPackage({
   label: "PaystackPayment",
-  name: "paystack-paymentmethod",
-  icon: "fa fa-credit-card-alt",
+  name: "reaction-paystack",
+  icon: "fa fa-cc-mastercard",
   autoEnable: true,
   settings: {
     mode: false,
-    apiKey: ""
+    apiPublicKey: "",
+    apiSecretKey: ""
   },
   registry: [
     // Dashboard card

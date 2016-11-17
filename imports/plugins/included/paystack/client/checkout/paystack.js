@@ -3,19 +3,12 @@ import {Meteor} from "meteor/meteor";
 import {Random} from "meteor/random";
 import {Template} from "meteor/templating";
 import {Reaction} from "/client/api";
-import {Cart, Shops} from "/lib/collections";
+import {Cart, Shops, Accounts} from "/lib/collections";
 import {Paystack} from "../../lib/api";
 import {PaystackPayment} from "../../lib/collections/schemas";
+import {HTTP} from "meteor/http";
 
 import "./paystack.html";
-
-let submitting = false;
-
-function uiEnd(template, buttonText) {
-  template.$(":input").removeAttr("disabled");
-  template.$("#btn-complete-order").text(buttonText);
-  return template.$("#btn-processing").addClass("hidden");
-}
 
 function paymentAlert(errorMessage) {
   return $(".alert").removeClass("hidden").text(errorMessage);
@@ -28,9 +21,9 @@ function hidePaymentAlert() {
 function handlePaystackSubmitError(error) {
   const serverError = error !== null ? error.message : void 0;
   if (serverError) {
-    return paymentAlert("Oops! " + serverError);
+    paymentAlert("Oops! " + serverError);
   } else if (error) {
-    return paymentAlert("Oops! " + error, null, 4);
+    paymentAlert("Oops! " + error, null, 4);
   }
 }
 
@@ -43,7 +36,28 @@ Template.paystackPaymentForm.helpers({
     return Random.id();
   },
   getPublicKey() {
-    return "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3";
+    return Paystack.accountOptions().apiPublicKey;
+    // return "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3";
+  },
+  getEmailAddress() {
+    const userId = Meteor.userId();
+    const account = Accounts.findOne({
+      userId: userId
+    });
+    if (account.emails.length === 0) {
+      return "";
+    }
+    return account.emails[0].address;
+  },
+  getPhoneNumber() {
+    const userId = Meteor.userId();
+    const account = Accounts.findOne({
+      userId: userId
+    });
+    if (account.profile.addressBook.length === 0) {
+      return "";
+    }
+    return account.profile.addressBook[0].phone;
   },
   getAmount() {
     const cart = Cart.findOne();
@@ -53,78 +67,60 @@ Template.paystackPaymentForm.helpers({
     const exchangeRateToTheDollar = shop[0].currencies[currency];
     const costInDollars = costInLocalCurrency / exchangeRateToTheDollar.rate;
     const nairaExchangeRateToTheDollar = shop[0].currencies.NGN.rate;
-    const costInKobo = Math.ceil(costInDollars * nairaExchangeRateToTheDollar * 100);
-    return costInKobo;
+    return Math.ceil(costInDollars * nairaExchangeRateToTheDollar * 100);
   },
   paymentSuccessful(transactionDetails) {
-    console.log(Paystack.accountOptions());
-    console.log(transactionDetails);
+    const transactionRef = transactionDetails.reference;
+    const secretKey = Paystack.accountOptions().apiSecretKey;
+    // const secretKey = "sk_test_fb0ebf87ce4491621dbcee625c09143254749051";
+    //
+    HTTP.call("GET", `https://api.paystack.co/transaction/verify/${transactionRef}`, {headers: {Authorization: `Bearer ${secretKey}`}}, function (error, response) {
+      if (error) {
+        handlePaystackSubmitError(error);
+        uiEnd(template, "Resubmit payment");
+      } else {
+        const res = response.data.data;
+        const data = {
+          payerName: res.customer.first_name + " " + res.customer.last_name,
+          payerEmail: res.customer.email,
+          payerNumber: res.metadata.custom_fields[0].value,
+          cardNumber: res.authorization.last4,
+          expireMonth: res.authorization.exp_month,
+          expireYear: res.authorization.exp_year,
+          transactionReference: res.reference
+        };
+
+        if (res.status) {
+          const paymentMethod = {
+            processor: "Paystack",
+            storedCard: data.cardNumber,
+            method: "Paystack Payment",
+            transactionId: data.transactionReference,
+            currency: "NGN",
+            amount: res.amount,
+            status: res.status,
+            mode: "authorize",
+            createdAt: new Date(),
+            transactions: []
+          };
+          paymentMethod.transactions.push({
+            currency: "NGN",
+            transactionId: data.transactionReference,
+            amount: paymentMethod.amount
+          });
+          Meteor.call("cart/submitPayment", paymentMethod);
+        }
+      }
+    });
+  },
+  windowClosed() {
+    paymentAlert("The payment wasn't completed.");
   }
 });
 
 AutoForm.addHooks("paystack-payment-form", {
   onSubmit: function (doc) {
-    submitting = true;
-    const template = this.template;
-    hidePaymentAlert();
     //
-    //
-    // console.log(shop[0].currencies);
-    // const exchangeRate =  shop[0].currencies.NGN.rate;
-    // console.log(exchangeRate);
-    // console.log(Paystack.accountOptions());
-    console.log({
-      total: Cart.findOne().cartTotal(),
-      currency: Shops.findOne().currency
-    });
-    const transactionId = Random.id();
-    // const costInNaira = fx.convert(cost, {from: currency, to: "NGN"});
-    // console.log(cost, costInNaira);
-    //
-    const handler = PaystackPop.setup({
-      key: "",
-      email: doc.payerEmail,
-      amount: cost,
-      ref: transactionId,
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Mobile Number",
-            variable_name: "mobile_number",
-            value: doc.payerNumber
-          }
-        ]
-      },
-      callback: function (response) {
-        alert("success. transaction ref is " + response.reference);
-        //
-        // submitting = false;
-        // const paymentMethod = {
-        //   processor: "Paystack",
-        //   storedCard: "",
-        //   method: "Paystack Payment",
-        //   transactionId: transactionId,
-        //   currency: currency,
-        //   amount: costInNaira,
-        //   status: transaction.status,
-        //   mode: "authorize",
-        //   createdAt: new Date(),
-        //   transactions: []
-        // };
-        // paymentMethod.transactions.push(transaction.response);
-        // Meteor.call("cart/submitPayment", paymentMethod);
-        // return false;
-      },
-      onClose: function () {
-        alert("window closed");
-        // //
-        // submitting = false;
-        // handlePaystackSubmitError(error);
-        // uiEnd(template, "Resubmit payment");
-        // return false;
-      }
-    });
-    handler.openIframe();
   },
   beginSubmit: function () {
     this.template.$(":input").attr("disabled", true);

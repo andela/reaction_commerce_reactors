@@ -6,7 +6,8 @@ import { Pages } from "/lib/collections";
 Template.pages.onCreated(function () {
   this.state = new ReactiveDict();
   this.state.setDefault({
-    pages: []
+    pages: [],
+    page: {}
   });
 
   // Watch for updates to the subscription and query params
@@ -17,12 +18,22 @@ Template.pages.onCreated(function () {
   });
 });
 
+Template.pages.events({
+  "click [data-event-action=editPage]": function (event) {
+    event.preventDefault();
+    CKEDITOR.instances.pageContent.setData(this.pageContent);
+    Template.instance().state.set("page", this);
+  }
+});
+
 /**
  * pages helpers
  */
 Template.pages.helpers({
   displayPages() {
-    console.log(Template.instance().state.get("pages"))
     return Template.instance().state.get("pages");
+  },
+  editPage() {
+    return Template.instance().state.get("page");
   }
 });

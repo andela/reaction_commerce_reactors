@@ -59,9 +59,6 @@ Template.paystackPaymentForm.helpers({
     }
     return account.profile.addressBook[0].phone;
   },
-  getPublicKey() {
-    return "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3";
-  },
   getAmount() {
     const cart = Cart.findOne();
     const shop = Shops.find({_id: cart.shopId}).fetch();

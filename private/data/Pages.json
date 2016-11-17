@@ -1,0 +1,17 @@
+[{
+  "pageName": "about-page",
+  "pageTitle": "About Page",
+  "pageContent": "About Page Content",
+  "isVisible": true
+},{
+  "pageName": "contact-page",
+  "pageTitle": "Contact Page",
+  "pageContent": "Contact Page Content",
+  "isVisible": true
+},{
+  "pageName": "support-page",
+  "pageTitle": "Support Page",
+  "pageContent": "Support Page Content",
+  "isVisible": true
+}
+]

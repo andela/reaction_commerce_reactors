@@ -1,0 +1,29 @@
+
+<template name="walletCheckout">
+  <div class="row">
+
+    <div class="col-sm-12 col-lg-12" style="margin-bottom:15px">
+      <div class="col-sm-12 col-lg-12">Current Wallet balance is {{ wallet.amount }}</div>
+      {{#if isEmpty wallet.amount }}
+         <div class="col-sm-12 col-lg-12" style="color:red"> You cannot pay with wallet. Wallet is empty </div>
+      {{/if}}
+    </div>
+
+    <div class="col-xs-6">
+      <button class="btn btn-sm btn-success btn-block">
+        <span id="top-up-wallet" data-i18n="Top up wallet">Top up wallet</span>
+        <i class="fa fa-spinner fa-spin hidden" id="btn-processing"></i>
+      </button>
+    </div>
+
+
+    {{#unless isEmpty wallet.amount }}
+    <div class="col-xs-6">
+        <button class="btn btn-sm btn-success btn-block">
+          <span id="pay-with-wallet" data-i18n="Pay with wallet">Pay</span>
+          <i class="fa fa-spinner fa-spin hidden" id="btn-processing"></i>
+        </button>
+      </div>
+    {{/unless}}
+</div>
+</template>

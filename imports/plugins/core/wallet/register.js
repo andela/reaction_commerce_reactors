@@ -1,24 +1,27 @@
-/* eslint camelcase: 0 */
+// /* eslint camelcase: 0 */
 import { Reaction } from "/server/api";
 
 Reaction.registerPackage({
-  label: "WalletPayment",
+  label: "Wallet",
   name: "wallet-paymentmethod",
   icon: "fa fa-credit-card-alt",
   autoEnable: true,
   settings: {
-    mode: false,
-    apiKey: ""
+   name: "Wallet Payment"
   },
   registry: [
     // Dashboard card
     {
       provides: "dashboard",
-      label: "Wallet Payment Provider",
-      description: "Wallet payment provider",
+      route: "/dashboard/wallet",
+      name: "Wallet",
+      label: "Pay by Wallet",
+      description: "Wallet",
       icon: "fa fa-credit-card-alt",
       priority: 3,
-      container: "paymentMethod"
+      container: "paymentMethod",
+      workflow: "coreDashboardWorkflow",
+      template: "wallet"
     },
 
     // Settings panel
@@ -32,7 +35,7 @@ Reaction.registerPackage({
 
     // Payment form for checkout
     {
-      template: "walletPaymentForm",
+      template: "walletCheckout",
       provides: "paymentMethod"
     }
   ]

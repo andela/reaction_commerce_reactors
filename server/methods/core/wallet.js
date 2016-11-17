@@ -30,16 +30,12 @@ Meteor.methods({
       Logger.info(`Wallet already exists for this user: ${ userId }`);
     }
   },
-<<<<<<< HEAD
 
   // Get current users wallet
-=======
->>>>>>> 13006b0259f8557eed6baec3ee5e5003c3a249ac
   "wallet/getUserWallet": function () {
     const userWallet = Wallet.findOne({userId: Meteor.userId()});
     return userWallet;
   },
-<<<<<<< HEAD
 
   // Credits wallet when canceling orders at refund
   "wallet/refund/create": function (orderId, userId, paymentMethod, amount) {
@@ -76,9 +72,4 @@ Meteor.methods({
     return result;
   }
 
-=======
-  "wallet/creditWalletOnRefund": function () {
-    
-  }
->>>>>>> 13006b0259f8557eed6baec3ee5e5003c3a249ac
 });

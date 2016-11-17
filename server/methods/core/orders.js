@@ -1106,7 +1106,12 @@ Meteor.methods({
           "workflow.status": "coreOrderWorkflow/cancel-request"
         }
       });
-
+    
+    const order = Orders.findOne(orderId);
+    order.status = "cancelled";
+    const shop = Shops.findOne(order.shopId);
+    order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    Meteor.call("createNotification", order);
 
     return null;
   }

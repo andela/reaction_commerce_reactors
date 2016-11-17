@@ -4,11 +4,12 @@ import { Notifications } from "/lib/collections";
 Meteor.methods({
   "createNotification": function (order) {
     check(order, Object);
-    let notifyUser = true;
+    let notifyUser = false;
     this.unblock();
+    const roleObj = Object.keys(Meteor.user().roles);
 
-    if (Meteor.user().roles[0].includes("admin")) {
-      notifyUser = false;
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
     }
 
     Notifications.insert({

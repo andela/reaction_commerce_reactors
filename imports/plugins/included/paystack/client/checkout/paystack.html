@@ -3,6 +3,7 @@
   <form>
     <div class="row">
       <div class="form-group">
+<<<<<<< 1ddeab709b7ff85eec7b0d2e6ab28e95ee3b1f53
 <<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
         <label class="control-label" for="payerEmailAddress">Email</label>
         <input type="email" id="payerEmailAddress" value="{{getEmailAddress}}" required aria-describedby="email-desc"/>
@@ -11,11 +12,16 @@
         <label class="control-label">Email</label>
         <input type="email" value="{{doc.payerEmail}}"/>
 >>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
+=======
+        <label class="control-label" for="payerEmailAddress">Email</label>
+        <input type="email" id="payerEmailAddress"/>
+>>>>>>> feature(paystack-option): adds secret key settings option to the dashboard
       </div>
     </div>
 
     <div class="row">
       <div class="form-group">
+<<<<<<< 1ddeab709b7ff85eec7b0d2e6ab28e95ee3b1f53
 <<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
         <label class="control-label" for="payerMobileNumber">Mobile Number</label>
         <input type="text" id="payerMobileNumber" value="{{getPhoneNumber}}"/>
@@ -23,6 +29,10 @@
         <label class="control-label">Mobile Number:</label>
         <input type="text" value="{{doc.payerNumber}}"/>
 >>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
+=======
+        <label class="control-label" for="payerMobileNumber">Mobile Number</label>
+        <input type="text" id="payerMobileNumber"/>
+>>>>>>> feature(paystack-option): adds secret key settings option to the dashboard
       </div>
     </div>
 
@@ -32,6 +42,7 @@
 
   <script>
     function payWithPaystack() {
+<<<<<<< 1ddeab709b7ff85eec7b0d2e6ab28e95ee3b1f53
 <<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
       var email = document.getElementById("payerEmailAddress").value;
       const phoneNumber = document.getElementById("payerMobileNumber").value;
@@ -48,20 +59,35 @@
         amount: 10000,
         ref: {{getTransactionId}},
 >>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
+=======
+      var email = document.getElementById("payerEmailAddress").value;
+      const phoneNumber = document.getElementById("payerMobileNumber").value;
+
+      var handler = PaystackPop.setup({
+        key: "{{getPublicKey}}",
+        email: email,
+        amount: {{getAmount}},
+        ref: "{{getTransactionId}}",
+>>>>>>> feature(paystack-option): adds secret key settings option to the dashboard
         metadata: {
           custom_fields: [
             {
               display_name: "Mobile Number",
               variable_name: "mobile_number",
+<<<<<<< 1ddeab709b7ff85eec7b0d2e6ab28e95ee3b1f53
 <<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
               value: phoneNumber
 =======
               value: {{doc.payerNumber}}
 >>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
+=======
+              value: phoneNumber
+>>>>>>> feature(paystack-option): adds secret key settings option to the dashboard
             }
           ]
         },
         callback: function (response) {
+<<<<<<< 1ddeab709b7ff85eec7b0d2e6ab28e95ee3b1f53
 <<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
           Template.paystackPaymentForm.__helpers.get('paymentSuccessful')(response);
         },
@@ -73,6 +99,12 @@
         onClose: function () {
           alert('window closed');
 >>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
+=======
+          Template.paystackPaymentForm.__helpers.get('paymentSuccessful').call(response);
+        },
+        onClose: function () {
+          console.log("Paystack popup window closed.");
+>>>>>>> feature(paystack-option): adds secret key settings option to the dashboard
         }
       });
       handler.openIframe();

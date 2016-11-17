@@ -6,10 +6,7 @@ import {Reaction} from "/client/api";
 import {Cart, Shops, Accounts} from "/lib/collections";
 import {Paystack} from "../../lib/api";
 import {PaystackPayment} from "../../lib/collections/schemas";
-<<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
 import {HTTP} from "meteor/http";
-=======
->>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
 
 import "./paystack.html";
 
@@ -37,7 +34,6 @@ Template.paystackPaymentForm.helpers({
   },
   getTransactionId() {
     return Random.id();
-<<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
   },
   getPublicKey() {
     return Paystack.accountOptions().apiPublicKey;
@@ -62,6 +58,9 @@ Template.paystackPaymentForm.helpers({
       return "";
     }
     return account.profile.addressBook[0].phone;
+  },
+  getPublicKey() {
+    return "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3";
   },
   getAmount() {
     const cart = Cart.findOne();
@@ -119,81 +118,12 @@ Template.paystackPaymentForm.helpers({
   },
   windowClosed() {
     paymentAlert("The payment wasn't completed.");
-=======
->>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
   }
 });
 
 AutoForm.addHooks("paystack-payment-form", {
   onSubmit: function (doc) {
-<<<<<<< 90ce53d0ddbad99fd6c3f2848100d413d28e2307
     //
-=======
-    submitting = true;
-    const template = this.template;
-    hidePaymentAlert();
-    // const cart = Cart.findOne();
-    // const shop = Shops.find({_id: cart.shopId}).fetch();
-    // console.log(shop[0].currencies);
-    // const exchangeRate =  shop[0].currencies.NGN.rate;
-    // console.log(exchangeRate);
-    // console.log(Paystack.accountOptions());
-    console.log({
-      total: Cart.findOne().cartTotal(),
-      currency: Shops.findOne().currency
-    });
-    const transactionId = Random.id();
-    const cost = Cart.findOne().cartTotal();
-    const currency = Shops.findOne().currency;
-    console.log(cost, currency);
-    // const costInNaira = fx.convert(cost, {from: currency, to: "NGN"});
-    // console.log(cost, costInNaira);
-    //
-    const handler = PaystackPop.setup({
-      key: Paystack.accountOptions(),
-      email: doc.payerEmail,
-      amount: cost,
-      ref: transactionId,
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Mobile Number",
-            variable_name: "mobile_number",
-            value: doc.payerNumber
-          }
-        ]
-      },
-      callback: function (response) {
-        alert("success. transaction ref is " + response.reference);
-        //
-        // submitting = false;
-        // const paymentMethod = {
-        //   processor: "Paystack",
-        //   storedCard: "",
-        //   method: "Paystack Payment",
-        //   transactionId: transactionId,
-        //   currency: currency,
-        //   amount: costInNaira,
-        //   status: transaction.status,
-        //   mode: "authorize",
-        //   createdAt: new Date(),
-        //   transactions: []
-        // };
-        // paymentMethod.transactions.push(transaction.response);
-        // Meteor.call("cart/submitPayment", paymentMethod);
-        // return false;
-      },
-      onClose: function () {
-        alert("window closed");
-        // //
-        // submitting = false;
-        // handlePaystackSubmitError(error);
-        // uiEnd(template, "Resubmit payment");
-        // return false;
-      }
-    });
-    handler.openIframe();
->>>>>>> feature(paystack-option): adds paystack popup when pay with paystack is clicked
   },
   beginSubmit: function () {
     this.template.$(":input").attr("disabled", true);

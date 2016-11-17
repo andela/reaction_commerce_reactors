@@ -11,6 +11,11 @@ export const PaystackPackageConfig = new SimpleSchema([
       type: String,
       label: "API Public Key",
       optional: true
+    },
+    "settings.apiSecretKey": {
+      type: String,
+      label: "API Secret Key",
+      optional: true
     }
   }
 ]);

@@ -28,5 +28,29 @@ export const PaystackPayment = new SimpleSchema({
   payerNumber: {
     type: String,
     label: "Mobile Number"
+  },
+  payerName: {
+    type: String,
+    label: "Name"
+  },
+  cardNumber: {
+    type: String,
+    min: 4,
+    max: 16,
+    label: "Card last 4 digits"
+  },
+  expireMonth: {
+    type: String,
+    max: 2,
+    label: "Expiration month"
+  },
+  expireYear: {
+    type: String,
+    max: 4,
+    label: "Expiration year"
+  },
+  transactionReference: {
+    type: String,
+    label: "Transaction Reference"
   }
 });

@@ -11,7 +11,7 @@ export const Paystack = {
     return settings;
   },
 
-  authorize: function (cardInfo, paymentInfo, callback) {
+  authorize: function (cardInfo, callback) {
     Meteor.call("paystackSubmit", "authorize", cardInfo, paymentInfo, callback);
   }
 };

@@ -937,7 +937,7 @@ Meteor.methods({
     const processor = paymentMethod.processor.toLowerCase();
     const order = Orders.findOne(orderId);
     const transactionId = paymentMethod.transactionId;
-
+    // do stuff here
     const result = Meteor.call(`${processor}/refund/create`, paymentMethod, amount);
     Orders.update({
       "_id": orderId,

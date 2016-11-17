@@ -41,6 +41,24 @@ Template.paystackPaymentForm.helpers({
   },
   getTransactionId() {
     return Random.id();
+  },
+  getPublicKey() {
+    return "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3";
+  },
+  getAmount() {
+    const cart = Cart.findOne();
+    const shop = Shops.find({_id: cart.shopId}).fetch();
+    const costInLocalCurrency = Cart.findOne().cartTotal();
+    const currency = Shops.findOne().currency;
+    const exchangeRateToTheDollar = shop[0].currencies[currency];
+    const costInDollars = costInLocalCurrency / exchangeRateToTheDollar.rate;
+    const nairaExchangeRateToTheDollar = shop[0].currencies.NGN.rate;
+    const costInKobo = Math.ceil(costInDollars * nairaExchangeRateToTheDollar * 100);
+    return costInKobo;
+  },
+  paymentSuccessful(transactionDetails) {
+    console.log(Paystack.accountOptions());
+    console.log(transactionDetails);
   }
 });
 
@@ -49,8 +67,8 @@ AutoForm.addHooks("paystack-payment-form", {
     submitting = true;
     const template = this.template;
     hidePaymentAlert();
-    // const cart = Cart.findOne();
-    // const shop = Shops.find({_id: cart.shopId}).fetch();
+    //
+    //
     // console.log(shop[0].currencies);
     // const exchangeRate =  shop[0].currencies.NGN.rate;
     // console.log(exchangeRate);
@@ -60,14 +78,11 @@ AutoForm.addHooks("paystack-payment-form", {
       currency: Shops.findOne().currency
     });
     const transactionId = Random.id();
-    const cost = Cart.findOne().cartTotal();
-    const currency = Shops.findOne().currency;
-    console.log(cost, currency);
     // const costInNaira = fx.convert(cost, {from: currency, to: "NGN"});
     // console.log(cost, costInNaira);
     //
     const handler = PaystackPop.setup({
-      key: Paystack.accountOptions(),
+      key: "",
       email: doc.payerEmail,
       amount: cost,
       ref: transactionId,

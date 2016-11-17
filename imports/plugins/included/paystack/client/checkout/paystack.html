@@ -3,15 +3,15 @@
   <form>
     <div class="row">
       <div class="form-group">
-        <label class="control-label">Email</label>
-        <input type="email" value="{{doc.payerEmail}}"/>
+        <label class="control-label" for="payerEmailAddress">Email</label>
+        <input type="email" id="payerEmailAddress"/>
       </div>
     </div>
 
     <div class="row">
       <div class="form-group">
-        <label class="control-label">Mobile Number:</label>
-        <input type="text" value="{{doc.payerNumber}}"/>
+        <label class="control-label" for="payerMobileNumber">Mobile Number</label>
+        <input type="text" id="payerMobileNumber"/>
       </div>
     </div>
 
@@ -21,25 +21,28 @@
 
   <script>
     function payWithPaystack() {
+      var email = document.getElementById("payerEmailAddress").value;
+      const phoneNumber = document.getElementById("payerMobileNumber").value;
+
       var handler = PaystackPop.setup({
-        key: "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3",
-        email: {{doc.payerEmail}},
-        amount: 10000,
-        ref: {{getTransactionId}},
+        key: "{{getPublicKey}}",
+        email: email,
+        amount: {{getAmount}},
+        ref: "{{getTransactionId}}",
         metadata: {
           custom_fields: [
             {
               display_name: "Mobile Number",
               variable_name: "mobile_number",
-              value: {{doc.payerNumber}}
+              value: phoneNumber
             }
           ]
         },
         callback: function (response) {
-          alert('success. transaction ref is ' + response.reference);
+          Template.paystackPaymentForm.__helpers.get('paymentSuccessful').call(response);
         },
         onClose: function () {
-          alert('window closed');
+          console.log("Paystack popup window closed.");
         }
       });
       handler.openIframe();

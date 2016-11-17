@@ -21,8 +21,12 @@ Template.pages.onCreated(function () {
 Template.pages.events({
   "click [data-event-action=editPage]": function (event) {
     event.preventDefault();
-    CKEDITOR.instances.pageContent.setData(this.pageContent);
-    Template.instance().state.set("page", this);
+    const page = this
+    Template.instance().state.set("page", page);
+    setTimeout(() => {
+      console.log(page)
+      CKEDITOR.instances.pageContent.setData(page.pageContent);
+    }, 500);
   }
 });
 
@@ -35,5 +39,11 @@ Template.pages.helpers({
   },
   editPage() {
     return Template.instance().state.get("page");
+  }
+});
+
+Template.pageContent.helpers({
+  showPage() {
+    return (Template.instance().data.pageName);
   }
 });

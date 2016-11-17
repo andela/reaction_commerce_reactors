@@ -30,11 +30,46 @@ Meteor.methods({
       Logger.info(`Wallet already exists for this user: ${ userId }`);
     }
   },
+
+  // Get current users wallet
   "wallet/getUserWallet": function () {
     const userWallet = Wallet.findOne({userId: Meteor.userId()});
     return userWallet;
   },
-  "wallet/creditWalletOnRefund": function () {
 
+  // Credits wallet when canceling orders at refund
+  "wallet/refund/create": function (orderId, userId, paymentMethod, amount) {
+    check(orderId, String);
+    check(userId, String);
+    check(paymentMethod, Object);
+    check(amount, Number);
+
+    const userWallet = Wallet.findOne({userId: userId});
+    const newAmount = userWallet.amount + amount;
+    const transaction = {
+      _id: orderId,
+      amount: amount,
+      date: new Date(),
+      transactiontype: amount + " credit from " + paymentMethod.method
+    };
+
+    Wallet.update({
+      userId: userId
+    }, {
+      $set: {
+        amount: newAmount
+      },
+      $push: {transactionHistory: transaction}
+    });
+
+    const result = {
+      success: true,
+      message: "Refund of " + amount + " successfull " + " from " +  paymentMethod
+    };
+
+    Logger.info(`Credited wallet on refund for: ${ userId }`);
+
+    return result;
   }
+
 });

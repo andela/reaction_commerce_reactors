@@ -928,17 +928,19 @@ Meteor.methods({
    */
   "orders/refunds/create": function (orderId, paymentMethod, amount) { // Important (refund)
     check(orderId, String);
-    check(paymentMethod, Reaction.Schemas.PaymentMethod);
+    check(paymentMethod, Object);
     check(amount, Number);
 
     if (!Reaction.hasPermission("orders")) {
       throw new Meteor.Error(403, "Access Denied");
     }
-    const processor = paymentMethod.processor.toLowerCase();
     const order = Orders.findOne(orderId);
     const transactionId = paymentMethod.transactionId;
-    // do stuff here
-    const result = Meteor.call(`${processor}/refund/create`, paymentMethod, amount);
+
+    // Refund into the wallet
+    const result = Meteor.call("wallet/refund/create",
+     orderId, order.userId, paymentMethod, amount);
+
     Orders.update({
       "_id": orderId,
       "billing.paymentMethod.transactionId": transactionId
@@ -992,7 +994,8 @@ Meteor.methods({
       // Refund money
       Meteor.call("orders/refunds/create", orderId, paymentMethod, amendedAmount, (error) => {
         if (error) {
-          Alerts.alert(error.reason);
+          Logger.info(`error on lin 944: ${ error }`);
+          // Alerts.alert(error.reason);
         } else {
           // send an email to the user
           Meteor.call("orders/sendCancelNotification", order, (err) => {

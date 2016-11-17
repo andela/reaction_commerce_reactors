@@ -8,7 +8,8 @@ Reaction.registerPackage({
   autoEnable: true,
   settings: {
     mode: false,
-    apiKey: ""
+    apiPublicKey: "",
+    apiSecretKey: ""
   },
   registry: [
     // Dashboard card

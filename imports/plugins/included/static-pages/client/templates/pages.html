@@ -1,15 +1,32 @@
 <template name="pages">
-  <div class="row">
-    <div class="col-sm-9">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8">
 
-    </div>
-    <div class="col-sm-3">
-      <h3>List of pages</h3>
-      <ul>
-        <li> Contact Us <button class="btn btn-sm btn-success fa fa-edit"></button><button class="btn btn-sm btn-danger fa fa-trash"></button> </li>
-        <li> About us <button class="btn btn-sm btn-success fa fa-edit"></button><button class="btn btn-sm btn-danger fa fa-trash"></button></li>
-        <li> Support <button class="btn btn-sm btn-success fa fa-edit"></button><button class="btn btn-sm btn-danger fa fa-trash"></button></li>
-      </ul>
+      </div>
+      <div class="col-sm-4">
+        <h3 class="text-center">List of pages</h3>
+        <ul class="list-group">
+          {{#each page in displayPages}}
+            {{> pageList page}}
+          {{else}}
+            <div class="empty-view-message">
+                <i class="fa fa-file"></i>
+                <p>No Pages Found</p>
+            </div>
+          {{/each}}
+        </ul>
+      </div>
     </div>
   </div>
+</template>
+
+<template name="pageList">
+  <li class="list-group-item">
+    <span >{{ pageTitle }}</span>
+    <div class="pull-right">
+        <button class="btn btn-sm btn-info fa fa-edit"></button>
+        <button class="btn btn-sm btn-danger fa fa-trash"></button>
+    </div>
+</li>
 </template>

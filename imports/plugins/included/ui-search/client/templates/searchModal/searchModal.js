@@ -7,7 +7,6 @@ import { ProductSearch, Tags, OrderSearch, AccountSearch } from "/lib/collection
 import { IconButton, SortableTable } from "/imports/plugins/core/ui/client/components";
 
 
-
 // filterItems = [{vendor: []}, {min: 0}, {max: 9999999}, {score: false}];
 function filterResult(sortKey, sortStyle) {
   const result = [];

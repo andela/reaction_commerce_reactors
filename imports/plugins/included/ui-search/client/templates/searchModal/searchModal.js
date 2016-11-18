@@ -6,8 +6,6 @@ import { i18next } from "/client/api";
 import { ProductSearch, Tags, OrderSearch, AccountSearch } from "/lib/collections";
 import { IconButton, SortableTable } from "/imports/plugins/core/ui/client/components";
 
-
-// filterItems = [{vendor: []}, {min: 0}, {max: 9999999}, {score: false}];
 function filterResult(sortKey, sortStyle) {
   const result = [];
   if (JSON.stringify(filterItems) === "[{\"vendor\":[]},{},{},{}]") {
@@ -35,9 +33,6 @@ function filterResult(sortKey, sortStyle) {
         case "max":
           match = priceMatch("max", product.price, item[key]);
           break;
-        case "score":
-          match = scoreMatch(item[key], product[key]);
-          break;
         default:
           match = false;
       }
@@ -59,11 +54,6 @@ function setSearchResults(result) {
   }
 }
 
-// Match for score
-function scoreMatch(itemKey, productKey) {
-  return productKey >= itemKey ? true : false;
-}
-
 // Match for price
 function priceMatch(type, value, condition) {
   if (!value) {
@@ -73,7 +63,7 @@ function priceMatch(type, value, condition) {
   if (type === "min" && (value.min >= condition || value.max >= condition)) {
     return true;
   }
-  if (type === "max" && value.max <= condition) {
+  if (type === "max" && (value.min <= condition || value.max <= condition)) {
     return true;
   }
   return false;

@@ -2,7 +2,7 @@
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
 import { Reaction } from "/client/api";
-import { Cart, Shops } from "/lib/collections";
+import { Cart, Shops, Order} from "/lib/collections";
 import { Wallet } from "/lib/collections";
 
 import "./wallet.html";
@@ -10,6 +10,10 @@ import "./wallet.html";
 Template.walletCheckout.onCreated(function () {
   this.subscribe("Wallet");
 });
+
+function canAfford(walletBalance, cartTotal) {
+  return walletBalance >= cartTotal;
+}
 
 Template.walletCheckout.helpers({
   wallet: function () {
@@ -24,94 +28,41 @@ Template.walletCheckout.helpers({
   }
 });
 
+Template.walletCheckout.events({
+  "click #btn-wallet-pay": function () {
+    const cartTotal = parseFloat(Cart.findOne().cartTotal());
+    const userWallet = Wallet.findOne({userId: Meteor.userId()});
+    const cartId = Cart.findOne()._id;
 
-// function uiEnd(template, buttonText) {
-//   template.$(":input").removeAttr("disabled");
-//   template.$("#btn-complete-order").text(buttonText);
-//   return template.$("#btn-processing").addClass("hidden");
-// }
-//
-// function paymentAlert(errorMessage) {
-//   return $(".alert").removeClass("hidden").text(errorMessage);
-// }
-//
-// function hidePaymentAlert() {
-//   return $(".alert").addClass("hidden").text("");
-// }
-//
-// function handleWalletSubmitError(error) {
-//   const serverError = error !== null ? error.message : void 0;
-//   if (serverError) {
-//     return paymentAlert("Oops! " + serverError);
-//   } else if (error) {
-//     return paymentAlert("Oops! " + error, null, 4);
-//   }
-// }
-//
-//
-// Template.walletPaymentForm.helpers({
-//   Wallet() {
-//     return Wallet;
-//   }
-// });
-//
-// AutoForm.addHooks("wallet-form", {
-//   onSubmit: function (doc) {
-//     submitting = true;
-//     const template = this.template;
-//     hidePaymentAlert();
-//     const form = {
-//       name: doc.payerName,
-//       number: doc.cardNumber,
-//       expireMonth: doc.expireMonth,
-//       expireYear: doc.expireYear,
-//       cvv2: doc.cvv,
-//       type: Reaction.getCardType(doc.cardNumber)
-//     };
-//     const storedCard = form.type.charAt(0).toUpperCase() + form.type.slice(1) + " " + doc.cardNumber.slice(-4);
-//
-//     Wallet.authorize(form, {
-//       total: Cart.findOne().cartTotal(),
-//       currency: Shops.findOne().currency
-//     }, function (error, transaction) {
-//       submitting = false;
-//       let paymentMethod;
-//       if (error) {
-//         handleWalletSubmitError(error);
-//         uiEnd(template, "Resubmit payment");
-//       } else {
-//         if (transaction.saved === true) {
-//           submitting = false;
-//           paymentMethod = {
-//             processor: "Wallet",
-//             storedCard: storedCard,
-//             method: "Wallet Payment",
-//             transactionId: transaction.transactionId,
-//             currency: transaction.currency,
-//             amount: transaction.amount,
-//             status: transaction.status,
-//             mode: "authorize",
-//             createdAt: new Date(),
-//             transactions: []
-//           };
-//           paymentMethod.transactions.push(transaction.response);
-//           Meteor.call("cart/submitPayment", paymentMethod);
-//         } else {
-//           handleWalletSubmitError(transaction.error);
-//           uiEnd(template, "Resubmit payment");
-//         }
-//       }
-//     });
-//     return false;
-//   },
-//   beginSubmit: function () {
-//     this.template.$(":input").attr("disabled", true);
-//     this.template.$("#btn-complete-order").text("Submitting ");
-//     return this.template.$("#btn-processing").removeClass("hidden");
-//   },
-//   endSubmit: function () {
-//     if (!submitting) {
-//       return uiEnd(this.template, "Complete your order");
-//     }
-//   }
-// });
+    if (canAfford(userWallet.amount, cartTotal)) {
+      const newAmount = userWallet.amount - cartTotal;
+      const transaction = {
+        _id: cartId,
+        amount: cartTotal,
+        date: new Date(),
+        transactiontype: cartTotal + "debit for transaction, cartId: " + cartId
+      };
+
+      Meteor.call("wallet/updateOnPayment", newAmount, transaction);
+
+      const paymentMethod = {
+        processor: "Wallet",
+        method: "Wallet",
+        transactionId: cartId,
+        amount: cartTotal,
+        status: "Success",
+        mode: "void",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        transactions: [transaction]
+      };
+
+      Meteor.call("cart/submitPayment", paymentMethod);
+    } else {
+      Alerts.toast("Insufficient funds. Top up wallet first. ", {
+        html: true,
+        timeout: 10000
+      });
+    }
+  }
+});

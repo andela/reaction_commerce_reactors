@@ -70,6 +70,20 @@ Meteor.methods({
     Logger.info(`Credited wallet on refund for: ${ userId }`);
 
     return result;
+  },
+
+  "wallet/updateOnPayment": function (amount, transaction) {
+    check(amount, Number);
+    check(transaction, Object);
+
+    Wallet.update({
+      userId: Meteor.userId()
+    }, {
+      $set: {
+        amount: amount
+      },
+      $push: {transactionHistory: transaction}
+    });
   }
 
 });

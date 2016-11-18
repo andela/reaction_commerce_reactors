@@ -14,16 +14,9 @@
   <div class="rui items flex third">
     {{#each app in apps}}
       {{#if (pkgPermissions app)}}
-        {{#if app.useId}}
-          <div class="rui item flex vertical" data-intro="{{app.dataIntro}}" data-position="{{app.dataPosition}}"
-               id="dashboardIntro">
-            {{> gridPackage (packageProps app)}}
-          </div>
-        {{else}}
-          <div class="rui item flex vertical" data-intro="{{app.dataIntro}}" data-position="{{app.dataPosition}}">
-            {{> gridPackage (packageProps app)}}
-          </div>
-        {{/if}}
+        <div class="rui item flex vertical">
+          {{> gridPackage (packageProps app)}}
+        </div>
       {{/if}}
     {{/each}}
   </div>

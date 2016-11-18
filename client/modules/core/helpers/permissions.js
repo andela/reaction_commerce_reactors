@@ -69,15 +69,6 @@ Template.registerHelper("hasTakenTour", function () {
 });
 
 /**
- * hasTakenAdminTour template helper
- * @summary check if user has taken an admin tour
- * @return {Boolean} return true if user has taken an admin tour
- */
-Template.registerHelper("hasTakenAdminTour", function () {
-  return Reaction.hasTakenAdminTour();
-});
-
-/**
  * setHasTakenTour template helper
  * @summary change user taken tour state
  * @return {Null} return undefined

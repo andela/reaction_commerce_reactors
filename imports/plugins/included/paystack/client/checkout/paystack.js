@@ -36,6 +36,7 @@ Template.paystackPaymentForm.helpers({
     return Random.id();
   },
   getPublicKey() {
+    console.log(Paystack.accountOptions().apiPublicKey);
     return Paystack.accountOptions().apiPublicKey;
     // return "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3";
   },

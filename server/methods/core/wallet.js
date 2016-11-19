@@ -1,8 +1,3 @@
-import _ from "lodash";
-import path from "path";
-import moment from "moment";
-import accounting from "accounting-js";
-import Future from "fibers/future";
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import { Wallet } from "/lib/collections";
@@ -53,14 +48,7 @@ Meteor.methods({
       transactiontype: amount + " credit from " + paymentMethod.method
     };
 
-    Wallet.update({
-      userId: userId
-    }, {
-      $set: {
-        amount: newAmount
-      },
-      $push: {transactionHistory: transaction}
-    });
+    Meteor.call("wallet/updateOnPayment", newAmount, transaction);
 
     const result = {
       success: true,
@@ -84,6 +72,20 @@ Meteor.methods({
       },
       $push: {transactionHistory: transaction}
     });
-  }
+  },
 
+  "wallet/fundWallet": function (paymentMethod) {
+    check(paymentMethod, Object);
+
+    const userWallet = Wallet.findOne({userId: Meteor.userId()});
+    const newAmount = userWallet.amount + paymentMethod.amount;
+    const transaction = {
+      _id: paymentMethod.transactionId,
+      amount: paymentMethod.amount,
+      date: new Date(),
+      transactiontype: paymentMethod.amount + " credit from Wallet top up by" + paymentMethod.method
+    };
+
+    Meteor.call("wallet/updateOnPayment", newAmount, transaction);
+  }
 });

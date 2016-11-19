@@ -7,13 +7,13 @@ Reaction.registerPackage({
   icon: "fa fa-credit-card-alt",
   autoEnable: true,
   settings: {
-   name: "Wallet Payment"
+    mode: false,
+    name: "Wallet Payment"
   },
   registry: [
     // Dashboard card
     {
       provides: "dashboard",
-      name: "Wallet",
       label: "Pay by Wallet",
       description: "Wallet",
       icon: "fa fa-credit-card-alt",

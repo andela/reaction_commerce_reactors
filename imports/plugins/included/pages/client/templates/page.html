@@ -1,0 +1,25 @@
+<template name="page">
+  <div class="container">
+    {{#if isValidPage}}
+      {{> pageDetail pageDetails}}
+    {{else}}
+      <div class="empty-view-message">
+          <i class="fa fa-file"></i>
+          <p>The page you're looking for cannot be found</p>
+      </div>
+    {{/if}}
+  </div>
+</template>
+
+<template name="pageDetail">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="text-center">{{ pageTitle }}</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      {{ pageContent }}
+    </div>
+  </div>
+</template>

@@ -1,7 +1,7 @@
 import { Reaction } from "/server/api";
 
 Reaction.registerPackage({
-  label: "Pages",
+  label: "Static Pages",
   name: "static-pages",
   icon: "fa fa-file",
   autoEnable: true,
@@ -9,7 +9,7 @@ Reaction.registerPackage({
     name: "Pages"
   },
   registry: [{
-    route: "/dashboard/pages",
+    route: "/dashboard/static-pages",
     provides: "dashboard",
     workflow: "corePageWorkflow",
     name: "pages",
@@ -20,8 +20,8 @@ Reaction.registerPackage({
     container: "core",
     template: "pages"
   }, {
-    route: "/dashboard/pages",
-    name: "dashboard/pages",
+    route: "/dashboard/static-pages",
+    name: "dashboard/static-pages",
     provides: "shortcut",
     label: "Static Pages",
     description: "Create static pages",

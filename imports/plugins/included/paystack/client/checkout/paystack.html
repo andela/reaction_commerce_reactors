@@ -22,10 +22,10 @@
 
   <script>
     function payWithPaystack() {
-      var email = document.getElementById("payerEmailAddress").value;
+      const email = document.getElementById("payerEmailAddress").value;
       const phoneNumber = document.getElementById("payerMobileNumber").value;
 
-      var handler = PaystackPop.setup({
+      const handler = PaystackPop.setup({
         key: "{{getPublicKey}}",
         email: email,
         amount: {{getAmount}},

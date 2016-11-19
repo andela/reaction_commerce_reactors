@@ -1,12 +1,10 @@
 <template name="paystackSettings">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <div class="panel-title"><p>Don't have a Paystack account? Sign up <a
-          href="https://dashboard.paystack.co/#/login">here</a></p></div>
+      <div class="panel-title"><p>Don't have a Paystack account? Sign up <a href="https://dashboard.paystack.co/#/login">here</a></p></div>
     </div>
     <div class="panel-body">
-      {{#autoForm collection=Collections.Packages schema=PaystackPackageConfig doc=packageData type="update"
-                  id="paystack-update-form"}}
+      {{#autoForm collection=Collections.Packages schema=PaystackPackageConfig doc=packageData type="update" id="paystack-update-form"}}
         {{>afQuickField name='settings.apiPublicKey'}}
         {{>afQuickField name='settings.apiSecretKey'}}
         <button type="submit" class="btn btn-primary pull-right">Update</button>

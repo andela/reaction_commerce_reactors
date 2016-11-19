@@ -21,12 +21,17 @@ Template.pages.onCreated(function () {
 Template.pages.events({
   "click [data-event-action=editPage]": function (event) {
     event.preventDefault();
-    const page = this
+    const page = this;
     Template.instance().state.set("page", page);
     setTimeout(() => {
-      console.log(page)
       CKEDITOR.instances.pageContent.setData(page.pageContent);
     }, 500);
+  },
+  "click [data-event-action=viewPage]": function (event) {
+    event.preventDefault();
+    const path = `/reaction/page/${this.pageName}`;
+    Reaction.Router.go(path);
+    // return (Template.instance().data.pageName);
   }
 });
 

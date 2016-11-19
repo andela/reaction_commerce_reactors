@@ -29,6 +29,11 @@ Template.walletCheckout.helpers({
 });
 
 Template.walletCheckout.events({
+  "click #top-up-wallet": function () {
+    // Meteor.Router.to('/checkout/wallet');
+    console.log("in")
+  },
+
   "click #btn-wallet-pay": function () {
     const cartTotal = parseFloat(Cart.findOne().cartTotal());
     const userWallet = Wallet.findOne({userId: Meteor.userId()});

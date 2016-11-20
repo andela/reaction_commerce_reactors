@@ -7,7 +7,9 @@ Template.pages.onCreated(function () {
   this.state = new ReactiveDict();
   this.state.setDefault({
     pages: [],
-    page: {}
+    page: {},
+    edit: false,
+    create: false
   });
 
   // Watch for updates to the subscription and query params
@@ -19,10 +21,25 @@ Template.pages.onCreated(function () {
 });
 
 Template.pages.events({
+  "click [data-event-action=createPage]": function (event) {
+    event.preventDefault();
+
+    Template.instance().state.set("edit", false);
+    Template.instance().state.set("create", true);
+
+    // Template.instance().state.set("page", this);
+    // setTimeout(() => {
+    //   CKEDITOR.instances.pageContent.setData(page.pageContent);
+    // }, 500);
+  },
   "click [data-event-action=editPage]": function (event) {
     event.preventDefault();
+
+    Template.instance().state.set("edit", true);
+    Template.instance().state.set("create", false);
+
     const page = this;
-    Template.instance().state.set("page", page);
+    Template.instance().state.set("page", this);
     setTimeout(() => {
       CKEDITOR.instances.pageContent.setData(page.pageContent);
     }, 500);
@@ -56,11 +73,20 @@ Template.pages.helpers({
   },
   editPage() {
     return Template.instance().state.get("page");
+  },
+  showCreatePage() {
+    return Template.instance().state.get("create");
+  },
+  showEditPage() {
+    return Template.instance().state.get("edit");
   }
 });
 
 Template.pageContent.helpers({
-  showPage() {
-    return (Template.instance().data.pageName);
-  }
+  // showCreatePage() {
+  //   return Template.instance().state.get("create");
+  // },
+  // showEditPage() {
+  //   return Template.instance().state.get("edit");
+  // }
 });

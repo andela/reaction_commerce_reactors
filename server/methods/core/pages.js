@@ -32,6 +32,27 @@ Meteor.methods({
 
     Logger.info("Page updated");
   },
+  "pages/createPage": function (name, title, content) {
+    check(title, String);
+    check(name, String);
+    check(content, String);
+
+    this.unblock();
+
+    if (Pages.findOne({pageName: name})) {
+      Logger.info("Page already exists");
+      return false;
+    } else {
+      Pages.insert({
+        pageTitle: title,
+        pageName: name,
+        pageContent: content,
+        isVisible: true
+      });
+      Logger.info("Page created");
+      return true;
+    }
+  },
   "pages/deletePage": function (name) {
     check(name, String);
 

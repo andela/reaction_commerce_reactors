@@ -65,7 +65,7 @@ Template.dashboardOrdersList.helpers({
         let alertText = "Are you sure you want to cancel this order";
 
         if (status === "shipped") {
-          alertText = `${alertText}, your order has been shipped and your
+          alertText = `${alertText}, your order has been shipped and
           your shipping charge will not be refunded!`;
         }
         Alerts.alert({

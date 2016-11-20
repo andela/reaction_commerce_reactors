@@ -1,9 +1,17 @@
+import { Meteor } from "meteor/meteor";
 import { FlatButton } from "/imports/plugins/core/ui/client/components";
 import { Reaction } from "/client/api";
-import { Tags } from "/lib/collections";
+import { Tags, Pages } from "/lib/collections";
 
 Template.CoreNavigationBar.onCreated(function () {
   this.state = new ReactiveDict();
+  this.subscribe("Pages");
+  this.state.setDefault({
+    pages: []
+  });
+  Meteor.call("pages/getPages", (err, data) => {
+    this.state.set("pages", data);
+  });
 });
 
 /**
@@ -71,5 +79,9 @@ Template.CoreNavigationBar.helpers({
         instance.toggleMenuCallback = callback;
       }
     };
+  },
+  showPages() {
+    // console.log(Template.instance().state.get("pages"));
+    return Template.instance().state.get("pages");
   }
 });

@@ -31,7 +31,19 @@ Template.pages.events({
     event.preventDefault();
     const path = `/reaction/page/${this.pageName}`;
     Reaction.Router.go(path);
-    // return (Template.instance().data.pageName);
+  },
+  "click [data-event-action=deletePage]": function (event) {
+    event.preventDefault();
+    Meteor.call("pages/deletePage", this.pageName);
+  },
+  "submit form#pageForm": function (event) {
+    event.preventDefault();
+
+    const pageTitle = document.querySelector("#pageTitle").value;
+    const pageName = this.pageName;
+    const pageContent = document.querySelector("#pageContent").value;
+
+    Meteor.call("pages/savePage", pageName, pageTitle, pageContent);
   }
 });
 

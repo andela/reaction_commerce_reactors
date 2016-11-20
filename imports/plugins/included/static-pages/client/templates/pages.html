@@ -25,13 +25,15 @@
   <li class="list-group-item">
     <span >{{ pageTitle }}</span>
     <div class="pull-right">
-        <button class="btn btn-sm btn-success fa fa-file"
-          data-event-action="viewPage">
-        </button>
         <button class="btn btn-sm btn-info fa fa-edit"
           data-event-action="editPage">
         </button>
-        <button class="btn btn-sm btn-danger fa fa-trash"></button>
+        <button class="btn btn-sm btn-success fa fa-file"
+          data-event-action="viewPage">
+        </button>
+        <button class="btn btn-sm btn-danger fa fa-trash"
+          data-event-action="deletePage">
+          </button>
     </div>
 </li>
 </template>
@@ -39,14 +41,14 @@
 <template name="pageContent">
   {{#if showPage}}
   <h3 class="text-center">{{pageTitle}}</h3>
-  <form>
+  <form name="pageForm" id="pageForm">
     <div class="form-group">
       <label for="PageTitle">Page Title</label>
       <input type="text" class="form-control" id="pageTitle" placeholder="Page Title" value="{{pageTitle}}">
     </div>
     <div class="form-group">
-      <label for="PageName">Page Title</label>
-      <input type="text" class="form-control" id="pageName" placeholder="Page Name" value="{{pageName}}">
+      <label for="PageName">Page Name</label>
+      <input type="text" class="form-control" id="pageName" placeholder="Page Name" value="{{pageName}}" disabled>
     </div>
     <div class="form-group">
       <label for="exampleInputPassword1">Page Content</label>

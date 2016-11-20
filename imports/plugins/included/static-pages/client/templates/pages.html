@@ -3,9 +3,10 @@
     <div class="row">
       <div class="col-sm-8">
         {{#if showEditPage}}
-          {{> pageContent editPage}}
+          {{> pageContent data=editPage disabled=true context=pageEdit}}
         {{else}}
           {{#if showCreatePage}}
+            {{> pageContent data=createPage disabled=false context=pageCreate}}
           {{else}}
             <div class="well" style="margin-top:50px;">
               <p class="text-center">
@@ -62,23 +63,23 @@
 </template>
 
 <template name="pageContent">
-  <h3 class="text-center">{{pageTitle}}</h3>
-  <form name="pageForm" id="pageForm">
-    <div class="form-group">
-      <label for="PageTitle">Page Title</label>
-      <input type="text" class="form-control" id="pageTitle" placeholder="Page Title" value="{{pageTitle}}">
-    </div>
-    <div class="form-group">
-      <label for="PageName">Page Name</label>
-      <input type="text" class="form-control" id="pageName" placeholder="Page Name" value="{{pageName}}" disabled>
-    </div>
-    <div class="form-group">
-      <label for="exampleInputPassword1">Page Content</label>
-      <textarea class="form-control" name="pageContent" id="pageContent" rows="15"></textarea>
-      <script>
-        CKEDITOR.replace("pageContent");
-      </script>
-    </div>
-    <button type="submit" class="btn btn-success">Submit</button>
-  </form>
+    <h3 class="text-center">{{data.pageTitle}}</h3>
+    <form name="{{context}}-page" id="{{context}}-page">
+      <div class="form-group">
+        <label for="PageTitle">Page Title</label>
+        <input type="text" class="form-control" id="pageTitle" placeholder="Page Title" value="{{data.pageTitle}}">
+      </div>
+      <div class="form-group">
+        <label for="PageName">Page Name</label>
+        <input type="text" class="form-control" id="pageName" placeholder="Page Name" value="{{data.pageName}}" disabled={{disabled}}>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Page Content</label>
+        <textarea class="form-control" name="pageContent" id="pageContent" rows="15"></textarea>
+        <script>
+          CKEDITOR.replace("pageContent");
+        </script>
+      </div>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
 </template>

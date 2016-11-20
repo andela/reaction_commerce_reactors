@@ -26,11 +26,6 @@ Template.pages.events({
 
     Template.instance().state.set("edit", false);
     Template.instance().state.set("create", true);
-
-    // Template.instance().state.set("page", this);
-    // setTimeout(() => {
-    //   CKEDITOR.instances.pageContent.setData(page.pageContent);
-    // }, 500);
   },
   "click [data-event-action=editPage]": function (event) {
     event.preventDefault();
@@ -53,14 +48,23 @@ Template.pages.events({
     event.preventDefault();
     Meteor.call("pages/deletePage", this.pageName);
   },
-  "submit form#pageForm": function (event) {
+  "submit form#edit-page": function (event) {
     event.preventDefault();
 
     const pageTitle = document.querySelector("#pageTitle").value;
-    const pageName = this.pageName;
+    const pageName = document.querySelector("#pageName").value;
     const pageContent = document.querySelector("#pageContent").value;
 
     Meteor.call("pages/savePage", pageName, pageTitle, pageContent);
+  },
+  "submit form#create-page": function (event) {
+    event.preventDefault();
+
+    const pageTitle = document.querySelector("#pageTitle").value;
+    const pageName = document.querySelector("#pageName").value;
+    const pageContent = document.querySelector("#pageContent").value;
+
+    Meteor.call("pages/createPage", pageName, pageTitle, pageContent);
   }
 });
 
@@ -74,19 +78,23 @@ Template.pages.helpers({
   editPage() {
     return Template.instance().state.get("page");
   },
+  createPage() {
+    return {};
+  },
   showCreatePage() {
     return Template.instance().state.get("create");
   },
   showEditPage() {
     return Template.instance().state.get("edit");
+  },
+  pageEdit() {
+    return "edit";
+  },
+  pageCreate() {
+    return "create"
   }
 });
 
 Template.pageContent.helpers({
-  // showCreatePage() {
-  //   return Template.instance().state.get("create");
-  // },
-  // showEditPage() {
-  //   return Template.instance().state.get("edit");
-  // }
+
 });

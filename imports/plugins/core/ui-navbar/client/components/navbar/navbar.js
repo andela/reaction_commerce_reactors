@@ -81,7 +81,9 @@ Template.CoreNavigationBar.helpers({
     };
   },
   showPages() {
-    // console.log(Template.instance().state.get("pages"));
     return Template.instance().state.get("pages");
+  },
+  pagesAvailable() {
+    return Template.instance().state.get("pages").length > 0;
   }
 });

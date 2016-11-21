@@ -9,6 +9,7 @@ import { Logger, Reaction } from "/server/api";
  */
 Meteor.methods({
 
+  // Creates new wallet for all users on sign up
   "wallet/createWallet": function (userId) {
     const userWallet = Wallet.findOne({userId: userId});
     if (!userWallet) {
@@ -45,7 +46,8 @@ Meteor.methods({
       _id: orderId,
       amount: amount,
       date: new Date(),
-      transactiontype: amount + " credit from " + paymentMethod.method
+      transactiontype: "Credit",
+      description: amount + " credit from " + paymentMethod.method + "for order " + orderId
     };
 
     Meteor.call("wallet/updateOnPayment", newAmount, transaction);
@@ -60,6 +62,7 @@ Meteor.methods({
     return result;
   },
 
+  // Updates wallet with a certain amount and transaction
   "wallet/updateOnPayment": function (amount, transaction) {
     check(amount, Number);
     check(transaction, Object);
@@ -74,16 +77,18 @@ Meteor.methods({
     });
   },
 
+  // Funds wallet
   "wallet/fundWallet": function (paymentMethod) {
     check(paymentMethod, Object);
 
-    const userWallet = Wallet.findOne({userId: Meteor.userId()});
+    const userWallet = Wallet.findOne({ userId: Meteor.userId() });
     const newAmount = userWallet.amount + paymentMethod.amount;
     const transaction = {
       _id: paymentMethod.transactionId,
       amount: paymentMethod.amount,
       date: new Date(),
-      transactiontype: paymentMethod.amount + " credit from Wallet top up by" + paymentMethod.method
+      transactiontype: "Credit",
+      description: paymentMethod.amount + " credit from Wallet top up by" + paymentMethod.method
     };
 
     Meteor.call("wallet/updateOnPayment", newAmount, transaction);

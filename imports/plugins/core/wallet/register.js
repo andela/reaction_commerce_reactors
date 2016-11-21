@@ -4,7 +4,7 @@ import { Reaction } from "/server/api";
 Reaction.registerPackage({
   label: "Wallet",
   name: "wallet-paymentmethod",
-  icon: "fa fa-credit-card-alt",
+  icon: "fa fa-ticket",
   autoEnable: true,
   settings: {
     mode: false,
@@ -16,7 +16,7 @@ Reaction.registerPackage({
       provides: "dashboard",
       label: "Pay by Wallet",
       description: "Wallet",
-      icon: "fa fa-credit-card-alt",
+      icon: "fa fa-ticket",
       priority: 3,
       container: "paymentMethod",
       workflow: "coreDashboardWorkflow"

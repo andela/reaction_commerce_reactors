@@ -3,6 +3,7 @@ import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
 import { Cart} from "/lib/collections";
 import { Wallet } from "/lib/collections";
+import Paystack from "/imports/plugins/included/paystack/lib/api";
 
 import "./wallet.html";
 
@@ -38,6 +39,7 @@ Template.walletCheckout.helpers({
 
   getPublicKey: () => {
     // return Paystack.accountOptions().apiPublicKey;
+    // console.log(Paystack.accountOptions().)
     return "pk_test_5bc8b75198effa35216aed4bde2fa22369032618";
   },
 
@@ -99,13 +101,14 @@ Template.walletCheckout.helpers({
 });
 
 Template.walletCheckout.events({
+
   "click #top-up-wallet": function () {
     const display = document.getElementById("fundWallet").style.display;
-    console.log(display);
     if (display === "block") {
       document.getElementById("fundWallet").style.display = "none";
       return;
     }
+
     document.getElementById("fundWallet").style.display = "block";
   },
 
@@ -120,7 +123,9 @@ Template.walletCheckout.events({
         _id: cartId,
         amount: cartTotal,
         date: new Date(),
-        transactiontype: cartTotal + "debit for transaction, cartId: " + cartId
+        transactiontype: "Debit",
+        description: cartTotal + "debit for transaction, cartId: " + cartId,
+        items: Cart.findOne().items
       };
 
       Meteor.call("wallet/updateOnPayment", newAmount, transaction);
@@ -145,4 +150,5 @@ Template.walletCheckout.events({
       });
     }
   }
+
 });

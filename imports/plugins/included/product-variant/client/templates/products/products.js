@@ -201,7 +201,7 @@ Template.socialFeeds.helpers({
     if (facebookConfig.enabled && facebookConfig.appId !== "" && facebookConfig.profilePage !== "") {
       const index = facebookConfig.profilePage.lastIndexOf("/") + 1;
       return `https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2F${
-        facebookConfig.profilePage.substr(index)}&tabs=timeline&width=1500&height=500&
+        facebookConfig.profilePage.substr(index)}&tabs=timeline&width=300&height=500&
         small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true&appId=${facebookConfig.appId}`;
     }
     return false;

@@ -643,7 +643,16 @@ Meteor.methods({
       order.status = "new";
       const shop = Collections.Shops.findOne(order.shopId);
       order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-      Meteor.call("createNotification", order);
+
+      let notifyUser = false;
+      const roleObj = Object.keys(Meteor.user().roles);
+      if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+        notifyUser = true;
+      }
+      const notify = {};
+      notify.title = "A new order has been created";
+      notify.message = "Order detail here";
+      Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
       // order success
       return orderId;

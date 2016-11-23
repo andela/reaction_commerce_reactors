@@ -262,7 +262,17 @@ Meteor.methods({
     // create in site notification
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-    Meteor.call("createNotification", order);
+
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Your order has been shipped";
+    notify.message = "Order detail here";
+    console.log(notify);
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
     return {
       workflowResult: workflowResult,
@@ -336,7 +346,16 @@ Meteor.methods({
     // create in site notification
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-    Meteor.call("createNotification", order);
+
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Your order has been delivered";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
     const itemIds = shipment.items.map((item) => {
       return item._id;
@@ -600,7 +619,15 @@ Meteor.methods({
     }
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-    Meteor.call("createNotification", order);
+
+    let notifyUser = false;
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Your order has been completed.";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
     // return this.orderCompleted(order);
   },
 
@@ -919,7 +946,16 @@ Meteor.methods({
             }
             const shop = Shops.findOne(order.shopId);
             order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-            Meteor.call("createNotification", order);
+
+            let notifyUser = false;
+            const roleObj = Object.keys(Meteor.user().roles);
+            if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+              notifyUser = true;
+            }
+            const notify = {};
+            notify.title = "Your payment was successful.";
+            notify.message = "Order detail here";
+            Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
           } else {
             if (result && result.error) {
               Logger.fatal("Failed to capture transaction.", order, paymentMethod.transactionId, result.error);
@@ -1076,7 +1112,16 @@ Meteor.methods({
     order.status = "cancelled";
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-    Meteor.call("createNotification", order);
+
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Your order has been cancelled";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
     // change the shipping status to canceled
     Meteor.call("orders/shipmentCanceled", order, shipment);
@@ -1106,12 +1151,21 @@ Meteor.methods({
           "workflow.status": "coreOrderWorkflow/cancel-request"
         }
       });
-    
+
     const order = Orders.findOne(orderId);
     order.status = "cancelled";
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-    Meteor.call("createNotification", order);
+
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "An order has been cancelled";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
     return null;
   }

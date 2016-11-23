@@ -6,7 +6,13 @@ Meteor.publish("notificationList", (uid) => {
   check(uid, Match.Any);
 
   let currentUser = Meteor.users.findOne(uid);
-  let isAdmin = currentUser.roles[Object.keys(currentUser.roles)[0]].includes('admin');
+  let currentUserRoleKey = Object.keys(currentUser.roles);
+  let isAdmin = currentUser.roles[currentUserRoleKey[0]].includes('admin');
+
+  console.log('Current user', currentUser);
+  console.log('Current user role', currentUser.roles[currentUserRoleKey]);
+  //console.log('Meteor.user', Meteor.user());
+  console.log('is current user admin?', isAdmin);
 
   if(!uid){
     return this.ready();
@@ -14,11 +20,12 @@ Meteor.publish("notificationList", (uid) => {
 
   if(isAdmin) {
     return Notifications.find({
-      nofifyUser: false
+      notifyUser: false
     });
   } else {
     return Notifications.find({
-      userId: uid
+      userId: uid,
+      notifyUser: true
     });
   }
 

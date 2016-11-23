@@ -50,21 +50,69 @@ Template.pages.events({
   },
   "submit form#edit-page": function (event) {
     event.preventDefault();
+    const spaceTest = /\w/gi;
 
     const pageTitle = document.querySelector("#pageTitle").value;
     const pageName = document.querySelector("#pageName").value;
     const pageContent = document.querySelector("#pageContent").value;
 
-    Meteor.call("pages/savePage", pageName, pageTitle, pageContent);
+    if (spaceTest.test(pageTitle) && spaceTest.test(pageName) && spaceTest.test(pageContent)) {
+      Meteor.call("pages/savePage", pageName, pageTitle, pageContent);
+
+      Alerts.alert({
+        title: "Page edit",
+        text: "The page has been successfully update",
+        showCancelButton: false,
+        confirmButtonText: "Close"
+      });
+
+      Template.instance().state.set("create", false);
+      Template.instance().state.set("edit", false);
+    } else {
+      Alerts.alert({
+        title: "Page creation",
+        text: "Please fill all the fields",
+        showCancelButton: false,
+        confirmButtonText: "Close"
+      });
+    }
   },
   "submit form#create-page": function (event) {
     event.preventDefault();
+    const templateInstance = Template.instance();
+    const spaceTest = /\w/gi;
 
     const pageTitle = document.querySelector("#pageTitle").value;
     const pageName = document.querySelector("#pageName").value;
     const pageContent = document.querySelector("#pageContent").value;
 
-    Meteor.call("pages/createPage", pageName, pageTitle, pageContent);
+    if (spaceTest.test(pageTitle) && spaceTest.test(pageName) && spaceTest.test(pageContent)) {
+      Meteor.call("pages/createPage", pageName, pageTitle, pageContent, (err, result) => {
+        let alertText = "";
+
+        if (result) {
+          alertText = "You have successfully created a page";
+          templateInstance.state.set("create", false);
+          templateInstance.state.set("edit", false);
+        } else {
+          alertText = "A page with that name exists, please try again";
+        }
+
+        Alerts.alert({
+          title: "Page creation",
+          text: alertText,
+          showCancelButton: false,
+          confirmButtonText: "Close"
+        });
+      });
+    } else {
+      Alerts.alert({
+        title: "Page creation",
+        text: "Please fill all the fields",
+        showCancelButton: false,
+        confirmButtonText: "Close"
+      });
+    }
   }
 });
 

@@ -18,6 +18,15 @@ import { AlertContainer } from "/imports/plugins/core/ui/client/containers";
 import { PublishContainer } from "/imports/plugins/core/revisions";
 
 class ProductDetail extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      digital: false,
+      cartQuantity: "number"
+    };
+  }
+
   get tags() {
     return this.props.tags || [];
   }
@@ -30,8 +39,12 @@ class ProductDetail extends Component {
     return this.props.editable;
   }
 
-  logging() {
-    console.log("Switched");
+  changePro() {
+    if (this.state.digital) {
+      this.setState("cartQuantity", "hidden");
+    } else {
+      this.setState("cartQuantity", "number");
+    }
   }
 
   switchDigital() {
@@ -40,7 +53,7 @@ class ProductDetail extends Component {
         <div className="switch-middle">
           <b className="switch-text">Physical Product</b>
           <label className="switch">
-            <input type="checkbox" onChange={this.logging()}/>
+            <input id="digital" type="checkbox" onChange={this.changePro}/>
             <div className="slider round"/>
           </label>
           <b className="switch-text"> Digital Product</b>
@@ -51,15 +64,12 @@ class ProductDetail extends Component {
   }
 
   chooseButton() {
-    const temp = false;
-    if (temp !== false) {
-      console.log("Temp checker");
-    }
     return (
       <div>
         <AlertContainer placement="productDetail" />
         <AddToCartButton
           cartQuantity={this.props.cartQuantity}
+          inputType={this.state.cartQuantity}
           onCartQuantityChange={this.props.onCartQuantityChange}
           onClick={this.props.onAddToCart}
         />

@@ -30,6 +30,43 @@ class ProductDetail extends Component {
     return this.props.editable;
   }
 
+  logging() {
+    console.log("Switched");
+  }
+
+  switchDigital() {
+    if (this.props.hasAdminPermission) {
+      return (
+        <div className="switch-middle">
+          <b className="switch-text">Physical Product</b>
+          <label className="switch">
+            <input type="checkbox" onChange={this.logging()}/>
+            <div className="slider round"/>
+          </label>
+          <b className="switch-text"> Digital Product</b>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  chooseButton() {
+    const temp = false;
+    if (temp !== false) {
+      console.log("Temp checker");
+    }
+    return (
+      <div>
+        <AlertContainer placement="productDetail" />
+        <AddToCartButton
+          cartQuantity={this.props.cartQuantity}
+          onCartQuantityChange={this.props.onCartQuantityChange}
+          onClick={this.props.onAddToCart}
+        />
+      </div>
+    );
+  }
+
   handleVisibilityChange = (event, isProductVisible) => {
     if (this.props.onProductFieldChange) {
       this.props.onProductFieldChange(this.product._id, "isVisible", isProductVisible);
@@ -81,6 +118,8 @@ class ProductDetail extends Component {
 
         <div className="container-main container-fluid pdp-container" itemScope itemType="http://schema.org/Product">
           <AlertContainer placement="productManagement" />
+
+          {this.switchDigital()}
 
           <header className="pdp header">
             <ProductField
@@ -168,14 +207,7 @@ class ProductDetail extends Component {
                 {this.props.topVariantComponent}
               </div>
               <hr />
-              <div>
-                <AlertContainer placement="productDetail" />
-                <AddToCartButton
-                  cartQuantity={this.props.cartQuantity}
-                  onCartQuantityChange={this.props.onCartQuantityChange}
-                  onClick={this.props.onAddToCart}
-                />
-              </div>
+              {this.chooseButton()}
             </div>
           </div>
         </div>

@@ -22,14 +22,6 @@ class Dropdown extends Component {
     }
   }
 
-  canLoadMore(){
-    if(this.props.list.length > 1) {
-      return ( <div className="dropdown-footer text-center">
-        <a href="#">View All</a>
-      </div>);
-    }
-  }
-
   markAsRead(notificationId){
     Meteor.call('markAsRead', notificationId);
   }
@@ -41,7 +33,6 @@ class Dropdown extends Component {
   render(){
     const { label, list} = this.props;
     let noNotify = this.noNotification();
-    let canLoadMore = this.canLoadMore();
 
     return (<div>
       <ul className="dropdown-notify notifications">
@@ -65,7 +56,6 @@ class Dropdown extends Component {
         </li>);
       })}
     </ul>
-      {canLoadMore}
     </div>);
   }
 

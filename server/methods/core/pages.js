@@ -3,6 +3,8 @@ import { check } from "meteor/check";
 import { Pages } from "/lib/collections";
 import { Logger } from "/server/api";
 
+Pages.allow({});
+
 Meteor.methods({
   /**
    * pages/savePage
@@ -21,13 +23,12 @@ Meteor.methods({
 
     const pageId = Pages.findOne({pageName: name})._id;
 
-    Pages.update(pageId, {
-      $set: {
-        pageTitle: title,
-        pageName: name,
-        pageContent: content,
-        isVisible: true
-      }
+    Pages.remove(pageId);
+    Pages.rawCollection().insert({
+      pageTitle: title,
+      pageName: name,
+      pageContent: content,
+      isVisible: true
     });
 
     Logger.info("Page updated");
@@ -43,7 +44,7 @@ Meteor.methods({
       Logger.info("Page already exists");
       return false;
     } else {
-      Pages.insert({
+      Pages.rawCollection().insert({
         pageTitle: title,
         pageName: name,
         pageContent: content,

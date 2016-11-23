@@ -128,7 +128,7 @@ class Button extends Component {
     const {
       // Destructure these vars as they aren't valid as attributes on the HTML element button
       iconAfter, label, active, className, status, i18nKeyTitle, i18nKeyLabel, i18nKeyTooltip, // eslint-disable-line no-unused-vars
-      tooltip, icon, toggle, onIcon, primary, toggleOn, eventAction, // eslint-disable-line no-unused-vars
+      tooltip,badge, icon, toggle, onIcon, primary, toggleOn, eventAction, // eslint-disable-line no-unused-vars
       toggleOnLabel, i18nKeyToggleOnLabel, tagName, onClick, // eslint-disable-line no-unused-vars
 
       // Get the rest of the properties and put them in attrs
@@ -169,6 +169,13 @@ class Button extends Component {
       });
     }
 
+    if(badge) {
+      return React.createElement(tagName, buttonProps,
+        <span>
+       {buttonChildren} <span className="badge badge-danger notify-badge">{badge}</span>
+       </span>
+      );
+    };
     // Button with tooltip gets some special treatment
     if (tooltip) {
       return React.createElement(tagName, buttonProps,
@@ -208,7 +215,8 @@ Button.propTypes = {
   toggleOn: PropTypes.bool,
   toggleOnLabel: PropTypes.string,
   tooltip: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.node]),
-  value: PropTypes.any
+  value: PropTypes.any,
+  badge: PropTypes.string
 };
 
 Button.defaultProps = {

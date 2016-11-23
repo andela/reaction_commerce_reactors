@@ -262,17 +262,16 @@ Meteor.methods({
     // create in site notification
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    Meteor.call("createNotification", order);
 
-    let notifyUser = false;
-    const roleObj = Object.keys(Meteor.user().roles);
-    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
-      notifyUser = true;
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your order has been shipped.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
     }
-    const notify = {};
-    notify.title = "Your order has been shipped";
-    notify.message = "Order detail here";
-    console.log(notify);
-    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
     return {
       workflowResult: workflowResult,
@@ -346,16 +345,16 @@ Meteor.methods({
     // create in site notification
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    Meteor.call("createNotification", order);
 
-    let notifyUser = false;
-    const roleObj = Object.keys(Meteor.user().roles);
-    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
-      notifyUser = true;
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your order has been delivered.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
     }
-    const notify = {};
-    notify.title = "Your order has been delivered";
-    notify.message = "Order detail here";
-    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
     const itemIds = shipment.items.map((item) => {
       return item._id;
@@ -619,15 +618,17 @@ Meteor.methods({
     }
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    Meteor.call("createNotification", order);
 
-    let notifyUser = false;
-    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
-      notifyUser = true;
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your order has been completed.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
     }
-    const notify = {};
-    notify.title = "Your order has been completed.";
-    notify.message = "Order detail here";
-    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
     // return this.orderCompleted(order);
   },
 
@@ -946,16 +947,15 @@ Meteor.methods({
             }
             const shop = Shops.findOne(order.shopId);
             order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-
-            let notifyUser = false;
-            const roleObj = Object.keys(Meteor.user().roles);
-            if (Meteor.user().roles[roleObj[0]].includes("admin")) {
-              notifyUser = true;
+            Meteor.call("createNotification", order);
+            const phone = `234${order.billing[0].address.phone.substr(1)}`;
+            const orderAmount = order.billing[0].invoice.total ? `\nAmount: ${order.billing[0].invoice.total} dollars.` : "";
+            const OrderMessage = `Payment for your order was successful.${orderAmount}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+            if (order.billing[0].address.phone && phone) {
+              Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+            } else {
+              Logger.error("Phone number was not found. SMS not sent.");
             }
-            const notify = {};
-            notify.title = "Your payment was successful.";
-            notify.message = "Order detail here";
-            Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
           } else {
             if (result && result.error) {
               Logger.fatal("Failed to capture transaction.", order, paymentMethod.transactionId, result.error);
@@ -1112,16 +1112,16 @@ Meteor.methods({
     order.status = "cancelled";
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    Meteor.call("createNotification", order);
 
-    let notifyUser = false;
-    const roleObj = Object.keys(Meteor.user().roles);
-    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
-      notifyUser = true;
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your order has been cancelled.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
     }
-    const notify = {};
-    notify.title = "Your order has been cancelled";
-    notify.message = "Order detail here";
-    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
     // change the shipping status to canceled
     Meteor.call("orders/shipmentCanceled", order, shipment);
@@ -1156,16 +1156,16 @@ Meteor.methods({
     order.status = "cancelled";
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    Meteor.call("createNotification", order);
 
-    let notifyUser = false;
-    const roleObj = Object.keys(Meteor.user().roles);
-    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
-      notifyUser = true;
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your request to cancel your order has been received.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
     }
-    const notify = {};
-    notify.title = "An order has been cancelled";
-    notify.message = "Order detail here";
-    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
     return null;
   }

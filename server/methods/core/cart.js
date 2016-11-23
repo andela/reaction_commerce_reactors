@@ -654,6 +654,14 @@ Meteor.methods({
       notify.message = "Order detail here";
       Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
 
+      const phone = `234${order.billing[0].address.phone.substr(1)}`;
+      const newOrderMessage = `Your order has been received.\nOrderId: ${orderId}.\nDate: ${order.createdAt}`;
+      if (order.billing[0].address.phone && phone) {
+        Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, newOrderMessage);
+      } else {
+        Logger.error("Phone number was not found. SMS not sent.");
+      }
+
       // order success
       return orderId;
     }

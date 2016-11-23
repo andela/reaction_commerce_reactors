@@ -1,7 +1,7 @@
 import { FlatButton } from "/imports/plugins/core/ui/client/components";
 import { Reaction } from "/client/api";
-import { Tags, Notifications} from "/lib/collections";
-import {Meteor} from "meteor/meteor";
+import { Tags, Notifications } from "/lib/collections";
+import { Meteor } from "meteor/meteor";
 import { Dropdown } from "/imports/plugins/included/notifications/client/components";
 
 const uid = Meteor.userId();
@@ -38,24 +38,18 @@ Template.CoreNavigationBar.helpers({
       component: FlatButton,
       icon: "fa fa-search",
       kind: "flat"
-      // onClick() {
-      //   Blaze.renderWithData(Template.searchModal, {
-      //   }, $("body").get(0));
-      //   $("body").css("overflow-y", "hidden");
-      //   $("#search-input").focus();
-      // }
     };
   },
 
-  notificationButton(){
-    const count = Notifications.find({read:false}).fetch().length;
-    const badge =  (count) ? count + '' : '';
+  notificationButton() {
+    const count = Notifications.find({ read: false }).fetch().length;
+    const badge = (count) ? count + "" : "";
     return {
       component: FlatButton,
       icon: "fa fa-bell",
       kind: "flat",
       badge: badge
-    }
+    };
   },
 
   onMenuButtonClick() {
@@ -74,10 +68,10 @@ Template.CoreNavigationBar.helpers({
     tags = Tags.find({
       isTopLevel: true
     }, {
-      sort: {
-        position: 1
-      }
-    }).fetch();
+        sort: {
+          position: 1
+        }
+      }).fetch();
 
     return {
       name: "coreHeaderNavigation",
@@ -92,10 +86,10 @@ Template.CoreNavigationBar.helpers({
   },
 
   notificationDropdown() {
-    const list = Notifications.find({},{sort:{time: -1}}).fetch();
+    const list = Notifications.find({}, { sort: { time: -1 } }).fetch();
     return {
       component: Dropdown,
-      list:list
-    }
+      list: list
+    };
   }
 });

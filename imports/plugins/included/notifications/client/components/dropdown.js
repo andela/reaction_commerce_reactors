@@ -1,4 +1,4 @@
-import {Meteor} from "meteor/meteor";
+import { Meteor } from "meteor/meteor";
 import React, { Component, PropTypes } from "react";
 import moment from "moment";
 
@@ -11,38 +11,38 @@ class Dropdown extends Component {
   }
 
   noNotification() {
-   if(this.props.list.length < 1) {
-    return (<li className="notification">
-      <div className="media">
-        <div className="media-body ">
-          <center className="notification-title">No notification</center>
+    if (this.props.list.length < 1) {
+      return (<li className="notification">
+        <div className="media">
+          <div className="media-body ">
+            <center className="notification-title">No notification</center>
+          </div>
         </div>
-      </div>
-    </li>);
+      </li>);
     }
   }
 
-  markAsRead(notificationId){
+  markAsRead(notificationId) {
     Meteor.call('markAsRead', notificationId);
   }
 
-  deleteNotification(notificationId){
+  deleteNotification(notificationId) {
     Meteor.call('deleteNotification', notificationId);
   }
 
-  render(){
+  render() {
     const { label, list} = this.props;
     let noNotify = this.noNotification();
 
     return (<div>
       <ul className="dropdown-notify notifications">
-      {noNotify}
-      {list.map((notify) => {
-        return (<li className="notification" data="{notify._id}" onClick={this.markAsRead.bind(this, notify._id)}>
-          <div className="dismiss-notification" onClick={this.deleteNotification.bind(this, notify._id)}>
-            <i className="fa  fa-close"></i></div>
-          <a href={notify.url}>
-            <div className="media">
+        {noNotify}
+        {list.map((notify) => {
+          return (<li className="notification" data="{notify._id}" onClick={this.markAsRead.bind(this, notify._id)} key={list.indexOf(notify)} >
+            <div className="dismiss-notification" onClick={this.deleteNotification.bind(this, notify._id)}>
+              <i className="fa  fa-close"></i></div>
+            <a href={notify.url}>
+              <div className="media">
                 <div className="media-body">
                   <strong className="notification-title">{notify.title}</strong>
 
@@ -50,12 +50,12 @@ class Dropdown extends Component {
                     <small className="timestamp">{moment(notify.time).fromNow()}</small>
                   </div>
                 </div>
-            </div>
-          </a>
+              </div>
+            </a>
 
-        </li>);
-      })}
-    </ul>
+          </li>);
+        })}
+      </ul>
     </div>);
   }
 

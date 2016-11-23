@@ -641,8 +641,6 @@ Meteor.methods({
 
       // create in site notification
       order.status = "new";
-      const shop = Collections.Shops.findOne(order.shopId);
-      order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
 
       let notifyUser = false;
       const roleObj = Object.keys(Meteor.user().roles);
@@ -650,12 +648,15 @@ Meteor.methods({
         notifyUser = true;
       }
       const notify = {};
-      notify.title = "A new order has been created";
-      notify.message = "Order detail here";
-      Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
-
+      const shop = Collections.Shops.findOne(order.shopId);
       const phone = `234${order.billing[0].address.phone.substr(1)}`;
       const newOrderMessage = `Your order has been received.\nOrderId: ${orderId}.\nDate: ${order.createdAt}`;
+
+      notify.title = "A new order has been created";
+      notify.message = "Order detail here";
+      order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+      Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
       if (order.billing[0].address.phone && phone) {
         Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, newOrderMessage);
       } else {

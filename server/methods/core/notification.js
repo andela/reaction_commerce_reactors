@@ -1,6 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
-import { Notifications, Accounts } from "/lib/collections";
+import { Notifications } from "/lib/collections";
 
 Meteor.methods({
   "createNotification": function (title, message, userId, url, notifyUser) {
@@ -33,6 +33,6 @@ Meteor.methods({
 
   "deleteNotification": function (notifyId) {
     check(notifyId, String);
-    Notifications.remove({_id:notifyId});
+    Notifications.remove({ _id: notifyId});
   }
 });

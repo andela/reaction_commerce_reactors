@@ -82,13 +82,13 @@ Meteor.methods({
     check(paymentMethod, Object);
 
     const userWallet = Wallet.findOne({ userId: Meteor.userId() });
-    const newAmount = userWallet.amount + paymentMethod.amount;
+    const newAmount = userWallet.amount + (paymentMethod.amount / 100);
     const transaction = {
       _id: paymentMethod.transactionId,
-      amount: paymentMethod.amount,
+      amount: paymentMethod.amount / 100,
       date: new Date(),
       transactiontype: "Credit",
-      description: paymentMethod.amount + " credit from Wallet top up by" + paymentMethod.method
+      description: paymentMethod.amount / 100 + " credit from Wallet top up by " + paymentMethod.method
     };
 
     Meteor.call("wallet/updateOnPayment", newAmount, transaction);

@@ -1,7 +1,7 @@
 /* eslint camelcase: 0 */
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
-import { Cart} from "/lib/collections";
+import { Cart, Shops} from "/lib/collections";
 import { Wallet } from "/lib/collections";
 import Paystack from "/imports/plugins/included/paystack/lib/api";
 
@@ -37,17 +37,8 @@ Template.walletCheckout.helpers({
     return false;
   },
 
-  getPublicKey: () => {
-    // return Paystack.accountOptions().apiPublicKey;
-    // console.log(Paystack.accountOptions().)
-    return "pk_test_5bc8b75198effa35216aed4bde2fa22369032618";
-  },
-
-  getTransactionId: () => {
-    return Random.id();
-  },
-
   paymentSuccessful: (transactionDetails) => {
+    console.log('inkhjkh');
     document.getElementById("fundWallet").style.display = "none";
     const transactionRef = transactionDetails.reference;
     // const secretKey = Paystack.accountOptions().apiSecretKey;
@@ -85,7 +76,7 @@ Template.walletCheckout.helpers({
           paymentMethod.transactions.push({
             currency: "NGN",
             transactionId: data.transactionReference,
-            amount: paymentMethod.amount
+            amount: paymentMethod.amount / 100
           });
           Meteor.call("wallet/fundWallet", paymentMethod);
         }
@@ -124,7 +115,7 @@ Template.walletCheckout.events({
         amount: cartTotal,
         date: new Date(),
         transactiontype: "Debit",
-        description: cartTotal + "debit for transaction, cartId: " + cartId,
+        description: cartTotal + " debit for transaction, cartId: " + cartId,
         items: Cart.findOne().items
       };
 
@@ -151,4 +142,15 @@ Template.walletCheckout.events({
     }
   }
 
+});
+
+Template.fundWallet.helpers({
+  getTransactionId: () => {
+    return Random.id();
+  },
+  getPublicKey: () => {
+    // return Paystack.accountOptions().apiPublicKey;
+    // console.log(Paystack.accountOptions().)
+    return "pk_test_5bc8b75198effa35216aed4bde2fa22369032618";
+  }
 });

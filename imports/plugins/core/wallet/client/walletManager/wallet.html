@@ -1,0 +1,75 @@
+<template name="walletManager">
+  <style>
+    input {
+      height: 40px;
+      border: none;
+      padding: 10px;
+      border-radius: 7px;
+    },
+    .nav-dashboard {
+      min-height: 0px;
+    }
+  </style>
+  <div  style="margin:25px">
+    <div>
+      <h2>My Wallet</h2>
+      <div style="margin:20px">
+        <span>Wallet balance is: NGN {{wallet.amount}}</span>
+      </div>
+    </div>
+
+
+    <div class="col-xs-12 col-sm-12" style="z-index:1">
+      <div class="col-xs-3 col-sm-3">
+        <div class="col-sm-6">
+          <button class="btn btn-sm btn-success" id="top-up-wallet" >
+            <span data-i18n="Top up wallet">Top up wallet</span>
+            <i class="fa fa-spinner fa-spin hidden"></i>
+          </button>
+        </div>
+        <div class="col-sm-6">
+          <div id="show-history" style="display:none">
+            <button class="btn btn-sm btn-default" id="history-button">
+              <span data-i18n="Top up wallet">View History</span>
+              <i class="fa fa-spinner fa-spin hidden"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-6" style="z-index:1; display:block" id="history-bar">
+      <hr/>
+      <h3>Wallet History</h3>
+      {{#unless wallet.transactionHistory}}
+        No Record
+      {{/unless}}
+      {{#each wallet.transactionHistory}}
+        {{> transactionHistory}}
+      {{/each}}
+    </div>
+
+    <div class="col-sm-6 col-lg-6" id="fundWallet" style="display:none">
+      <hr/>
+      <div class="col-sm-6 col-lg-6" style="z-index:1;margin:auto;width:300px;border-left:1px solid #eee">
+        {{> fundWallet}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="transactionHistory">
+  <div style="margin:20px">
+    NGN {{description}} <br/>
+    Amount: NGN {{amount}}<br/>
+    Type: {{transactiontype}}<br/>
+    {{#if items}}
+      For: <br/>
+      {{#each items}}
+        Product: {{title}}   Quantity: {{quantity}} <br/>
+      {{/each}}
+    {{/if}}
+    Date: {{date}}
+    <hr>
+  </div>
+</template>

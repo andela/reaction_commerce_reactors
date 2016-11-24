@@ -18,14 +18,41 @@ Reaction.registerPackage({
       description: "Wallet",
       icon: "fa fa-ticket",
       priority: 3,
-      container: "paymentMethod",
-      workflow: "coreDashboardWorkflow"
+      container: "paymentMethod"
+    },
+
+    {
+      route: "/wallet",
+      name: "wallet",
+      workflow: "coreDashboardWorkflow",
+      description: "Wallet",
+      label: "Wallet",
+      template: "walletManager",
+      icon: "fa fa-ticket",
+      priority: 0,
+      permissions: [{
+        label: "Wallet",
+        permission: "wallet"
+      }]
     },
 
     // Payment form for checkout
     {
       template: "walletCheckout",
       provides: "paymentMethod"
-    }
-  ]
+    }]
+  //
+  // layout: [{
+  //   layout: "walletLayout",
+  //   workflow: "coreCartWorkflow",
+  //   collection: "Wallet",
+  //   theme: "default",
+  //   enabled: true,
+  //   structure: {
+  //     template: "walletManager",
+  //     layoutHeader: "Wallet",
+  //     layoutFooter: ""
+  //   }
+  // }]
+
 });

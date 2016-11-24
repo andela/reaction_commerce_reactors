@@ -1,10 +1,9 @@
 <template name="walletCheckout">
-  <script src="https://js.paystack.co/v1/inline.js"></script>
 
   <div class="row" style="margin:20px">
 
     <div class="col-sm-12 col-lg-12" style="margin-bottom:15px">
-      <div class="col-sm-12 col-lg-12">Current Wallet balance is {{ wallet.amount }}</div>
+      <div class="col-sm-12 col-lg-12">Current Wallet balance is {{ wallet.amount }} NGN</div>
       {{#if isEmpty wallet.amount }}
          <div class="col-sm-12 col-lg-12" style="color:red"> You cannot pay with wallet. Wallet is empty </div>
       {{/if}}
@@ -31,37 +30,45 @@
 <hr/>
 
   <div class="row" id="fundWallet" style="display:none;margin:15px">
+    {{> fundWallet}}
+  </div>
+</template>
 
-    <span  data-i18n="Top up">Fund wallet with Paystack</span>
 
-    <div class="col-sm-12 col-lg-12" style="margin:15px 10px 0 15px">
-      <input type="email" id="walletEmailAddress" placeholder="Email Address" required aria-describedby="email-desc"/>
-    </div>
 
-    <div class="col-sm-12 col-lg-12" style="margin:15px">
-      <div class="col-sm-7" >
-        <input type="text" placeholder="Phone Number" id="walletMobileNumber" />
-      </div>
+<template name="fundWallet">
+  <script src="https://js.paystack.co/v1/inline.js"></script>
 
-      <div class="col-sm-5" >
-        <input type="text" placeholder="Amount" id="walletAmount"/>
-      </div>
-    </div>
+  <h3><span  data-i18n="Top up">Fund wallet with Paystack</span></h3>
 
-    <button type="button" class="btn btn-sm btn-success btn-block" onclick="fundWallet()"> Fund Wallet
-    </button>
+  <div class="col-sm-12 col-lg-12" style="margin:15px 10px 0 15px">
+    <input type="email" id="walletEmailAddress" placeholder="Email Address" required aria-describedby="email-desc"/>
   </div>
 
+  <div class="col-sm-12 col-lg-12" style="margin:15px">
+    <div class="col-sm-7" style="margin:0 10px 0 0">
+      <input type="text" placeholder="Phone Number" id="walletMobileNumber" />
+    </div>
+
+    <div class="col-sm-5" style="margin:15px 0 0 0">
+      <input type="text" placeholder="Amount" id="walletAmount"/>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-sm btn-success btn-block" onclick="fundWallet()"> Fund Wallet
+  </button>
   <script>
     function fundWallet() {
       const email = document.getElementById("walletEmailAddress").value;
       const phoneNumber = document.getElementById("walletMobileNumber").value;
       const amount = parseFloat(document.getElementById("walletAmount").value);
 
+      amount_in_kobo = amount * 100;
+
       const handler = PaystackPop.setup({
         key: "{{ getPublicKey }}",
         email: email,
-        amount: amount,
+        amount: amount_in_kobo,
         ref: "{{ getTransactionId }}",
         metadata: {
           custom_fields: [

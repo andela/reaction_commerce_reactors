@@ -146,7 +146,7 @@ export default function () {
 
       // create Wallet on sign up for all users except admin
       Meteor.call("wallet/createWallet", user._id, function () {
-        Logger.info(` bla bla: ${ account.userId } `);
+        Logger.info(` Created Wallet for : ${ account.userId } `);
       });
 
       // assign default user roles

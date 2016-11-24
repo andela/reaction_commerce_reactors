@@ -1,6 +1,6 @@
 import {Template} from "meteor/templating";
 import {Reaction} from "/client/api";
-import {Packages} from "/lib/collections";
+import {Packages, PaystackSettings} from "/lib/collections";
 import {PaystackPackageConfig} from "../../lib/collections/schemas";
 
 import "./paystack.html";
@@ -36,13 +36,22 @@ Template.paystack.events({
 
 AutoForm.hooks({
   "paystack-update-form": {
+    before: {
+      update: function (doc) {
+        const id = Meteor.userId();
+        const publicKey = doc.$set["settings.apiPublicKey"];
+        const secretKey = doc.$set["settings.apiSecretKey"];
+        Meteor.call("settings/paystack", id, publicKey, secretKey);
+        return doc;
+      }
+    },
     onSuccess: function () {
       Alerts.removeSeen();
-      return Alerts.add("Paystack settings saved.", "success");
+      return Alerts.toast("Paystack settings saved.", "success");
     },
     onError: function (operation, error) {
       Alerts.removeSeen();
-      return Alerts.add("Paystack settings update failed. " + error, "danger");
+      return Alerts.toast("Paystack settings update failed. " + error, "danger");
     }
   }
 });

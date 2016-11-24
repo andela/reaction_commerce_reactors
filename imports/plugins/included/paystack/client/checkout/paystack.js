@@ -2,9 +2,7 @@
 import {Meteor} from "meteor/meteor";
 import {Random} from "meteor/random";
 import {Template} from "meteor/templating";
-import {Reaction} from "/client/api";
 import {Cart, Shops, Accounts} from "/lib/collections";
-import {Paystack} from "../../lib/api";
 import {PaystackPayment} from "../../lib/collections/schemas";
 import {HTTP} from "meteor/http";
 
@@ -27,6 +25,11 @@ function handlePaystackSubmitError(error) {
   }
 }
 
+Template.paystackPaymentForm.onCreated(function () {
+  Meteor.call("settings/getPaystack", (error, data) => {
+    Window.KEYS = data;
+  });
+});
 
 Template.paystackPaymentForm.helpers({
   PaystackPayment() {
@@ -34,11 +37,6 @@ Template.paystackPaymentForm.helpers({
   },
   getTransactionId() {
     return Random.id();
-  },
-  getPublicKey() {
-    console.log(Paystack.accountOptions().apiPublicKey);
-    return Paystack.accountOptions().apiPublicKey;
-    // return "pk_test_867ed4f0ca26373dc638cc61c2ebbd6b340e4ae3";
   },
   getEmailAddress() {
     const userId = Meteor.userId();
@@ -72,8 +70,7 @@ Template.paystackPaymentForm.helpers({
   },
   paymentSuccessful(transactionDetails) {
     const transactionRef = transactionDetails.reference;
-    const secretKey = Paystack.accountOptions().apiSecretKey;
-    // const secretKey = "sk_test_fb0ebf87ce4491621dbcee625c09143254749051";
+    const secretKey = Window.KEYS[0].apiSecretKey;
     //
     HTTP.call("GET", `https://api.paystack.co/transaction/verify/${transactionRef}`, {headers: {Authorization: `Bearer ${secretKey}`}}, function (error, response) {
       if (error) {

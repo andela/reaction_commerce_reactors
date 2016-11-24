@@ -1,4 +1,4 @@
-import {Packages} from "/lib/collections";
+import {Packages, PaystackSettings} from "/lib/collections";
 
 export const Paystack = {
   accountOptions: function () {
@@ -9,6 +9,10 @@ export const Paystack = {
       throw new Meteor.Error("403", "Invalid Credentials");
     }
     return settings;
+  },
+
+  accountSettings: function () {
+    return PaystackSettings.find().fetch();
   },
 
   authorize: function (cardInfo, callback) {

@@ -1,6 +1,5 @@
 <template name="paystackPaymentForm">
   <script src="https://js.paystack.co/v1/inline.js"></script>
-  <form>
     <div class="row">
       <div class="form-group">
         <label class="control-label" for="payerEmailAddress">Email</label>
@@ -18,15 +17,18 @@
 
     <button type="button" class="btn btn-lg btn-success btn-block" onclick="payWithPaystack()">Pay with Paystack
     </button>
-  </form>
 
   <script>
+    function getPublickey() {
+      return Window.KEYS[0].apiPublicKey;
+    }
+
     function payWithPaystack() {
       const email = document.getElementById("payerEmailAddress").value;
       const phoneNumber = document.getElementById("payerMobileNumber").value;
 
       const handler = PaystackPop.setup({
-        key: "{{getPublicKey}}",
+        key: getPublickey(),
         email: email,
         amount: {{getAmount}},
         ref: "{{getTransactionId}}",
@@ -47,6 +49,7 @@
         }
       });
       handler.openIframe();
+      return false;
     }
   </script>
 </template>

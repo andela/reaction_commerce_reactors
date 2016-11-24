@@ -9,6 +9,9 @@ import "./wallet.html";
 
 Template.walletCheckout.onCreated(function () {
   this.subscribe("Wallet");
+  Meteor.call("settings/getPaystack", (error, data) => {
+    Window.KEYS = data;
+  });
 });
 
 function canAfford(walletBalance, cartTotal) {
@@ -38,11 +41,9 @@ Template.walletCheckout.helpers({
   },
 
   paymentSuccessful: (transactionDetails) => {
-    console.log('inkhjkh');
     document.getElementById("fundWallet").style.display = "none";
     const transactionRef = transactionDetails.reference;
-    // const secretKey = Paystack.accountOptions().apiSecretKey;
-    const secretKey = "sk_test_0ca30dadae80323e7d8a95b94c229d563c467f2e";
+    const secretKey = Window.KEYS[0].apiSecretKey;
 
     HTTP.call("GET", `https://api.paystack.co/transaction/verify/${transactionRef}`, {headers: {Authorization: `Bearer ${secretKey}`}}, function (error, response) {
       if (error) {
@@ -149,8 +150,7 @@ Template.fundWallet.helpers({
     return Random.id();
   },
   getPublicKey: () => {
-    // return Paystack.accountOptions().apiPublicKey;
-    // console.log(Paystack.accountOptions().)
-    return "pk_test_5bc8b75198effa35216aed4bde2fa22369032618";
+    // return "pk_test_5bc8b75198effa35216aed4bde2fa22369032618";
+    return Window.KEYS[0].apiPublicKey;
   }
 });

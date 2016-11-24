@@ -9,6 +9,9 @@ import "./wallet.html";
 
 Template.walletManager.onCreated(function () {
   this.subscribe("Wallet");
+  Meteor.call("settings/getPaystack", (error, data) => {
+    Window.KEYS = data;
+  });
 });
 
 Template.walletManager.helpers({

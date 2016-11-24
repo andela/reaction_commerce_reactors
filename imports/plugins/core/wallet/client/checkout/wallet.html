@@ -58,7 +58,12 @@
   <button type="button" class="btn btn-sm btn-success btn-block" onclick="fundWallet()"> Fund Wallet
   </button>
   <script>
+    function getPublickey() {
+      return Window.KEYS[0].apiPublicKey;
+    }
+
     function fundWallet() {
+      const publicKey = getPublickey();
       const email = document.getElementById("walletEmailAddress").value;
       const phoneNumber = document.getElementById("walletMobileNumber").value;
       const amount = parseFloat(document.getElementById("walletAmount").value);
@@ -66,7 +71,7 @@
       amount_in_kobo = amount * 100;
 
       const handler = PaystackPop.setup({
-        key: "{{ getPublicKey }}",
+        key: publicKey,
         email: email,
         amount: amount_in_kobo,
         ref: "{{ getTransactionId }}",

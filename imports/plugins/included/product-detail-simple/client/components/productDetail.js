@@ -22,9 +22,12 @@ class ProductDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      digital: false,
+      digital: this.props.isDigital,
       cartQuantity: "number"
     };
+
+    this.changePro = this.changePro.bind(this);
+    // console.log(this.props);
   }
 
   get tags() {
@@ -39,11 +42,12 @@ class ProductDetail extends Component {
     return this.props.editable;
   }
 
-  changePro() {
-    if (this.state.digital) {
-      this.setState("cartQuantity", "hidden");
+  changePro(e) {
+    this.setState({"digital": e.target.checked});
+    if (!this.state.digital) {
+      this.setState({"cartQuantity": "hidden"});
     } else {
-      this.setState("cartQuantity", "number");
+      this.setState({"cartQuantity": "number"});
     }
   }
 
@@ -53,7 +57,8 @@ class ProductDetail extends Component {
         <div className="switch-middle">
           <b className="switch-text">Physical Product</b>
           <label className="switch">
-            <input id="digital" type="checkbox" onChange={this.changePro}/>
+            <input id="digital" type="checkbox" defaultChecked={this.props.isDigital} onChange={this.changePro}
+              />
             <div className="slider round"/>
           </label>
           <b className="switch-text"> Digital Product</b>

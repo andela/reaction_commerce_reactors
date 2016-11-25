@@ -1,0 +1,15 @@
+<template name="vendor-application">
+  {{#if hasDashboardAccess}}
+    {{> adminVendorTemplate}}
+  {{else}}
+    {{> userVendorTemplate}}
+  {{/if}}
+</template>
+
+<template name="adminVendorTemplate">
+    <h1>Approve vendor request</h1>
+</template>
+
+<template name="userVendorTemplate">
+  <h1>Appply to be a vendor</h1>
+</template>

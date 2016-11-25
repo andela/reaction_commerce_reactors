@@ -5,6 +5,16 @@ import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
 
 Template.loginDropdown.events({
+  "click #dropdown-apps-shop-apply": (event) => {
+    event.preventDefault();
+    Reaction.Router.go("/reaction/vendor");
+  },
+
+  "click #dropdown-apps-retake-tour": (event) => {
+    event.preventDefault();
+    Reaction.Router.go("/");
+    introJs().start();
+  },
 
   /**
    * Submit sign up form
@@ -65,10 +75,6 @@ Template.loginDropdown.events({
       event.preventDefault();
       const route = this.name || this.route;
       Reaction.Router.go(route);
-    } else {
-      event.preventDefault();
-      Reaction.Router.go("/");
-      introJs().start();
     }
     template.$(".dropdown-toggle").dropdown("toggle");
   }

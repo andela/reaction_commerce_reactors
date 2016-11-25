@@ -52,6 +52,10 @@
         <span class="icon-text">Retake Tour</span>
       </a>
     </li>
+    <li class="dropdown-apps-icon">
+      <i class="fa fa-user-secret"></i>
+      <span class="icon-text" data-i18n="accountsUI.signedIn">You are signed in.</span>
+    </li>
   </ul>
 </template>
 
@@ -66,10 +70,13 @@
         </span>
       </a>
     </li>
-  {{else}}
-  <li class="dropdown-apps-icon">
-    <i class="fa fa-user-secret"></i>
-    <span class="icon-text" data-i18n="accountsUI.signedIn">You are signed in.</span>
-  </li>
   {{/each}}
+  {{#unless hasDashboardAccess}}
+  <li class="dropdown-apps-icon">
+    <a href="/" id="dropdown-apps-shop-apply" title="Apply for Shop">
+      <i class="fa fa-user"></i>
+      <span class="icon-text">Apply for Shop</span>
+    </a>
+  </li>
+  {{/unless}}
 </template>

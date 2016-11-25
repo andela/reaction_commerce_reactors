@@ -24,7 +24,6 @@ Reaction.registerPackage({
     {
       route: "/wallet",
       name: "wallet",
-      workflow: "coreDashboardWorkflow",
       description: "Wallet",
       label: "Wallet",
       template: "walletManager",
@@ -41,18 +40,4 @@ Reaction.registerPackage({
       template: "walletCheckout",
       provides: "paymentMethod"
     }]
-  //
-  // layout: [{
-  //   layout: "walletLayout",
-  //   workflow: "coreCartWorkflow",
-  //   collection: "Wallet",
-  //   theme: "default",
-  //   enabled: true,
-  //   structure: {
-  //     template: "walletManager",
-  //     layoutHeader: "Wallet",
-  //     layoutFooter: ""
-  //   }
-  // }]
-
 });

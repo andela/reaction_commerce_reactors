@@ -25,11 +25,11 @@ Template.walletManager.events({
   "click #top-up-wallet": function () {
     document.getElementById("fundWallet").style.display = "block";
     document.getElementById("history-bar").style.display = "none";
-    document.getElementById("show-history").style.display = "block";
+    document.getElementById("history-button").disabled = false;
   },
   "click #history-button": function () {
     document.getElementById("fundWallet").style.display = "none";
     document.getElementById("history-bar").style.display = "block";
-    document.getElementById("show-history").style.display = "none";
+    document.getElementById("history-button").disabled = true;
   }
 });

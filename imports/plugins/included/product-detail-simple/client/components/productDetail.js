@@ -21,8 +21,9 @@ class ProductDetail extends Component {
 
   constructor(props) {
     super(props);
+    console.log(props)
     this.state = {
-      digital: this.props.isDigital,
+      digital: this.props.product.isDigital,
       cartQuantity: "number"
     };
 
@@ -49,6 +50,38 @@ class ProductDetail extends Component {
     } else {
       this.setState({"cartQuantity": "number"});
     }
+    this.props.onProductFieldChange(this.props.product._id, "isDigital", !this.state.digital);
+  }
+
+  showDigitalForm() {
+    if (this.state.digital) {
+      return (
+        <div>
+          <div className="rui separator divider labeled">
+            <hr/>
+            <span className="label">
+              <span>Digital Product Options</span>
+            </span>
+            <hr/>
+          </div>
+          <form>
+            <div className="form-group">
+              <label htmlFor="category">Category</label>
+              <select id="category" className="form-control text-center">
+                <option>Audio</option>
+                <option>Books</option>
+                <option>Software</option>
+                <option>Video</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="file-upoad">File upload</label>
+              <input type="file" className="form-control" id="file-upload"/>
+            </div>
+          </form>
+        </div>
+      );
+    }
   }
 
   switchDigital() {
@@ -57,7 +90,7 @@ class ProductDetail extends Component {
         <div className="switch-middle">
           <b className="switch-text">Physical Product</b>
           <label className="switch">
-            <input id="digital" type="checkbox" defaultChecked={this.props.isDigital} onChange={this.changePro}
+            <input id="digital" type="checkbox" defaultChecked={this.props.product.isDigital} onChange={this.changePro}
               />
             <div className="slider round"/>
           </label>
@@ -223,6 +256,8 @@ class ProductDetail extends Component {
               </div>
               <hr />
               {this.chooseButton()}
+              <hr />
+              {this.showDigitalForm()}              
             </div>
           </div>
         </div>

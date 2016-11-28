@@ -65,7 +65,12 @@ Template.paystackPaymentForm.helpers({
     const currency = Shops.findOne().currency;
     const exchangeRateToTheDollar = shop[0].currencies[currency];
     const costInDollars = costInLocalCurrency / exchangeRateToTheDollar.rate;
-    const nairaExchangeRateToTheDollar = shop[0].currencies.NGN.rate;
+    let nairaExchangeRateToTheDollar;
+    if (shop[0].currencies.NGN.rate) {
+      nairaExchangeRateToTheDollar = shop[0].currencies.NGN.rate;
+    } else {
+      nairaExchangeRateToTheDollar = 1;
+    }
     return Math.ceil(costInDollars * nairaExchangeRateToTheDollar * 100);
   },
   paymentSuccessful(transactionDetails) {

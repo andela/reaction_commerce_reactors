@@ -1,12 +1,14 @@
 import _ from "lodash";
-import React from 'react';
-import './productResults.html';
+import React from "react";
+import "./productResults.html";
 import { ProductSearch } from "/lib/collections";
-import TrackerReact from 'meteor/ultimatejs:tracker-react';
-import ListElement from './sortList.jsx';
-require('rc-slider/assets/index.css');
-const Slider = require('rc-slider');
-let priceMax, lastMin, lastMax;
+import TrackerReact from "meteor/ultimatejs:tracker-react";
+import ListElement from "./sortList.jsx";
+require("rc-slider/assets/index.css");
+const Slider = require("rc-slider");
+let priceMax;
+let lastMin = 0;
+let lastMax = 0;
 
 export default class SortnFilter extends TrackerReact(React.Component) {
   constructor(props) {
@@ -23,12 +25,12 @@ export default class SortnFilter extends TrackerReact(React.Component) {
     this.setState({ min: e[0] * (0.01 * priceMax) });
     this.setState({ max: e[1] * (0.01 * priceMax) });
 
-    if (!lastMin || lastMin !== this.state.min) {
-      $(this.min).trigger('change');
+    if (lastMin !== this.state.min) {
       lastMin = this.state.min;
-    } else {
-      $(this.max).trigger('change');
+      $(this.min).trigger("change");
+    } else if (lastMax !== this.state.max) {
       lastMax = this.state.max;
+      $(this.max).trigger("change");
     }
   }
   getProducts() {
@@ -64,25 +66,17 @@ export default class SortnFilter extends TrackerReact(React.Component) {
         </div>
         <hr />
         <h4>Filter</h4>
-        <hr />
         <h5>Brands</h5>
         <div style={{ overflowY: "scroll", maxHeight: "100px" }}>
           {this.renderVendors()}
         </div>
         <hr />
-        <div id="score" name="scoreName">
-          <h5>Ratings</h5>
-          <input value="4" name="bestSeller" type="radio" /> &#9733; &#9733; &#9733; &#9733; &#9733;<br />
-          <input value="3" name="bestSeller" type="radio" /> &#9733; &#9733; &#9733; &#9733;<br />
-          <input value="2" name="bestSeller" type="radio" /> &#9733; &#9733; &#9733;<br />
-          <input value="1" name="bestSeller" type="radio" /> &#9733; &#9733;<br />
-          <input value="0" name="bestSeller" type="radio" /> &#9733; <br />
-        </div>
-        <hr />
         <h5>Price</h5>
         <div style={{ width: 180, padding: "0px 10px" }}>
           <Slider range allowCross={false} defaultValue={[0, 0]} onChange={this.updatePrice} />
-          <div id="min" >
+          <label style={{ float: "left" }}> min</label>
+          <label style={{ float: "right" }}> max</label><br />
+          <div id="min" style={{ clear: "both"}} >
             <input ref={input => this.min = input} style={{ float: "left", width: "60px", marginLeft: "4px" }} value={this.state.min} readOnly />
           </div>
           <div id="max">

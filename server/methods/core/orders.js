@@ -632,7 +632,6 @@ Meteor.methods({
     } else {
       Logger.warn("No order email found. No notification sent.");
     }
-
     // in app notification
     const shop = Shops.findOne(order.shopId);
     order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;

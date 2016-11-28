@@ -229,6 +229,11 @@ Import.product = function (key, product, parent) {
   return this.object(Collections.Products, key, product);
 };
 
+// Ralph
+Import.page = function (key, page) {
+  return this.object(Collections.Pages, key, page);
+};
+
 /**
  * @summary Store a package in the import buffer.
  * @param {Object} pkg The package data to be updated

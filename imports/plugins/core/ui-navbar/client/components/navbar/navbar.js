@@ -1,15 +1,22 @@
+import { Meteor } from "meteor/meteor";
 import { FlatButton } from "/imports/plugins/core/ui/client/components";
 import { Reaction } from "/client/api";
-import { Tags, Notifications } from "/lib/collections";
+import { Tags, Notifications, Pages } from "/lib/collections";
 import { Meteor } from "meteor/meteor";
 import { Dropdown } from "/imports/plugins/included/notifications/client/components";
 
 const uid = Meteor.userId();
 const sub = Meteor.subscribe("notificationList", uid);
 
-
 Template.CoreNavigationBar.onCreated(function () {
   this.state = new ReactiveDict();
+  this.subscribe("Pages");
+  this.state.setDefault({
+    pages: []
+  });
+  Meteor.call("pages/getPages", (err, data) => {
+    this.state.set("pages", data);
+  });
 });
 
 /**
@@ -86,10 +93,16 @@ Template.CoreNavigationBar.helpers({
   },
 
   notificationDropdown() {
-    const list = Notifications.find({}, { sort: { time: -1 } }).fetch();
+    const list = Notifications.find({}, {sort: {time: -1}}).fetch();
     return {
       component: Dropdown,
       list: list
     };
+  },
+  showPages() {
+    return Template.instance().state.get("pages");
+  },
+  pagesAvailable() {
+    return Template.instance().state.get("pages").length > 0;
   }
 });

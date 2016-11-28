@@ -3,7 +3,7 @@ import { Reaction } from "/server/api";
 
 Reaction.registerPackage({
   label: "Vendor",
-  name: "vendor-application",
+  name: "vendorApplication",
   icon: "fa fa-ticket",
   autoEnable: true,
   settings: {
@@ -27,7 +27,7 @@ Reaction.registerPackage({
       name: "vendor",
       description: "Vendor",
       label: "Vendor",
-      template: "vendor-application",
+      template: "vendorApplication",
       icon: "fa fa-ticket",
       priority: 0,
       permissions: [{

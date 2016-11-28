@@ -1,4 +1,4 @@
-<template name="vendor-application">
+<template name="vendorApplication">
   {{#if hasDashboardAccess}}
     {{> adminVendorTemplate}}
   {{else}}
@@ -8,8 +8,27 @@
 
 <template name="adminVendorTemplate">
     <h1>Approve vendor request</h1>
+    {{#each getShopRequest }}
+      <div>
+        <label>Shop Display Name</label> {{shopName}}
+        <label>Shop Email</label> {{shopEmail}}
+        <p>Shop Description</p> {{shopDescription}}
+        <input type="button" value="Accept" class="accept" />
+        <input type="button" value="Reject" class="reject" />
+      </div>
+    {{/each}}
+    {{#unless getShopRequest}}
+      <div>There are no requests at the moment</div>
+    {{/unless}}
 </template>
 
 <template name="userVendorTemplate">
   <h1>Appply to be a vendor</h1>
+  <form class="submitRequest">
+    <input id="shopname" type="text" placeholder="Enter shop name" required/>
+    <input id="shopemail" type="text" placeholder="Enter your shop's email" required/>
+    <input id="shopaddress" type="text" placeholder="Enter your shop's address" required/>
+    <textarea id="shopdescription" required></textarea>
+    <button>Submit</button>
+  </form>
 </template>

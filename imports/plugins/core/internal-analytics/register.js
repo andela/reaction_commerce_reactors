@@ -11,5 +11,22 @@ Reaction.registerPackage({
   settings: {
     name: "Internal Analytics"
   },
-  registry: [{}]
-})
+  registry: [
+    {
+      provides: "dashboard",
+      route: "/dashboard/internal-analytics",
+      name: "internal-analytics",
+      label: "Internal Analytics",
+      description: "Provides internal analytics",
+      icon: "fa fa-bar-chart-o",
+      priority: 1,
+      container: "core",
+      workflow: "coreDashboardWorkflow",
+      template: "internal-analytics"
+    },
+    {
+      template: "internalAnalytics",
+      provides: "analyticsMethod"
+    }
+  ]
+});

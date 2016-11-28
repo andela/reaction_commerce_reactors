@@ -1,3 +1,2 @@
-/**
- * Created by bolorundurowb on 11/28/16.
- */
+import "./templates/analytics.js";
+import "./templates/analytics.html";

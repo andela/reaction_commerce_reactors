@@ -46,7 +46,17 @@ Template.pages.events({
   },
   "click [data-event-action=deletePage]": function (event) {
     event.preventDefault();
-    Meteor.call("pages/deletePage", this.pageName);
+
+    Alerts.alert({
+      title: "Delete page",
+      text: "Are you sure you want to delete the page",
+      showCancelButton: true,
+      confirmButtonText: "Delete page"
+    }, (isConfirm) => {
+      if (isConfirm) {
+        Meteor.call("pages/deletePage", this.pageName);
+      }
+    });
   },
   "submit form#edit-page": function (event) {
     event.preventDefault();

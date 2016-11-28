@@ -1,4 +1,3 @@
-import { Meteor } from "meteor/meteor";
 import { FlatButton } from "/imports/plugins/core/ui/client/components";
 import { Reaction } from "/client/api";
 import { Tags, Notifications, Pages } from "/lib/collections";

@@ -59,7 +59,7 @@ Meteor.methods({
 
     const pageId = Pages.findOne({pageName: name})._id;
     Pages.remove(pageId);
-    Logger.info("Page updated");
+    Logger.info("Page deleted");
   },
   "pages/getPages": function () {
     return Pages.find().fetch();

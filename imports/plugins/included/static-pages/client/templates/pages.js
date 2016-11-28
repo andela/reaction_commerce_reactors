@@ -149,7 +149,7 @@ Template.pages.helpers({
     return "edit";
   },
   pageCreate() {
-    return "create"
+    return "create";
   }
 });
 

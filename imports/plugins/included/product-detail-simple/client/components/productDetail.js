@@ -21,14 +21,12 @@ class ProductDetail extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props)
     this.state = {
       digital: this.props.product.isDigital,
       cartQuantity: "number"
     };
 
     this.changePro = this.changePro.bind(this);
-    // console.log(this.props);
   }
 
   get tags() {

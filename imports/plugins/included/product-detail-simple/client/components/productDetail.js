@@ -23,10 +23,13 @@ class ProductDetail extends Component {
     super(props);
     this.state = {
       digital: this.props.product.isDigital,
-      cartQuantity: "number"
+      cartQuantity: "number",
+      subCategory: "",
+      value: ""
     };
 
     this.changePro = this.changePro.bind(this);
+    this.setSub = this.setSub.bind(this);
   }
 
   get tags() {
@@ -51,6 +54,21 @@ class ProductDetail extends Component {
     this.props.onProductFieldChange(this.props.product._id, "isDigital", !this.state.digital);
   }
 
+  setSub(e) {
+    this.setState({"subCategory": e.target.value});
+  }
+
+  subCat() {
+    if (this.state.subCategory === "Audio") {
+      return (
+        <select id="subCategory" className="form-control text-center">
+          <option>Audio Book</option>
+          <option>Music</option>
+        </select>
+      );
+    }
+  }
+
   showDigitalForm() {
     if (this.state.digital) {
       return (
@@ -65,12 +83,14 @@ class ProductDetail extends Component {
           <form>
             <div className="form-group">
               <label htmlFor="category">Category</label>
-              <select id="category" className="form-control text-center">
+              <select id="category" className="form-control text-center" onChange={this.setSub}>
                 <option>Audio</option>
                 <option>Books</option>
                 <option>Software</option>
                 <option>Video</option>
               </select>
+              <br/>
+              {this.subCat()}
             </div>
             <div className="form-group">
               <label htmlFor="file-upoad">File upload</label>
@@ -255,7 +275,7 @@ class ProductDetail extends Component {
               <hr />
               {this.chooseButton()}
               <hr />
-              {this.showDigitalForm()}              
+              {this.showDigitalForm()}
             </div>
           </div>
         </div>

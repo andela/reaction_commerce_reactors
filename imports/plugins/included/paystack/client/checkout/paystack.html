@@ -20,35 +20,46 @@
 
   <script>
     function getPublickey() {
+      if (!Window.KEYS[0]) {
+        Alerts.toast("Sorry, the admin has not set the API keys", "error");
+      }
       return Window.KEYS[0].apiPublicKey;
     }
 
     function payWithPaystack() {
-      const email = document.getElementById("payerEmailAddress").value;
-      const phoneNumber = document.getElementById("payerMobileNumber").value;
+      try {
+        const email = document.getElementById("payerEmailAddress").value;
+        const phoneNumber = document.getElementById("payerMobileNumber").value;
 
-      const handler = PaystackPop.setup({
-        key: getPublickey(),
-        email: email,
-        amount: {{getAmount}},
-        ref: "{{getTransactionId}}",
-        metadata: {
-          custom_fields: [
-            {
-              display_name: "Mobile Number",
-              variable_name: "mobile_number",
-              value: phoneNumber
-            }
-          ]
-        },
-        callback: function (response) {
-          Template.paystackPaymentForm.__helpers.get('paymentSuccessful')(response);
-        },
-        onClose: function () {
-          Template.paystackPaymentForm.__helpers.get('windowClosed').call();
+        const handler = PaystackPop.setup({
+          key: getPublickey(),
+          email: email,
+          amount: {{getAmount}},
+          ref: "{{getTransactionId}}",
+          metadata: {
+            custom_fields: [
+              {
+                display_name: "Mobile Number",
+                variable_name: "mobile_number",
+                value: phoneNumber
+              }
+            ]
+          },
+          callback: function (response) {
+            Template.paystackPaymentForm.__helpers.get('paymentSuccessful')(response);
+          },
+          onClose: function () {
+            Template.paystackPaymentForm.__helpers.get('windowClosed').call();
+          }
+        });
+        handler.openIframe();
+      } catch (e) {
+        if (e.message.indexOf("email") !== -1) {
+          Alerts.toast("The entered email is invalid", "error");
+        } else {
+          Alerts.toast("Sorry, an error occurred.", "error");
         }
-      });
-      handler.openIframe();
+      }
       return false;
     }
   </script>

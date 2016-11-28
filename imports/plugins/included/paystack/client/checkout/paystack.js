@@ -64,14 +64,20 @@ Template.paystackPaymentForm.helpers({
     const costInLocalCurrency = Cart.findOne().cartTotal();
     const currency = Shops.findOne().currency;
     const exchangeRateToTheDollar = shop[0].currencies[currency];
-    const costInDollars = costInLocalCurrency / exchangeRateToTheDollar.rate;
-    let nairaExchangeRateToTheDollar;
-    if (shop[0].currencies.NGN.rate) {
-      nairaExchangeRateToTheDollar = shop[0].currencies.NGN.rate;
+    if (!exchangeRateToTheDollar.rate) {
+      Alerts.toast("Sorry, we could not retrieve the exchange rates. You cannot pay with paystack.",
+        "error");
+      return 0;
     } else {
-      nairaExchangeRateToTheDollar = 1;
+      const costInDollars = costInLocalCurrency / exchangeRateToTheDollar.rate;
+      let nairaExchangeRateToTheDollar;
+      if (shop[0].currencies.NGN.rate) {
+        nairaExchangeRateToTheDollar = shop[0].currencies.NGN.rate;
+      } else {
+        nairaExchangeRateToTheDollar = 1;
+      }
+      return Math.ceil(costInDollars * nairaExchangeRateToTheDollar * 100);
     }
-    return Math.ceil(costInDollars * nairaExchangeRateToTheDollar * 100);
   },
   paymentSuccessful(transactionDetails) {
     const transactionRef = transactionDetails.reference;
@@ -117,7 +123,7 @@ Template.paystackPaymentForm.helpers({
     });
   },
   windowClosed() {
-    paymentAlert("The payment wasn't completed.");
+    Alerts.toast("The payment wasn't completed.", "danger");
   }
 });
 

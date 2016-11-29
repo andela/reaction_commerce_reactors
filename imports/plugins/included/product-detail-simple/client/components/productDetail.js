@@ -25,11 +25,12 @@ class ProductDetail extends Component {
       digital: this.props.product.isDigital,
       cartQuantity: "number",
       subCategory: "",
-      value: ""
+      value: "Audio"
     };
 
     this.changePro = this.changePro.bind(this);
     this.setSub = this.setSub.bind(this);
+    this.getUrl = this.getUrl.bind(this);
   }
 
   get tags() {
@@ -67,6 +68,12 @@ class ProductDetail extends Component {
         </select>
       );
     }
+    return null;
+  }
+
+  getUrl(e) {
+    // console.log(e.target.files[0]);
+    Meteor.call("product/digital/uploadFile", e.target.files[0]);
   }
 
   showDigitalForm() {
@@ -94,12 +101,14 @@ class ProductDetail extends Component {
             </div>
             <div className="form-group">
               <label htmlFor="file-upoad">File upload</label>
-              <input type="file" className="form-control" id="file-upload"/>
+              <input type="file" className="form-control" id="file-upload" onChange={this.getUrl}/>
             </div>
           </form>
         </div>
       );
     }
+
+    return null;
   }
 
   switchDigital() {

@@ -3,6 +3,7 @@ import { Reaction } from "/server/api";
 
 const {
   Accounts,
+  Audio,
   Cart,
   Packages,
   Discounts,
@@ -15,7 +16,8 @@ const {
   Shops,
   Tags,
   Templates,
-  Translations
+  Translations,
+  Video
 } = Collections;
 
 /**
@@ -112,7 +114,7 @@ export default function () {
    * Permissive security for users with the "admin" role for FS.Collections
    */
 
-  Security.permit(["insert", "update", "remove"]).collections([Media]).ifHasRole({
+  Security.permit(["insert", "update", "remove"]).collections([Audio, Media, Video]).ifHasRole({
     role: ["admin", "owner", "createProduct"],
     group: Reaction.getShopId()
   }).ifFileBelongsToShop().allowInClientCode();
@@ -169,7 +171,7 @@ export default function () {
   /*
    * apply download permissions to file collections
    */
-  _.each([Media], function (fsCollection) {
+  _.each([Audio, Media, Video], function (fsCollection) {
     return fsCollection.allow({
       download: function () {
         return true;

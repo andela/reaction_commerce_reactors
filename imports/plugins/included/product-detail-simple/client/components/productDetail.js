@@ -16,6 +16,7 @@ import {
 } from "./";
 import { AlertContainer } from "/imports/plugins/core/ui/client/containers";
 import { PublishContainer } from "/imports/plugins/core/revisions";
+import { Audio} from "/lib/collections";
 
 class ProductDetail extends Component {
 
@@ -72,8 +73,9 @@ class ProductDetail extends Component {
   }
 
   getUrl(e) {
-    // console.log(e.target.files[0]);
-    Meteor.call("product/digital/uploadFile", e.target.files[0]);
+    const file = e.target.files[0];
+    const fileNew = new FS.File(file);
+    Audio.insert(fileNew);
   }
 
   showDigitalForm() {

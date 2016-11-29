@@ -16,8 +16,7 @@ const {
   Shops,
   Tags,
   Templates,
-  Translations,
-  Video
+  Translations
 } = Collections;
 
 /**
@@ -114,7 +113,7 @@ export default function () {
    * Permissive security for users with the "admin" role for FS.Collections
    */
 
-  Security.permit(["insert", "update", "remove"]).collections([Audio, Media, Video]).ifHasRole({
+  Security.permit(["insert", "update", "remove"]).collections([Media]).ifHasRole({
     role: ["admin", "owner", "createProduct"],
     group: Reaction.getShopId()
   }).ifFileBelongsToShop().allowInClientCode();
@@ -171,7 +170,7 @@ export default function () {
   /*
    * apply download permissions to file collections
    */
-  _.each([Audio, Media, Video], function (fsCollection) {
+  _.each([Audio, Media], function (fsCollection) {
     return fsCollection.allow({
       download: function () {
         return true;

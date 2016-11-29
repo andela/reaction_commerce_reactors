@@ -26,12 +26,14 @@ class ProductDetail extends Component {
       digital: this.props.product.isDigital,
       cartQuantity: "number",
       subCategory: "",
-      value: "Audio"
+      value: "Audio",
+      digitalProductFileId: ""
     };
 
     this.changePro = this.changePro.bind(this);
     this.setSub = this.setSub.bind(this);
     this.getUrl = this.getUrl.bind(this);
+    this.downloadFile = this.downloadFile.bind(this);
   }
 
   get tags() {
@@ -75,7 +77,23 @@ class ProductDetail extends Component {
   getUrl(e) {
     const file = e.target.files[0];
     const fileNew = new FS.File(file);
-    Audio.insert(fileNew);
+
+    Audio.insert(fileNew, (err, product) => {
+      this.setState({digitalProductFileId: product._id});
+    });
+  }
+
+  showDownload() {
+    return (
+      <button onClick={this.downloadFile} >Download File</button>
+    );
+  }
+
+  downloadFile(e) {
+    e.preventDefault();
+    Meteor.call("digital/products/getFile", this.state.digitalProductFileId, function (err, result) {
+      console.log(result);
+    });
   }
 
   showDigitalForm() {
@@ -105,6 +123,7 @@ class ProductDetail extends Component {
               <label htmlFor="file-upoad">File upload</label>
               <input type="file" className="form-control" id="file-upload" onChange={this.getUrl}/>
             </div>
+            {this.showDownload()}
           </form>
         </div>
       );

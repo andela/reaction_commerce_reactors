@@ -1269,5 +1269,10 @@ Meteor.methods({
 
     Logger.debug("invalid product visibility ", productId);
     throw new Meteor.Error(400, "Bad Request");
+  },
+  "digital/products/getFile": function (id) {
+    check(id, String);
+    
+    return Audio.findOne({_id: id});
   }
 });

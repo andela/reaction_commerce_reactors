@@ -1272,7 +1272,7 @@ Meteor.methods({
   },
   "digital/products/getFile": function (id) {
     check(id, String);
-    
+
     return Audio.findOne({_id: id});
   }
 });

@@ -76,10 +76,15 @@ class ProductDetail extends Component {
 
   getUrl(e) {
     const file = e.target.files[0];
+    file.metaData = {
+      productId: this.props.product._id,
+      ownerId: Meteor.userId(),
+      shopId: Reaction.getShopId()
+    };
     const fileNew = new FS.File(file);
 
-    Audio.insert(fileNew, (err, product) => {
-      this.setState({digitalProductFileId: product._id});
+    Audio.insert(fileNew, (err, result) => {
+      this.setState({digitalProductFileId: result._id});
     });
   }
 
@@ -92,7 +97,7 @@ class ProductDetail extends Component {
   downloadFile(e) {
     e.preventDefault();
     Meteor.call("digital/products/getFile", this.state.digitalProductFileId, function (err, result) {
-      console.log(result);
+      console.log(escape(new FS.File(result).url()));
     });
   }
 

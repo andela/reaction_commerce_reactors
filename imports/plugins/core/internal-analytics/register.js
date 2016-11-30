@@ -6,7 +6,7 @@ import {Reaction} from "/server/api";
 Reaction.registerPackage({
   label: "Internal Analytics",
   name: "reaction-internal-analytics",
-  icon: "fa fa-bar-chart-o",
+  icon: "fa fa-line-chart",
   autoEnable: true,
   settings: {
     name: "Internal Analytics"
@@ -18,15 +18,29 @@ Reaction.registerPackage({
       name: "internal-analytics",
       label: "Internal Analytics",
       description: "Provides internal analytics",
-      icon: "fa fa-bar-chart-o",
+      icon: "fa fa-line-chart",
       priority: 1,
       container: "core",
-      workflow: "coreDashboardWorkflow",
-      template: "internal-analytics"
-    },
+      workflow: "coreAnalyticsWorkflow",
+      template: "internalAnalytics"
+    }
+  ],
+  layout: [
     {
-      template: "internalAnalytics",
-      provides: "analyticsMethod"
+      layout: "coreLayout",
+      layoutHeader: "layoutHeader",
+      layoutFooter: "",
+      label: "Internal Analytics",
+      workflow: "coreAnalyticsWorkflow",
+      theme: "default",
+      enabled: true,
+      structure: {
+        notFound: "notFound",
+        template: "internalAnalytics",
+        dashboardHeader: "dashboardHeader",
+        dashboardControls: "dashboardControls",
+        adminControlsFooter: "adminControlsFooter"
+      }
     }
   ]
 });

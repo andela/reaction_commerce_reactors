@@ -36,8 +36,7 @@ class ProductDetail extends Component {
     this.changePro = this.changePro.bind(this);
     this.setSub = this.setSub.bind(this);
     this.setSubVal = this.setSubVal.bind(this);
-    this.getUrl = this.getUrl.bind(this);
-    this.downloadFile = this.downloadFile.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
     this.deleteFile = this.deleteFile.bind(this);
     this.showDigitalInfo = this.showDigitalInfo.bind(this);
     this.populateDigitalInfo = this.populateDigitalInfo.bind(this);
@@ -76,7 +75,6 @@ class ProductDetail extends Component {
   }
 
   subCat() {
-    console.log(this.props.product);
     if (this.state.category === "Audio") {
       return (
         <select id="subCategory" className="form-control text-center" onChange={this.setSubVal}>
@@ -88,7 +86,7 @@ class ProductDetail extends Component {
     return null;
   }
 
-  getUrl(e) {
+  uploadFile(e) {
     const file = e.target.files[0];
     const fileNew = new FS.File(file);
     fileNew.metaData = {
@@ -99,34 +97,20 @@ class ProductDetail extends Component {
 
     Audio.insert(fileNew, (err, result) => {
       this.setState({digitalProductFileId: result._id});
-    });
-  }
-
-  showDownload() {
-    return (
-      <button onClick={this.downloadFile} >Download File</button>
-    );
-  }
-
-  downloadFile(e) {
-    e.preventDefault();
-    Meteor.call("digital/products/getFile", this.state.digitalProductFileId, function (err, result) {
-      console.log(escape(new FS.File(result).url()));
+      this.setState({digitalInfo: result});
     });
   }
 
   deleteFile(e) {
     e.preventDefault();
-    Meteor.call("digital/products/deleteFile", this.state.digitalProductFileId, function (err, result) {
-      console.log(result);
+
+    Audio.remove({_id: this.state.digitalProductFileId}, (err, res) => {
+      if (err) {
+        Logge(err);
+      } else if (Number(res) === 1) {
+        this.setState({digitalInfo: null, digitalProductFileId: ""});
+      }
     });
-    // Audio.remove(fileDel, (er, file) => {
-    //   if (er) {
-    //     console.log(er);
-    //   } else {
-    //     console.log(file);
-    //   }
-    // });
   }
 
   populateDigitalInfo() {
@@ -136,7 +120,7 @@ class ProductDetail extends Component {
           <div>
             <h5> Name: {this.state.digitalInfo.original.name} </h5>
             <h5> Type: {this.state.digitalInfo.original.type} </h5>
-            <button onClick={this.deleteFile} >Delete File</button>
+            <button className="btn btn-danger" onClick={this.deleteFile} >Delete File</button>
           </div>
         );
       }
@@ -173,9 +157,8 @@ class ProductDetail extends Component {
             </div>
             <div className="form-group">
               <label htmlFor="file-upoad">File upload</label>
-              <input type="file" className="form-control" id="file-upload" onChange={this.getUrl}/>
+              <input type="file" className="form-control" id="file-upload" onChange={this.uploadFile} disabled={this.state.digitalInfo ? true : false}/>
             </div>
-            {this.showDownload()}
           </form>
         </div>
       );
@@ -187,8 +170,10 @@ class ProductDetail extends Component {
   showDigitalInfo() {
     if (this.state.digital) {
       Meteor.call("digital/products/getDigitalProduct", this.props.product._id, (err, result) => {
-        this.setState({digitalInfo: result});
-        this.setState({digitalProductFileId: result._id});
+        if (result) {
+          this.setState({digitalInfo: result});
+          this.setState({digitalProductFileId: result._id});
+        }
       });
     }
   }

@@ -19,6 +19,10 @@ export default function () {
         host: "",
         port: ""
       },
+      sms: {
+        apiKey: "",
+        apiSecret: ""
+      },
       openexchangerates: {
         appId: "",
         refreshPeriod: "every 1 hour"

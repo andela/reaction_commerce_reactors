@@ -53,7 +53,7 @@ Template.dashboardOrdersList.helpers({
   // Create a helper to import in the FlatButton react component for
   // cancelOrder button
   CancelOrderButton() {
-    const order = this;
+    const order = this || Template.instance().data;
     return  {
       component: FlatButton,
       kind: "flat",
@@ -61,11 +61,16 @@ Template.dashboardOrdersList.helpers({
       label: "Cancel order",
       disabled: Template.dashboardOrdersList.__helpers.get("getClassName").call(this, order),
       onClick() {
+        const status = order.workflow.status.split("/")[1];
+        let alertText = "Are you sure you want to cancel this order";
+
+        if (status === "shipped") {
+          alertText = `${alertText}, your order has been shipped and
+          your shipping charge will not be refunded!`;
+        }
         Alerts.alert({
           title: "Cancel order",
-          text: `Are you sure you want to cancel this order,
-          your shipping charge would not be refunded if your
-          order has been shipped`,
+          text: alertText,
           showCancelButton: true,
           confirmButtonText: "Cancel Order"
         }, (isConfirm) => {

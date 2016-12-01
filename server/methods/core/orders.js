@@ -80,10 +80,10 @@ Meteor.methods({
         "_id": order._id,
         "shipping._id": shipment._id
       }, {
-        $set: {
-          "shipping.$.packed": packed
-        }
-      });
+          $set: {
+            "shipping.$.packed": packed
+          }
+        });
 
       // Set the status of the items as shipped
       const itemIds = shipment.items.map((item) => {
@@ -96,10 +96,10 @@ Meteor.methods({
           "_id": order._id,
           "shipping._id": shipment._id
         }, {
-          $set: {
-            "shipping.$.packed": packed
-          }
-        });
+            $set: {
+              "shipping.$.packed": packed
+            }
+          });
       }
       return result;
     }
@@ -218,6 +218,7 @@ Meteor.methods({
    * @param {Object} shipment - shipment object
    * @return {Object} return results of several operations
    */
+  // email active
   "orders/shipmentShipped": function (order, shipment) {
     check(order, Object);
     check(shipment, Object);
@@ -244,7 +245,11 @@ Meteor.methods({
       shippedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "shipped", order);
     }
 
+    // send email
+    order.status = "shipped";
     if (order.email) {
+      order.mailSubject = "Your Order has been Shipped.";
+      order.tpl = "orders/coreOrderWorkflow/shipped";
       Meteor.call("orders/sendNotification", order, (err) => {
         if (err) {
           Logger.error(err, "orders/shipmentShipped: Failed to send notification");
@@ -252,6 +257,28 @@ Meteor.methods({
       });
     } else {
       Logger.warn("No order email found. No notification sent.");
+    }
+
+    // in app notification
+    const shop = Shops.findOne(order.shopId);
+    order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Your order has been shipped.";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your order has been shipped.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
     }
 
     return {
@@ -298,6 +325,7 @@ Meteor.methods({
    * @param {Object} order - order object
    * @return {Object} return workflow result
    */
+  // email active
   "orders/shipmentDelivered": function (order) {
     check(order, Object);
 
@@ -308,8 +336,11 @@ Meteor.methods({
     this.unblock();
 
     const shipment = order.shipping[0];
-
+    // USE this block to call emails.
+    order.status = "delivered";
     if (order.email) {
+      order.mailSubject = "Your Order Has Been Delivered.";
+      order.tpl = "orders/coreOrderWorkflow/delivered";
       Meteor.call("orders/sendNotification", order, (err) => {
         if (err) {
           Logger.error(err, "orders/shipmentShipped: Failed to send notification");
@@ -317,6 +348,28 @@ Meteor.methods({
       });
     } else {
       Logger.warn("No order email found. No notification sent.");
+    }
+
+    // in app notification
+    const shop = Shops.findOne(order.shopId);
+    order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Your order has been delivered.";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your order has been delivered.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
     }
 
     const itemIds = shipment.items.map((item) => {
@@ -453,15 +506,15 @@ Meteor.methods({
 
     // email templates can be customized in Templates collection
     // loads defaults from /private/email/templates
-    const tpl = `orders/${order.workflow.status}`;
+    const tpl = order.tpl || `orders/${order.workflow.status}`;
     SSR.compileTemplate(tpl, Reaction.Email.getTemplate(tpl));
 
     Reaction.Email.send({
       to: order.email,
       from: `${shop.name} <${shop.emails[0].address}>`,
-      subject: `Your order is confirmed`,
+      subject: order.mailSubject || "Your order is confirmed",
       // subject: `Order update from ${shop.name}`,
-      html: SSR.render(tpl,  dataForOrderEmail)
+      html: SSR.render(tpl, dataForOrderEmail)
     });
 
     return true;
@@ -529,7 +582,7 @@ Meteor.methods({
       to: order.email,
       from: `${shop.name} <${shop.emails[0].address}>`,
       subject: "Your order has been canceled",
-      html: SSR.render(tpl,  dataForOrderCancelEmail)
+      html: SSR.render(tpl, dataForOrderCancelEmail)
     });
 
     return true;
@@ -543,6 +596,7 @@ Meteor.methods({
    * @param {Object} order - order object
    * @return {Object} return this.orderCompleted result
    */
+  // email active
   "orders/orderCompleted": function (order) {
     check(order, Object);
 
@@ -564,6 +618,42 @@ Meteor.methods({
       completedOrderResult = Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "completed", order);
     }
     // TODO: send an email that the order has been delivered
+    // return this.orderCompleted(order);
+    // send notification for completed order here
+    order.status = "completed";
+    if (order.email) {
+      order.mailSubject = "Your Order Has Been Completed.";
+      order.tpl = "orders/coreOrderWorkflow/completed";
+      Meteor.call("orders/sendNotification", order, (err) => {
+        if (err) {
+          Logger.error(err, "orders/shipmentShipped: Failed to send notification");
+        }
+      });
+    } else {
+      Logger.warn("No order email found. No notification sent.");
+    }
+    // in app notification
+    const shop = Shops.findOne(order.shopId);
+    order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Your transaction is complete.";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your order has been completed.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
+    }
+
     // return this.orderCompleted(order);
   },
 
@@ -593,13 +683,18 @@ Meteor.methods({
     return Orders.update({
       "_id": orderId,
       "shipping._id": shippingId
-    }, {
-      $addToSet: {
-        "shipping.shipments": data
-      }
-    });
+    },
+      {
+        $addToSet: {
+          "shipping.shipments": data
+        }
+      });
   },
 
+  // username
+  // shopname
+  // tracking info
+  // order details
   /**
    * orders/updateShipmentTracking
    * @summary Adds tracking information to order without workflow update.
@@ -622,10 +717,10 @@ Meteor.methods({
       "_id": order._id,
       "shipping._id": shipment._id
     }, {
-      $set: {
-        ["shipping.$.tracking"]: tracking
-      }
-    });
+        $set: {
+          ["shipping.$.tracking"]: tracking
+        }
+      });
   },
 
   /**
@@ -650,10 +745,10 @@ Meteor.methods({
       "_id": orderId,
       "shipping._id": shipmentId
     }, {
-      $push: {
-        "shipping.$.items": item
-      }
-    });
+        $push: {
+          "shipping.$.items": item
+        }
+      });
   },
 
   "orders/updateShipmentItem": function (orderId, shipmentId, item) {
@@ -669,10 +764,10 @@ Meteor.methods({
       "_id": orderId,
       "shipments._id": shipmentId
     }, {
-      $addToSet: {
-        "shipment.$.items": shipmentIndex
-      }
-    });
+        $addToSet: {
+          "shipment.$.items": shipmentIndex
+        }
+      });
   },
 
   /**
@@ -723,7 +818,7 @@ Meteor.methods({
       throw new Meteor.Error(403, "Access Denied. You are not connected.");
     }
 
-    return Orders.update({cartId: cartId}, {
+    return Orders.update({ cartId: cartId }, {
       $set: {
         email: email
       }
@@ -803,10 +898,10 @@ Meteor.methods({
       Products.update({
         _id: item.variants._id
       }, {
-        $inc: {
-          inventoryQuantity: -item.quantity
-        }
-      }, { selector: { type: "variant" } });
+          $inc: {
+            inventoryQuantity: -item.quantity
+          }
+        }, { selector: { type: "variant" } });
     });
   },
 
@@ -819,6 +914,7 @@ Meteor.methods({
    * @param {String} orderId - add tracking to orderId
    * @return {null} no return value
    */
+  // email active
   "orders/capturePayments": (orderId) => {
     check(orderId, String);
 
@@ -849,16 +945,55 @@ Meteor.methods({
             Orders.update({
               "_id": orderId,
               "billing.paymentMethod.transactionId": transactionId
-            }, {
-              $set: {
-                "billing.$.paymentMethod.mode": "capture",
-                "billing.$.paymentMethod.status": "completed",
-                "billing.$.paymentMethod.metadata": metadata
-              },
-              $push: {
-                "billing.$.paymentMethod.transactions": result
-              }
-            });
+            },
+              {
+                $set: {
+                  "billing.$.paymentMethod.mode": "capture",
+                  "billing.$.paymentMethod.status": "completed",
+                  "billing.$.paymentMethod.metadata": metadata
+                },
+                $push: {
+                  "billing.$.paymentMethod.transactions": result
+                }
+              });
+
+            // call send notification for payment
+            order.status = "paymentCaptured";
+            if (order.email) {
+              order.tpl = "orders/coreOrderWorkflow/captured";
+              order.mailSubject = "Your Payment Has Been Captured";
+              Meteor.call("orders/sendNotification", order, (err) => {
+                if (err) {
+                  Logger.error(err, "orders/shipmentShipped: Failed to send notification");
+                }
+              });
+            } else {
+              Logger.warn("No order email found. No notification sent.");
+            }
+
+            // in app notification
+            const shop = Shops.findOne(order.shopId);
+            order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+            let notifyUser = false;
+            const roleObj = Object.keys(Meteor.user().roles);
+            if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+              notifyUser = true;
+            }
+            const notify = {};
+            notify.title = "Your payment was successful.";
+            notify.message = "Order detail here";
+            Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
+            // send sms
+            const phone = `234${order.billing[0].address.phone.substr(1)}`;
+            const orderAmount = order.billing[0].invoice.total ? `\nAmount: ${order.billing[0].invoice.total} dollars.` : "";
+            const OrderMessage = `Payment for your order was successful.${orderAmount}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+
+            if (order.billing[0].address.phone && phone) {
+              Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+            } else {
+              Logger.error("Phone number was not found. SMS not sent.");
+            }
           } else {
             if (result && result.error) {
               Logger.fatal("Failed to capture transaction.", order, paymentMethod.transactionId, result.error);
@@ -869,17 +1004,18 @@ Meteor.methods({
             Orders.update({
               "_id": orderId,
               "billing.paymentMethod.transactionId": transactionId
-            }, {
-              $set: {
-                "billing.$.paymentMethod.mode": "capture",
-                "billing.$.paymentMethod.status": "error"
-              },
-              $push: {
-                "billing.$.paymentMethod.transactions": result
-              }
-            });
+            },
+              {
+                $set: {
+                  "billing.$.paymentMethod.mode": "capture",
+                  "billing.$.paymentMethod.status": "error"
+                },
+                $push: {
+                  "billing.$.paymentMethod.transactions": result
+                }
+              });
 
-            return {error: "orders/capturePayments: Failed to capture transaction"};
+            return { error: "orders/capturePayments: Failed to capture transaction" };
           }
         });
       }
@@ -945,10 +1081,10 @@ Meteor.methods({
       "_id": orderId,
       "billing.paymentMethod.transactionId": transactionId
     }, {
-      $push: {
-        "billing.$.paymentMethod.transactions": result
-      }
-    });
+        $push: {
+          "billing.$.paymentMethod.transactions": result
+        }
+      });
 
     if (result.saved === false) {
       Logger.fatal("Attempt for refund transaction failed", order._id, paymentMethod.transactionId, result.error);
@@ -967,6 +1103,7 @@ Meteor.methods({
    * @param {String} cancelationReason - cancelation reason
    * @return {null} no return value
    */
+  // email active
   "orders/cancelOrder": function (orderId, cancelationReason) {
     check(orderId, String);
     check(cancelationReason, String);
@@ -1013,6 +1150,30 @@ Meteor.methods({
         }
       });
     }
+    order.status = "cancelled";
+
+    // in app notification
+    const shop = Shops.findOne(order.shopId);
+    order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Your order has been cancelled.";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
+    // send sms
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your order has been cancelled.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
+    }
 
     // change the shipping status to canceled
     Meteor.call("orders/shipmentCanceled", order, shipment);
@@ -1038,11 +1199,37 @@ Meteor.methods({
     Orders.update({
       _id: orderId
     }, {
-      $set: {
-        "workflow.status": "coreOrderWorkflow/cancel-request"
-      }
-    });
+        $set: {
+          "workflow.status": "coreOrderWorkflow/cancel-request"
+        }
+      });
 
+    const order = Orders.findOne(orderId);
+
+    // in app notification
+    const shop = Shops.findOne(order.shopId);
+    order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
+    let notifyUser = false;
+    const roleObj = Object.keys(Meteor.user().roles);
+    if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+      notifyUser = true;
+    }
+    const notify = {};
+    notify.title = "Cancel order request.";
+    notify.message = "Order detail here";
+    Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
+    // send sms
+    order.status = "cancelled";
+    const phone = `234${order.billing[0].address.phone.substr(1)}`;
+    const tracking = order.shipping[0].tracking ? `\nTracking No.: ${order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your request to cancel your order has been received.${tracking}\nOrderId: ${order._id}.\nDate: ${new Date().toString()}`;
+
+    if (order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
+    }
 
     return null;
   }

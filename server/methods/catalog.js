@@ -1274,5 +1274,21 @@ Meteor.methods({
     check(id, String);
 
     return Audio.findOne({_id: id});
+  },
+  "digital/products/getDigitalProduct": function (id) {
+    check(id, String);
+
+    return Audio.findOne({"metaData.productId": id});
+  },
+  "digital/products/deleteFile": function (id) {
+    check(id, String);
+
+    Audio.remove({_id: id}, function (err, res) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(res);
+      }
+    });
   }
 });

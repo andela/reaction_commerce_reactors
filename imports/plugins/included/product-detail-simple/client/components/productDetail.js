@@ -26,15 +26,22 @@ class ProductDetail extends Component {
     this.state = {
       digital: this.props.product.isDigital,
       cartQuantity: this.props.product.isDigital ? "hidden" : "number",
-      subCategory: "",
+      category: "Audio",
+      subCat: "Audio Book",
       value: "Audio",
+      digitalInfo: null,
       digitalProductFileId: ""
     };
 
     this.changePro = this.changePro.bind(this);
     this.setSub = this.setSub.bind(this);
+    this.setSubVal = this.setSubVal.bind(this);
     this.getUrl = this.getUrl.bind(this);
     this.downloadFile = this.downloadFile.bind(this);
+    this.deleteFile = this.deleteFile.bind(this);
+    this.showDigitalInfo = this.showDigitalInfo.bind(this);
+    this.populateDigitalInfo = this.populateDigitalInfo.bind(this);
+    this.showDigitalInfo();
   }
 
   get tags() {
@@ -57,16 +64,22 @@ class ProductDetail extends Component {
       this.setState({"cartQuantity": "number"});
     }
     this.props.onProductFieldChange(this.props.product._id, "isDigital", !this.state.digital);
+    this.props.onProductFieldChange(this.props.product._id, "requiresShipping", this.state.digital);
   }
 
   setSub(e) {
-    this.setState({"subCategory": e.target.value});
+    this.setState({category: e.target.value});
+  }
+
+  setSubVal(e) {
+    this.setState({subCategory: e.target.value});
   }
 
   subCat() {
-    if (this.state.subCategory === "Audio") {
+    console.log(this.props.product);
+    if (this.state.category === "Audio") {
       return (
-        <select id="subCategory" className="form-control text-center">
+        <select id="subCategory" className="form-control text-center" onChange={this.setSubVal}>
           <option>Audio Book</option>
           <option>Music</option>
         </select>
@@ -77,12 +90,12 @@ class ProductDetail extends Component {
 
   getUrl(e) {
     const file = e.target.files[0];
-    file.metaData = {
+    const fileNew = new FS.File(file);
+    fileNew.metaData = {
       productId: this.props.product._id,
       ownerId: Meteor.userId(),
       shopId: Reaction.getShopId()
     };
-    const fileNew = new FS.File(file);
 
     Audio.insert(fileNew, (err, result) => {
       this.setState({digitalProductFileId: result._id});
@@ -100,6 +113,39 @@ class ProductDetail extends Component {
     Meteor.call("digital/products/getFile", this.state.digitalProductFileId, function (err, result) {
       console.log(escape(new FS.File(result).url()));
     });
+  }
+
+  deleteFile(e) {
+    e.preventDefault();
+    Meteor.call("digital/products/deleteFile", this.state.digitalProductFileId, function (err, result) {
+      console.log(result);
+    });
+    // Audio.remove(fileDel, (er, file) => {
+    //   if (er) {
+    //     console.log(er);
+    //   } else {
+    //     console.log(file);
+    //   }
+    // });
+  }
+
+  populateDigitalInfo() {
+    if (this.props.hasAdminPermission && this.state.digital) {
+      if (this.state.digitalInfo) {
+        return (
+          <div>
+            <h5> Name: {this.state.digitalInfo.original.name} </h5>
+            <h5> Type: {this.state.digitalInfo.original.type} </h5>
+            <button onClick={this.deleteFile} >Delete File</button>
+          </div>
+        );
+      }
+      return (
+          <div>
+            <h4>There is currently no saved file.</h4>
+          </div>
+      );
+    }
   }
 
   showDigitalForm() {
@@ -136,6 +182,15 @@ class ProductDetail extends Component {
     }
 
     return null;
+  }
+
+  showDigitalInfo() {
+    if (this.state.digital) {
+      Meteor.call("digital/products/getDigitalProduct", this.props.product._id, (err, result) => {
+        this.setState({digitalInfo: result});
+        this.setState({digitalProductFileId: result._id});
+      });
+    }
   }
 
   switchDigital() {
@@ -311,6 +366,7 @@ class ProductDetail extends Component {
               <hr />
               {this.chooseButton()}
               <hr />
+              {this.populateDigitalInfo()}
               {this.showDigitalForm()}
             </div>
           </div>

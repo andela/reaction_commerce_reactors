@@ -16,7 +16,8 @@ import {
 } from "./";
 import { AlertContainer } from "/imports/plugins/core/ui/client/containers";
 import { PublishContainer } from "/imports/plugins/core/revisions";
-import { Audio} from "/lib/collections";
+import { Audio, Products } from "/lib/collections";
+import { Reaction } from "/client/api";
 
 class ProductDetail extends Component {
 
@@ -24,7 +25,7 @@ class ProductDetail extends Component {
     super(props);
     this.state = {
       digital: this.props.product.isDigital,
-      cartQuantity: "number",
+      cartQuantity: this.props.product.isDigital ? "hidden" : "number",
       subCategory: "",
       value: "Audio",
       digitalProductFileId: ""
@@ -102,7 +103,7 @@ class ProductDetail extends Component {
   }
 
   showDigitalForm() {
-    if (this.state.digital) {
+    if (this.state.digital && this.props.hasAdminPermission) {
       return (
         <div>
           <div className="rui separator divider labeled">

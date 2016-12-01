@@ -16,7 +16,7 @@ import {
 } from "./";
 import { AlertContainer } from "/imports/plugins/core/ui/client/containers";
 import { PublishContainer } from "/imports/plugins/core/revisions";
-import { Audio, Products } from "/lib/collections";
+import { Audio, Books, Software, Video } from "/lib/collections";
 import { Reaction } from "/client/api";
 
 class ProductDetail extends Component {
@@ -89,28 +89,65 @@ class ProductDetail extends Component {
   uploadFile(e) {
     const file = e.target.files[0];
     const fileNew = new FS.File(file);
+    const productCategory = this.state.category;
+    console.log(fileNew.type(), fileNew.extension());
     fileNew.metaData = {
       productId: this.props.product._id,
       ownerId: Meteor.userId(),
       shopId: Reaction.getShopId()
     };
 
-    Audio.insert(fileNew, (err, result) => {
-      this.setState({digitalProductFileId: result._id});
-      this.setState({digitalInfo: result});
+    if (productCategory === "Audio" && fileNew.isAudio()) {
+      this.fileUpload(Audio, fileNew);
+    } else if (productCategory === "Video" && fileNew.isVideo()) {
+      this.fileUpload(Video, fileNew);
+    } else if (productCategory === "Software") {
+      this.fileUpload(Software, fileNew);
+    } else if (productCategory === "Books") {
+      this.fileUpload(Books, fileNew);
+    }
+  }
+
+  fileUpload(fileType, file) {
+    const digital = {};
+    digital.category = this.state.category;
+    digital.subCategory = this.state.subCat || "";
+    fileType.insert(file, (err, result) => {
+      if (err) {
+        console.log(err);
+        alert("there was an error uploading your file");
+      } else {
+        this.setState({digitalProductFileId: result._id});
+        this.setState({digitalInfo: result});
+        this.props.onProductFieldChange(this.product._id, "digitalInformation", digital);
+        alert("file uploaded");
+      }
+    });
+  }
+
+  fileDelete(fileType) {
+    fileType.remove({_id: this.state.digitalProductFileId}, (err, res) => {
+      if (err) {
+        Logger(err);
+      } else if (Number(res) === 1) {
+        this.setState({digitalInfo: null, digitalProductFileId: ""});
+      }
     });
   }
 
   deleteFile(e) {
     e.preventDefault();
+    const productCategory = this.state.category;
 
-    Audio.remove({_id: this.state.digitalProductFileId}, (err, res) => {
-      if (err) {
-        Logge(err);
-      } else if (Number(res) === 1) {
-        this.setState({digitalInfo: null, digitalProductFileId: ""});
-      }
-    });
+    if (productCategory === "Audio") {
+      this.fileDelete(Audio);
+    } else if (productCategory === "Video") {
+      this.fileDelete(Video);
+    } else if (productCategory === "Software") {
+      this.fileDelete(Software);
+    } else if (productCategory === "Books") {
+      this.fileDelete(Books);
+    }
   }
 
   populateDigitalInfo() {

@@ -6,6 +6,17 @@ import { Template } from "meteor/templating";
 
 Template.loginDropdown.events({
 
+  "click #dropdown-apps-retake-tour": (event) => {
+    event.preventDefault();
+    Reaction.Router.go("/");
+    introJs().start();
+  },
+
+  "click #dropdown-apps-wallet": (event) => {
+    event.preventDefault();
+    Reaction.Router.go("/reaction/wallet");
+  },
+
   /**
    * Submit sign up form
    * @param  {Event} event - jQuery Event
@@ -65,10 +76,6 @@ Template.loginDropdown.events({
       event.preventDefault();
       const route = this.name || this.route;
       Reaction.Router.go(route);
-    } else {
-      event.preventDefault();
-      Reaction.Router.go("/");
-      introJs().start();
     }
     template.$(".dropdown-toggle").dropdown("toggle");
   }

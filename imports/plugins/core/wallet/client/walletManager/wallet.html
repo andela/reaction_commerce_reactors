@@ -1,0 +1,100 @@
+<template name="walletManager">
+  <style>
+    input {
+      height: 40px;
+      border: none;
+      padding: 10px;
+      border-radius: 7px;
+    }
+  </style>
+  <div  id="wallet-manage-page">
+    <div class="col-sm-12">
+      <div id="wallet-title"><h1>My Wallet</h1></div>
+      <div id="wallet-text" class="text-center">
+        <span >Wallet balance is: NGN {{wallet.amount}}</span>
+      </div>
+    </div>
+
+
+    <div class="col-xs-12 col-sm-12" style="z-index:1">
+      <!-- <div class="col-sm-3"></div> -->
+      <div class="col-xs-6 col-sm-6" id="button-holder">
+        <div class="col-sm-6">
+          <button class="btn btn-sm btn-success" id="top-up-wallet" >
+            <span data-i18n="Top up wallet">Top up wallet</span>
+            <i class="fa fa-spinner fa-spin hidden"></i>
+          </button>
+        </div>
+        <div class="col-sm-6">
+          <div id="show-history">
+            <button class="btn btn-sm btn-default" disabled="true" id="history-button">
+              <span data-i18n="Top up wallet">View History</span>
+              <i class="fa fa-spinner fa-spin hidden"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-lg-12" style="z-index:1; display:block" id="history-bar">
+      <hr/>
+      <div class="text-center">
+        <h3>Wallet History</h3>
+      </div>
+      {{#unless wallet.transactionHistory}}
+      <div class="text-center">
+        <span > No Record </span>
+      </div>
+      {{/unless}}
+      {{#if wallet.transactionHistory}}
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S/N</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Desctiption</th>
+                <th>Items</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each wallet.transactionHistory}}
+                {{> transactionHistory}}
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="col-sm-12 col-lg-12" id="fundWallet" style="z-index:1;display:none">
+      <hr/>
+
+      <div class="col-sm-6 col-lg-6" style="margin-left:180px" >
+        {{> fundWallet}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="transactionHistory">
+  <tr>
+    <td></td>
+    <td>{{transactiontype}}</td>
+    <td>{{amount}}</td>
+    <td>{{description}}</td>
+    {{#unless items}}
+      <td>None</td>
+    {{/unless}}
+    {{#if items}}
+      <td>
+        <ul>
+          {{#each items}}
+            <li>{{title}} X {{quantity}}</li>
+          {{/each}}
+        </ul>
+      </td>
+    {{/if}}
+  </tr>
+</template>

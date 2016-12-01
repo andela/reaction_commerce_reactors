@@ -17,7 +17,7 @@ function uiEnd(template, buttonText) {
 }
 
 function paymentAlert(errorMessage) {
-  return $(".alert").removeClass("hidden").text(errorMessage);
+  $(".alert").removeClass("hidden").text(errorMessage);
 }
 
 function hidePaymentAlert() {

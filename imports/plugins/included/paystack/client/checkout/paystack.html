@@ -1,0 +1,66 @@
+<template name="paystackPaymentForm">
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+    <div class="row">
+      <div class="form-group">
+        <label class="control-label" for="payerEmailAddress">Email</label>
+        <input type="email" id="payerEmailAddress" value="{{getEmailAddress}}" required aria-describedby="email-desc"/>
+        <span id="email-desc" class="help-block">This is a required field</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <label class="control-label" for="payerMobileNumber">Mobile Number</label>
+        <input type="text" id="payerMobileNumber" value="{{getPhoneNumber}}"/>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-lg btn-success btn-block" onclick="payWithPaystack()">Pay with Paystack
+    </button>
+
+  <script>
+    function getPublickey() {
+      if (!Window.KEYS[0]) {
+        Alerts.toast("Sorry, the admin has not set the API keys", "error");
+      }
+      return Window.KEYS[0].apiPublicKey;
+    }
+
+    function payWithPaystack() {
+      try {
+        const email = document.getElementById("payerEmailAddress").value;
+        const phoneNumber = document.getElementById("payerMobileNumber").value;
+
+        const handler = PaystackPop.setup({
+          key: getPublickey(),
+          email: email,
+          amount: {{getAmount}},
+          ref: "{{getTransactionId}}",
+          metadata: {
+            custom_fields: [
+              {
+                display_name: "Mobile Number",
+                variable_name: "mobile_number",
+                value: phoneNumber
+              }
+            ]
+          },
+          callback: function (response) {
+            Template.paystackPaymentForm.__helpers.get('paymentSuccessful')(response);
+          },
+          onClose: function () {
+            Template.paystackPaymentForm.__helpers.get('windowClosed').call();
+          }
+        });
+        handler.openIframe();
+      } catch (e) {
+        if (e.message.indexOf("email") !== -1) {
+          Alerts.toast("The entered email is invalid", "error");
+        } else {
+          Alerts.toast("Sorry, an error occurred.", "error");
+        }
+      }
+      return false;
+    }
+  </script>
+</template>

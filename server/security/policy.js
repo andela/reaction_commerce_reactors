@@ -45,3 +45,7 @@ BrowserPolicy.content.allowOriginForAll("fonts.gstatic.com");
 
 BrowserPolicy.content.allowOriginForAll("enginex.kadira.io");
 BrowserPolicy.content.allowOriginForAll("*.stripe.com");
+
+BrowserPolicy.content.allowOriginForAll("js.paystack.co");
+BrowserPolicy.content.allowOriginForAll("paystack.com");
+BrowserPolicy.content.allowOriginForAll("*.siftscience.com");

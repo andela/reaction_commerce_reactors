@@ -22,6 +22,23 @@
       </div>
     {{/if}}
     <div class="search" data-intro="Search for products." data-position="auto">{{> React IconButtonComponent}}</div>
+
+    <div class="dropdown">
+
+        <div class="dropdown-toggle notify"
+             data-toggle="dropdown"
+             data-hover="dropdown"
+             data-intro="View notifications"
+             data-position="auto">
+          {{> React notificationButton }}
+        </div>
+        <div class="dropdown-menu notify-drop">
+            <div>
+              {{> React notificationDropdown }}
+            </div>
+        </div>
+    </div>
+
     <div class="languages hidden-xs" data-intro="Change your language." data-position="auto">{{> i18nChooser}}</div>
     <div class="accounts" data-intro="Manage your account." data-position="auto">{{> accounts tpl="loginDropdown"}}</div>
     <div class="cart" data-intro="View products in your cart." data-position="auto">{{> cartIcon}}</div>

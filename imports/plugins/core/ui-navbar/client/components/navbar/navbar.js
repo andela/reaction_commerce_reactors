@@ -9,12 +9,13 @@ const sub = Meteor.subscribe("notificationList", uid);
 
 Template.CoreNavigationBar.onCreated(function () {
   this.state = new ReactiveDict();
-  this.subscribe("Pages");
   this.state.setDefault({
     pages: []
   });
-  Meteor.call("pages/getPages", (err, data) => {
-    this.state.set("pages", data);
+
+  this.autorun(() => {
+    this.subscribe("Pages");
+    this.state.set("pages", Pages.find().fetch());
   });
 });
 

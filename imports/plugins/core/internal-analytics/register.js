@@ -29,7 +29,8 @@ Reaction.registerPackage({
     {
       layout: "coreLayout",
       layoutHeader: "layoutHeader",
-      layoutFooter: "",
+      layoutFooter: "layoutFooter",
+      collection: "History",
       label: "Internal Analytics",
       workflow: "coreAnalyticsWorkflow",
       theme: "default",

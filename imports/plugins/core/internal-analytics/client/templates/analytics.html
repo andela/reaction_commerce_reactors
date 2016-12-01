@@ -1,10 +1,32 @@
 <template name="internalAnalytics">
-  <div class="container-fluid-sm">
-    <div>
-      <label>Select Product: </label>
-      <select>
-        <option>All Products</option>
-      </select>
+  {{>chartHeader}}
+  {{>chartBody}}
+</template>
+
+<template name="chartHeader">
+  <div class="container">
+    <div class="row" style="margin-bottom: 10px; margin-top: 20px">
+      <div class="col-xs-6 col-sm-3">
+        <label>Select Product: </label>
+        <select class="dropdown">
+          <option>All Products</option>
+        </select>
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <label>Start Date: </label>
+        <input type="date"/>
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <label>End Date: </label>
+        <input type="date"/>
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <button type="button" class="btn btn-primary">Go</button>
+      </div>
     </div>
   </div>
+</template>
+
+<template name="chartBody">
+  <canvas id="theChart" width="auto" height="auto"></canvas>
 </template>

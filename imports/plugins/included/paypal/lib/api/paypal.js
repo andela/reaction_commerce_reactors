@@ -117,7 +117,7 @@ export const Paypal = {
 function getSettings(settings, ref, valueName) {
   if (settings !== null) {
     return settings[valueName];
-  } else if (ref !== null) {
+  } else if (ref !== null && ref !== undefined) {
     return ref[valueName];
   }
   return {};

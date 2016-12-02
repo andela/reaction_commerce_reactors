@@ -1,0 +1,97 @@
+<template name="walletCheckout">
+
+  <div class="row" style="margin:20px">
+
+    <div class="col-sm-12 col-lg-12" style="margin-bottom:15px">
+      <div class="col-sm-12 col-lg-12">Current Wallet balance is {{ wallet.amount }} NGN</div>
+      {{#if isEmpty wallet.amount }}
+         <div class="col-sm-12 col-lg-12" style="color:red"> You cannot pay with wallet. Wallet is empty </div>
+      {{/if}}
+    </div>
+
+    <div class="col-xs-6">
+      <button class="btn btn-sm btn-success btn-block" id="top-up-wallet" >
+        <span data-i18n="Top up wallet">Top up wallet</span>
+        <i class="fa fa-spinner fa-spin hidden"></i>
+      </button>
+    </div>
+
+
+    {{#unless isEmpty wallet.amount }}
+      <div class="col-xs-6">
+        <button class="btn btn-sm btn-success btn-block" id="btn-wallet-pay">
+          <span id="pay-with-wallet" data-i18n="Pay with wallet">Pay</span>
+          <i class="fa fa-spinner fa-spin hidden" id="btn-processing"></i>
+        </button>
+      </div>
+    {{/unless}}
+  </div>
+
+<hr/>
+
+  <div class="row" id="fundWallet" style="display:none;margin:15px">
+    {{> fundWallet}}
+  </div>
+</template>
+
+
+
+<template name="fundWallet">
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+  <h3><span  data-i18n="Top up">Fund wallet with Paystack</span></h3>
+
+  <div class="col-sm-12 col-lg-12" style="margin:15px 10px 0 15px">
+    <input type="email" id="walletEmailAddress" placeholder="Email Address" required aria-describedby="email-desc"/>
+  </div>
+
+  <div class="col-sm-12 col-lg-12" style="margin:15px">
+    <div class="col-sm-7" style="margin:0 10px 0 0">
+      <input type="text" placeholder="Phone Number" id="walletMobileNumber" />
+    </div>
+
+    <div class="col-sm-5" style="margin:15px 0 0 0">
+      <input type="text" placeholder="Amount" id="walletAmount"/>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-sm btn-success btn-block" onclick="fundWallet()"> Fund Wallet
+  </button>
+  <script>
+    function getPublickey() {
+      return Window.KEYS[0].apiPublicKey;
+    }
+
+    function fundWallet() {
+      const publicKey = getPublickey();
+      const email = document.getElementById("walletEmailAddress").value;
+      const phoneNumber = document.getElementById("walletMobileNumber").value;
+      const amount = parseFloat(document.getElementById("walletAmount").value);
+
+      amount_in_kobo = amount * 100;
+
+      const handler = PaystackPop.setup({
+        key: publicKey,
+        email: email,
+        amount: amount_in_kobo,
+        ref: "{{ getTransactionId }}",
+        metadata: {
+          custom_fields: [
+            {
+              display_name: "Mobile Number",
+              variable_name: "mobile_number",
+              value: phoneNumber
+            }
+          ]
+        },
+        callback: function (response) {
+          Template.walletCheckout.__helpers.get('paymentSuccessful')(response);
+        },
+        onClose: function () {
+          Template.walletCheckout.__helpers.get('windowClosed').call();
+        }
+      });
+      handler.openIframe();
+    }
+  </script>
+</template>

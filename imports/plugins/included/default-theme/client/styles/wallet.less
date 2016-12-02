@@ -1,0 +1,31 @@
+#wallet-manage-page {
+  margin:auto;
+  width:700px;
+}
+#wallet-title {
+  margin:auto;
+  width: 200px;
+  border-bottom: 1px solid #eeeeee;
+}
+#wallet-text {
+  height:40px;
+  margin-top: 40px;
+}
+#button-holder {
+  margin-left: 200px;
+}
+
+
+table {
+    counter-reset: rowNumber 1;
+}
+
+table tr:not(:first-child) {
+    counter-increment: rowNumber;
+}
+
+table tr td:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 5em;
+}

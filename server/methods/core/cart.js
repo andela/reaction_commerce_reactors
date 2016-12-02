@@ -641,9 +641,27 @@ Meteor.methods({
 
       // create in site notification
       order.status = "new";
+
+      let notifyUser = false;
+      const roleObj = Object.keys(Meteor.user().roles);
+      if (Meteor.user().roles[roleObj[0]].includes("admin")) {
+        notifyUser = true;
+      }
+      const notify = {};
       const shop = Collections.Shops.findOne(order.shopId);
+      const phone = `234${order.billing[0].address.phone.substr(1)}`;
+      const newOrderMessage = `Your order has been received.\nOrderId: ${orderId}.\nDate: ${order.createdAt}`;
+
+      notify.title = "A new order has been created";
+      notify.message = "Order detail here";
       order.orderUrl = Meteor.absoluteUrl() + getSlug(shop.name) + "/cart/completed?_id=" + order.cartId;
-      Meteor.call("createNotification", order);
+      Meteor.call("createNotification", notify.title, notify.message, order.userId, order.orderUrl, notifyUser);
+
+      if (order.billing[0].address.phone && phone) {
+        Meteor.call("sms/sendMessage", getSlug(shop.name).toUpperCase(), phone, newOrderMessage);
+      } else {
+        Logger.error("Phone number was not found. SMS not sent.");
+      }
 
       // order success
       return orderId;

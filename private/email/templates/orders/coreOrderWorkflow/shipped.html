@@ -5,10 +5,14 @@
 <body>
   <div>
     <div><img src="{{emailLogo}}" /> {{ shopContact.fullName }} </div>
-    <h3>Hi, {{shipping.address.fullName}}</h3><div>Order status: {{shipping.address.workflow.status}}</div>
+    <div style="float: right">
+      <div>Order status: {{shipping.workflow.status}}</div>
+      <div>Time Sent: {{orderDate}}</div>
+    </div>
+    <h3 style="clear: both">Hi, {{shipping.address.fullName}}</h3>
     <div>
       <p>Your order from {{shopContact.fullName}} has been shipped.</p>
-      <p>You can track your order with this tracking number {{shipping.address.tracking}} or by logging into your <a href="{{homepage}}{{orderUrl}}">account</a>.</p>
+      <p>You can track your order with this tracking number {{shipping.tracking}} or by logging into your <a href="{{homepage}}{{orderUrl}}">account</a>.</p>
       <p>Thank you for choosing <strong>{{shopContact.fullName}}</strong>.</p>
       <em>Regards.</em><br />
       <em>{{shopContact.fullName}}</em>

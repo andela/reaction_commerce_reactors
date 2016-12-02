@@ -7,7 +7,38 @@
       {{> tagNav tagNavProps}}
     </div>
 
+    {{#if pagesAvailable}}
+      <div data-intro="View other pages about the shop" data-position="auto">
+        <div role="presentation" class="dropdown">
+          <div class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Other Pages <span class="caret"></span>
+          </div>
+          <ul class="dropdown-menu text-center" role="menu">
+            {{#each showPages}}
+              <li><a role="menuitem" href="/reaction/page/{{pageName}}"> {{pageTitle}}</a></li>
+            {{/each}}
+         </ul>
+        </div>
+      </div>
+    {{/if}}
     <div class="search" data-intro="Search for products." data-position="auto">{{> React IconButtonComponent}}</div>
+
+    <div class="dropdown">
+
+        <div class="dropdown-toggle notify"
+             data-toggle="dropdown"
+             data-hover="dropdown"
+             data-intro="View notifications"
+             data-position="auto">
+          {{> React notificationButton }}
+        </div>
+        <div class="dropdown-menu notify-drop">
+            <div>
+              {{> React notificationDropdown }}
+            </div>
+        </div>
+    </div>
+
     <div class="languages hidden-xs" data-intro="Change your language." data-position="auto">{{> i18nChooser}}</div>
     <div class="accounts" data-intro="Manage your account." data-position="auto">{{> accounts tpl="loginDropdown"}}</div>
     <div class="cart" data-intro="View products in your cart." data-position="auto">{{> cartIcon}}</div>

@@ -34,6 +34,13 @@ export default function () {
     } catch (error) {
       Logger.info("Bypassing loading Tags default data.");
     }
+
+    try {
+      Fixture.process(Assets.getText("data/Pages.json"), ["pageName"], Reaction.Import.page);
+    } catch (error) {
+      Logger.error(error);
+      Logger.info("Bypassing loading Page default data.");
+    }
     //
     // these will flush and import with the rest of the imports from core init.
     // but Bulk.find.upsert() = false

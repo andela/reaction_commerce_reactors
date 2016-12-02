@@ -1,9 +1,22 @@
 import { FlatButton } from "/imports/plugins/core/ui/client/components";
 import { Reaction } from "/client/api";
-import { Tags } from "/lib/collections";
+import { Tags, Notifications, Pages } from "/lib/collections";
+import { Meteor } from "meteor/meteor";
+import { Dropdown } from "/imports/plugins/included/notifications/client/components";
+
+const uid = Meteor.userId();
+const sub = Meteor.subscribe("notificationList", uid);
 
 Template.CoreNavigationBar.onCreated(function () {
   this.state = new ReactiveDict();
+  this.state.setDefault({
+    pages: []
+  });
+
+  this.autorun(() => {
+    this.subscribe("Pages");
+    this.state.set("pages", Pages.find().fetch());
+  });
 });
 
 /**
@@ -32,14 +45,20 @@ Template.CoreNavigationBar.helpers({
       component: FlatButton,
       icon: "fa fa-search",
       kind: "flat"
-      // onClick() {
-      //   Blaze.renderWithData(Template.searchModal, {
-      //   }, $("body").get(0));
-      //   $("body").css("overflow-y", "hidden");
-      //   $("#search-input").focus();
-      // }
     };
   },
+
+  notificationButton() {
+    const count = Notifications.find({ read: false }).fetch().length;
+    const badge = (count) ? count + "" : "";
+    return {
+      component: FlatButton,
+      icon: "fa fa-bell",
+      kind: "flat",
+      badge: badge
+    };
+  },
+
   onMenuButtonClick() {
     const instance = Template.instance();
     return () => {
@@ -56,10 +75,10 @@ Template.CoreNavigationBar.helpers({
     tags = Tags.find({
       isTopLevel: true
     }, {
-      sort: {
-        position: 1
-      }
-    }).fetch();
+        sort: {
+          position: 1
+        }
+      }).fetch();
 
     return {
       name: "coreHeaderNavigation",
@@ -71,5 +90,19 @@ Template.CoreNavigationBar.helpers({
         instance.toggleMenuCallback = callback;
       }
     };
+  },
+
+  notificationDropdown() {
+    const list = Notifications.find({}, {sort: {time: -1}}).fetch();
+    return {
+      component: Dropdown,
+      list: list
+    };
+  },
+  showPages() {
+    return Template.instance().state.get("pages");
+  },
+  pagesAvailable() {
+    return Template.instance().state.get("pages").length > 0;
   }
 });

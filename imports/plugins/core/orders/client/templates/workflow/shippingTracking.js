@@ -2,7 +2,7 @@ import _ from "lodash";
 import { Meteor } from "meteor/meteor";
 import { Tracker } from "meteor/tracker";
 import { Template } from "meteor/templating";
-import { Orders } from "/lib/collections";
+import { Orders, Shops } from "/lib/collections";
 
 import FlatButton from "/imports/plugins/core/ui/client/components/button/flatButton"; // Import flatbutton react component
 
@@ -39,6 +39,16 @@ Template.coreOrderShippingTracking.events({
 
   "click [data-event-action=resendNotification]": function () {
     const template = Template.instance();
+    const shop = Shops.findOne(template.order.shopId);
+    const phone = `234${template.order.billing[0].address.phone.substr(1)}`;
+    const tracking = template.order.shipping[0].tracking ? `\nTracking No.: ${template.order.shipping[0].tracking}.` : "";
+    const OrderMessage = `Your request to cancel your order has been received.${tracking}\nOrderId: ${template.order._id}.\nDate: ${new Date().toString()}`;
+    if (template.order.billing[0].address.phone && phone) {
+      Meteor.call("sms/sendMessage", shop.name.toUpperCase(), phone, OrderMessage);
+    } else {
+      Logger.error("Phone number was not found. SMS not sent.");
+    }
+
     Meteor.call("orders/sendNotification", template.order, (err) => {
       if (err) {
         Alerts.toast("Server Error: Can't send email notification.", "error");

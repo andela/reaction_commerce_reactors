@@ -1,0 +1,85 @@
+<template name="pages">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8">
+        {{#if showEditPage}}
+          {{> pageContent data=editPage disabled=true context=pageEdit}}
+        {{else}}
+          {{#if showCreatePage}}
+            {{> pageContent data=createPage disabled=false context=pageCreate}}
+          {{else}}
+            <div class="well" style="margin-top:50px;">
+              <p class="text-center">
+                <i class="fa fa-file fa-5x"></i>
+                <h4> Select a page click on the button below to create a new page</h4>
+                <div>
+                    <button class="btn btn-info fa fa-plus-circle"
+                      data-event-action="createPage"> Create new page
+                    </button>
+                </div>
+              </p>
+            </div>
+          {{/if}}
+        {{/if}}
+      </div>
+      <div class="col-sm-4">
+        <h3 class="text-center">List of pages</h3>
+        <ul class="list-group">
+          {{#each page in displayPages}}
+            {{> pageList page}}
+          {{else}}
+            <div class="empty-view-message">
+                <i class="fa fa-file"></i>
+                <p>No Pages Found</p>
+            </div>
+          {{/each}}
+        </ul>
+        <div>
+            <button class="btn btn-info fa fa-plus-circle"
+              data-event-action="createPage">
+              Create new page
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="pageList">
+  <li class="list-group-item">
+    <span >{{ pageTitle }}</span>
+    <div class="pull-right">
+        <button class="btn btn-sm btn-info fa fa-edit"
+          data-event-action="editPage">
+        </button>
+        <button class="btn btn-sm btn-success fa fa-file"
+          data-event-action="viewPage">
+        </button>
+        <button class="btn btn-sm btn-danger fa fa-trash"
+          data-event-action="deletePage">
+          </button>
+    </div>
+</li>
+</template>
+
+<template name="pageContent">
+    <h3 class="text-center">{{data.pageTitle}}</h3>
+    <form name="{{context}}-page" id="{{context}}-page">
+      <div class="form-group">
+        <label for="PageTitle">Page Title</label>
+        <input type="text" class="form-control" id="pageTitle" placeholder="Page Title" value="{{data.pageTitle}}">
+      </div>
+      <div class="form-group">
+        <label for="PageName">Page Name <small>(This field should be unique)</small></label>
+        <input type="text" class="form-control" id="pageName" placeholder="Page Name" value="{{data.pageName}}" disabled={{disabled}}>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Page Content</label>
+        <textarea class="form-control" name="pageContent" id="pageContent" rows="15"></textarea>
+        <script>
+          CKEDITOR.replace("pageContent");
+        </script>
+      </div>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</template>

@@ -56,6 +56,10 @@ Template.productDetail.onCreated(function () {
   });
 });
 
+Template.productDetail.onRendered(function () {
+
+});
+
 /**
  * productDetail helpers
  * see helper/product.js for

@@ -54,6 +54,9 @@ Template.productDetail.onCreated(function () {
       }
     }
   });
+
+  Meteor.call("history/addView", "test");
+  console.log("Got here");
 });
 
 Template.productDetail.onRendered(function () {

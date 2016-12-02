@@ -394,7 +394,7 @@
       "scale": 0
     }
   },
-  "currency": "NGN",
+  "currency": "USD",
   "languages": [{
     "label": "العربية",
     "i18n": "ar",
@@ -3073,7 +3073,7 @@
     "city": "Santa Monica",
     "region": "CA",
     "postal": "90401",
-    "country": "NG",
+    "country": "US",
     "phone": "8885551212",
     "isCommercial": true,
     "isShippingDefault": true,
@@ -3095,8 +3095,7 @@
     "tag",
     "index",
     "cart/checkout",
-    "cart/completed",
-    "wallet"
+    "cart/completed"
   ]
 }, {
   "_id": "ddzuN2YPvgvx7rJS5",
@@ -3490,7 +3489,7 @@
       "scale": 0
     }
   },
-  "currency": "NGN",
+  "currency": "USD",
   "languages": [{
     "label": "العربية",
     "i18n": "ar",
@@ -6191,7 +6190,6 @@
     "tag",
     "index",
     "cart/checkout",
-    "cart/completed",
-    "wallet"
+    "cart/completed"
   ]
 }]

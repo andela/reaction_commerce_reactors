@@ -1,4 +1,3 @@
-// import * as Collections from "../../lib/collections/";
 import * as Endpoints from "./endpoints";
 
 if (Meteor.isServer) {

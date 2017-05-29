@@ -7,11 +7,22 @@ export function shops(Api) {
     get: function () {
       return Shops.find().fetch();
     }
-    // post: function () {
-    //   Products.insert(this.request.body, (err, id) => {
-    //     if (err) console.log(err);
-    //     return id;
-    //   });
-    // }
+  });
+  Api.addRoute("shops/:id", { authRequired: false }, {
+    get: function () {
+      return Shops.findOne(this.urlParams.id);
+    },
+    delete: {
+      action: function () {
+        if (Shops.remove(this.urlParams.id)) {
+          return { status: "success", data: { message: "Shop removed" } };
+        }
+        return {
+          statusCode: 404,
+          body: { status: "fail", message: "Shop not found" }
+        };
+      }
+    }
   });
 }
+

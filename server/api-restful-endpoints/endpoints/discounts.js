@@ -4,11 +4,11 @@ export function discounts(Api) {
   Api.addCollection(Discounts);
 
   Api.addRoute("discounts", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Discounts.find().fetch();
     },
     post: {
-      action: function () {
+      action: () => {
         if (Discounts.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function discounts(Api) {
   });
 
   Api.addRoute("discounts/:id", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Discounts.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: function () {
+      action: () => {
         if (Discounts.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Discounts items deleted" } };
         }

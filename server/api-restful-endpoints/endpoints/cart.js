@@ -4,11 +4,11 @@ export function cart(Api) {
   Api.addCollection(Cart);
 
   Api.addRoute("cart", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Cart.find().fetch();
     },
     post: {
-      action: function () {
+      action: () => {
         if (Cart.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function cart(Api) {
   });
 
   Api.addRoute("cart/:id", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Cart.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: function () {
+      action: () => {
         if (Cart.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Cart items deleted" } };
         }

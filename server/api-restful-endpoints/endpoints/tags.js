@@ -4,11 +4,11 @@ export function tags(Api) {
   Api.addCollection(Tags);
 
   Api.addRoute("tags", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Tags.find().fetch();
     },
     post: {
-      action: function () {
+      action: () => {
         if (Tags.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function tags(Api) {
   });
 
   Api.addRoute("tags/:id", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Tags.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: function () {
+      action: () => {
         if (Tags.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Tag deleted" } };
         }

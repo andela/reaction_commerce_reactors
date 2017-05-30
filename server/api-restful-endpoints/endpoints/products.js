@@ -4,11 +4,11 @@ export function products(Api) {
   Api.addCollection(Products);
 
   Api.addRoute("products", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Products.find().fetch();
     },
     post: {
-      action: function () {
+      action: () => {
         if (Products.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function products(Api) {
   });
 
   Api.addRoute("products/:id", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Products.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: function () {
+      action: () => {
         if (Products.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Product deleted" } };
         }

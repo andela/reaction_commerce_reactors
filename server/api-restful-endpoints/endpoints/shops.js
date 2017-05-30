@@ -4,16 +4,16 @@ export function shops(Api) {
   Api.addCollection(Shops);
 
   Api.addRoute("shops", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Shops.find().fetch();
     }
   });
   Api.addRoute("shops/:id", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Shops.findOne(this.urlParams.id);
     },
     delete: {
-      action: function () {
+      action: () => {
         if (Shops.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Shop removed" } };
         }

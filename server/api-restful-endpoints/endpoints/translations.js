@@ -4,11 +4,11 @@ export function translations(Api) {
   Api.addCollection(Translations);
 
   Api.addRoute("translations", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Translations.find().fetch();
     },
     post: {
-      action: function () {
+      action: () => {
         if (Translations.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function translations(Api) {
   });
 
   Api.addRoute("translations/:id", { authRequired: false }, {
-    get: function () {
+    get: () => {
       return Translations.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: function () {
+      action: () => {
         if (Translations.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Translation deleted" } };
         }

@@ -55,12 +55,12 @@ Template.productGrid.onRendered(function () {
 
   if (!Reaction.hasTakenTour()) {
     const name = 'IntroJS';
-    var value = localStorage.getItem(name);
+    let value = localStorage.getItem(name);
     if (value == null) {
       introJs()
         .start()
         .onexit(() => {
-          localStorage.setItem(name, 1)
+
           setHasTakenTour
         })
         .oncomplete(() => {

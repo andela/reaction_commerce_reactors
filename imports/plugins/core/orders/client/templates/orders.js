@@ -166,6 +166,9 @@ Template.ordersListItem.helpers({
 
   orderIsNew(order) {
     return order.workflow.status === "new";
+  },
+  isCanceled(order) {
+    return order.workflow.status === "canceled";
   }
 });
 

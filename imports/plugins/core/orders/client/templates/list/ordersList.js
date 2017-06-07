@@ -9,7 +9,9 @@ import { Orders, Shops } from "/lib/collections";
 Template.dashboardOrdersList.helpers({
   orderStatus() {
     if (this.workflow.status === "coreOrderCompleted") {
-      return true;
+      return "completed";
+    } else if (this.workflow.status === "canceled") {
+      return "cancelled";
     }
   },
   orders(data) {

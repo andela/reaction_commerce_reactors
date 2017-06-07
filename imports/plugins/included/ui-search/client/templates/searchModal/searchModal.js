@@ -74,10 +74,10 @@ function priceMatch(type, value, condition) {
   if (type === "min" && (value.min >= condition || value.max >= condition)) {
     return true;
   }
-  if (type === "max" && value.max <= condition) {
+  if (type === "max" && value.max <= condition || value.min >= condition) {
     return true;
   }
-  return false;
+  return true;
 }
 
 // Match for vendors

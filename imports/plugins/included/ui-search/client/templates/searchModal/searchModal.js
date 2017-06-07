@@ -7,7 +7,6 @@ import { ProductSearch, Tags, OrderSearch, AccountSearch } from "/lib/collection
 import { IconButton, SortableTable } from "/imports/plugins/core/ui/client/components";
 
 
-
  // filterItems = [{vendor: []}, {min: 0}, {max: 9999999}, {score: false}];
 function filterResult() {
   const result = [];
@@ -259,7 +258,7 @@ Template.searchModal.events({
     const key = event.target.parentNode.id;
     const value = event.target.value;
     this.filterItems.forEach((item) => {
-      let itemKey = Object.keys(item).toString();
+      const itemKey = Object.keys(item).toString();
       if (itemKey === key) {
         if (key === "vendor" && !item[itemKey].includes(value)) {
           item[itemKey].push(value);

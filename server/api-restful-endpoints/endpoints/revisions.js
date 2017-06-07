@@ -4,11 +4,11 @@ export function revisions(Api) {
   Api.addCollection(Revisions);
 
   Api.addRoute("revisions", { authRequired: false }, {
-    get: () =>  {
+    get() {
       return Revisions.find().fetch();
     },
     post: {
-      action: () =>  {
+      action() {
         if (Revisions.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function revisions(Api) {
   });
 
   Api.addRoute("revisions/:id", { authRequired: false }, {
-    get: () =>  {
+    get() {
       return Revisions.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: () =>  {
+      action() {
         if (Revisions.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Revision deleted" } };
         }

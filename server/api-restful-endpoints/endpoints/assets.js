@@ -4,11 +4,11 @@ export function assets(Api) {
   Api.addCollection(Assets);
 
   Api.addRoute("assets", { authRequired: false }, {
-    get: () => {
+    get() {
       return Assets.find().fetch();
     },
     post: {
-      action: () => {
+      action() {
         if (Assets.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function assets(Api) {
   });
 
   Api.addRoute("assets/:id", { authRequired: false }, {
-    get: () => {
+    get() {
       return Assets.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: () => {
+      action() {
         if (Assets.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Language removed" } };
         }

@@ -4,11 +4,11 @@ export function orders(Api) {
   Api.addCollection(Orders);
 
   Api.addRoute("orders", { authRequired: false }, {
-    get: () => {
+    get() {
       return Orders.find().fetch();
     },
     post: {
-      action: () => {
+      action() {
         if (Orders.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function orders(Api) {
   });
 
   Api.addRoute("orders/:id", { authRequired: false }, {
-    get: () => {
+    get() {
       return Orders.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: () => {
+      action() {
         if (Orders.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "order was deleted" } };
         }

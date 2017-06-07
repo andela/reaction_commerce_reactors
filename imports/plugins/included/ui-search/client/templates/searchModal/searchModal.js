@@ -76,7 +76,7 @@ function priceMatch(type, value, condition) {
   if (type === "max" && value.max <= condition || value.min >= condition) {
     return true;
   }
-  return true;
+  return false;
 }
 
 // Match for vendors

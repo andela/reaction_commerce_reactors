@@ -13,7 +13,7 @@ blaze-html-templates@1.0.4    # Compile .html files into Meteor Blaze views
 es5-shim@4.6.14               # ECMAScript 5 compatibility for older browsers.
 ecmascript@0.5.8              # Enable ECMAScript2015+ syntax in app code
 audit-argument-checks@1.0.7   # ensure meteor method argument validation
-browser-policy@1.0.9          # security-related policies enforced by newer browsers
+browser-policy          # security-related policies enforced by newer browsers
 juliancwirko:postcss          # CSS post-processing plugin (replaces standard-minifier-css)
 standard-minifier-js@1.2.0    # a minifier plugin used for Meteor apps by default
 session@1.1.6                 # ReactiveDict whose contents are preserved across Hot Code Push
@@ -97,3 +97,4 @@ practicalmeteor:sinon
 # Custom Packages
 react-template-helper
 ultimatejs:tracker-react@1.0.5
+nimble:restivus

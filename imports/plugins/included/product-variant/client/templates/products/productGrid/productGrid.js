@@ -54,10 +54,20 @@ Template.productGrid.onRendered(function () {
   };
 
   if (!Reaction.hasTakenTour()) {
-    const introJS = introJs();
-    introJS.start();
-    introJS.onexit(setHasTakenTour);
-    introJS.oncomplete(setHasTakenTour);
+    const name = 'IntroJS';
+    let value = localStorage.getItem(name);
+    if (value == null) {
+      introJs()
+        .start()
+        .onexit(() => {
+
+          setHasTakenTour
+        })
+        .oncomplete(() => {
+          localStorage.setItem(name, 1)
+          setHasTakenTour
+        })
+    }
   }
 
 });

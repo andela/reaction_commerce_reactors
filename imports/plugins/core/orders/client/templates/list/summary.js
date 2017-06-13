@@ -1,5 +1,16 @@
 import { Template } from "meteor/templating";
 import { NumericInput } from "/imports/plugins/core/ui/client/components";
+import swal from "sweetalert2";
+
+Template.ordersListSummary.onCreated(function () {
+  this.state = new ReactiveDict();
+
+  this.autorun(() => {
+    const currentData = Template.currentData();
+    const order = currentData.order;
+    this.state.set("order", order);
+  });
+});
 
 /**
  * ordersListSummary helpers
@@ -23,17 +34,23 @@ Template.ordersListSummary.helpers({
   },
   displayCancelButton() {
     return !(this.order.workflow.status === "canceled"
-     || this.order.workflow.status === "coreOrderWorkflow/canceled");
+      || this.order.workflow.status === "coreOrderWorkflow/canceled");
   },
+
   orderStatus() {
     return this.order.workflow.status === "canceled";
   }
 });
+
+/**
+ * ordersListSummary events
+ */
 Template.ordersListSummary.events({
-  /** @param {Event} event
-   * @param {Template} instance
-   * @return {void}
-   *
+  /**
+  * Submit form
+  * @param  {Event} event - Event object
+  * @param  {Template} instance - Blaze Template
+  * @return {void}
   */
   "click button[name=cancel]"(event, instance) {
     event.stopPropagation();

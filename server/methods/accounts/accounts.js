@@ -18,6 +18,17 @@ Meteor.methods({
     return false;
   },
 
+  "accounts/roleOptions": function (userRoles) {
+    check(userRoles, {
+      userId: userId,
+      userRole: userRole
+    });
+    Meteor.users.update(userRoles.userId, {
+      $set: { "profile.account": userRoles.userRole }
+    });
+    return userRoles.userRole;
+  },
+
   /**
    * accounts/addressBookAdd
    * @description add new addresses to an account
@@ -67,33 +78,33 @@ Meteor.methods({
           "userId": userId,
           "profile.addressBook.isShippingDefault": true
         }, {
-          $set: {
-            "profile.addressBook.$.isShippingDefault": false
-          }
-        });
+            $set: {
+              "profile.addressBook.$.isShippingDefault": false
+            }
+          });
       }
       if (address.isBillingDefault) {
         Collections.Accounts.update({
           "userId": userId,
           "profile.addressBook.isBillingDefault": true
         }, {
-          $set: {
-            "profile.addressBook.$.isBillingDefault": false
-          }
-        });
+            $set: {
+              "profile.addressBook.$.isBillingDefault": false
+            }
+          });
       }
     }
 
     return Collections.Accounts.upsert({
       userId: userId
     }, {
-      $set: {
-        userId: userId
-      },
-      $addToSet: {
-        "profile.addressBook": address
-      }
-    });
+        $set: {
+          userId: userId
+        },
+        $addToSet: {
+          "profile.addressBook": address
+        }
+      });
   },
 
   /**
@@ -150,10 +161,10 @@ Meteor.methods({
             "userId": userId,
             "profile.addressBook.isShippingDefault": true
           }, {
-            $set: {
-              "profile.addressBook.$.isShippingDefault": false
-            }
-          });
+              $set: {
+                "profile.addressBook.$.isShippingDefault": false
+              }
+            });
         } else {
           // if new `isShippingDefault` state is false, then we need to remove
           // this address from `cart.shipping`
@@ -169,10 +180,10 @@ Meteor.methods({
             "userId": userId,
             "profile.addressBook.isBillingDefault": true
           }, {
-            $set: {
-              "profile.addressBook.$.isBillingDefault": false
-            }
-          });
+              $set: {
+                "profile.addressBook.$.isBillingDefault": false
+              }
+            });
         } else {
           Meteor.call("cart/unsetAddresses", address._id, userId, "billing");
         }
@@ -183,10 +194,10 @@ Meteor.methods({
       "userId": userId,
       "profile.addressBook._id": address._id
     }, {
-      $set: {
-        "profile.addressBook.$": address
-      }
-    });
+        $set: {
+          "profile.addressBook.$": address
+        }
+      });
   },
 
   /**
@@ -218,12 +229,12 @@ Meteor.methods({
       "userId": userId,
       "profile.addressBook._id": addressId
     }, {
-      $pull: {
-        "profile.addressBook": {
-          _id: addressId
+        $pull: {
+          "profile.addressBook": {
+            _id: addressId
+          }
         }
-      }
-    });
+      });
   },
 
   /**

@@ -11,7 +11,6 @@ Template.loginFormSignUpView.onCreated(() => {
   template.formMessages = new ReactiveVar({});
   template.type = "signUp";
 });
-
 /**
  * Helpers: Login form sign up view
  */
@@ -27,15 +26,18 @@ Template.loginFormSignUpView.events({
    * @param  {Template} template - Blaze Template
    * @return {void}
    */
+
   "submit form": function (event, template) {
     event.preventDefault();
 
     // var usernameInput = template.$(".login-input--username");
     const emailInput = template.$(".login-input-email");
     const passwordInput = template.$(".login-input-password");
+    const registerRole = template.$(".register-role");
 
     const email = emailInput.val().trim();
     const password = passwordInput.val().trim();
+    const role = registerRole.val();
 
     const validatedEmail = LoginFormValidation.email(email);
     const validatedPassword = LoginFormValidation.password(password);
@@ -64,10 +66,22 @@ Template.loginFormSignUpView.events({
     const newUserData = {
       // username: username,
       email: email,
-      password: password
+      password: password,
+      role: role
+    };
+    const userRoles = {
+      userId: Meteor.userId(),
+      userRole: newUserData.role
     };
 
+    Meteor.call("accounts/roleOption", userRoles, (err, res) => {
+      if (err) {
+        return err;
+      }
+    });
+
     Accounts.createUser(newUserData, function (error) {
+      console.log(newUserData);
       if (error) {
         // Show some error message
         templateInstance.formMessages.set({

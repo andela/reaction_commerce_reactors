@@ -4,11 +4,11 @@ export function accounts(Api) {
   Api.addCollection(Accounts);
 
   Api.addRoute("accounts", { authRequired: false }, {
-    get: () => {
+    get() {
       return Accounts.find().fetch();
     },
     post: {
-      action: () => {
+      action() {
         if (Accounts.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,11 +28,11 @@ export function accounts(Api) {
   });
 
   Api.addRoute("accounts/:id", { authRequired: false }, {
-    get: () => {
+    get() {
       return Accounts.findOne(this.urlParams.id);
     },
     delete: {
-      action: () => {
+      action() {
         if (Accounts.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Account deleted" } };
         }

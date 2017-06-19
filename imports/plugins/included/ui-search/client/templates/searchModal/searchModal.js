@@ -1,14 +1,12 @@
 import _ from "lodash";
-import React from "react";
-import { DataType } from "react-taco-table";
+// import React from "react";
+// import { DataType } from "react-taco-table";
 import { Template } from "meteor/templating";
-import { i18next } from "/client/api";
+// import { i18next } from "/client/api";
 import { ProductSearch, Tags, OrderSearch, AccountSearch } from "/lib/collections";
-import { IconButton, SortableTable } from "/imports/plugins/core/ui/client/components";
+import { IconButton } from "/imports/plugins/core/ui/client/components";
 
-
-
- // filterItems = [{vendor: []}, {min: 0}, {max: 9999999}, {score: false}];
+// filterItems = [{vendor: []}, {min: 0}, {max: 9999999}, {score: false}];
 function filterResult() {
   const result = [];
   if (JSON.stringify(filterItems) === "[{\"vendor\":[]},{},{},{}]") {
@@ -43,7 +41,7 @@ function filterResult() {
           match = false;
       }
       if (match) {
-        count ++;
+        count++;
         if (count === tempFilter.length) {
           result.push(product);
         }
@@ -70,8 +68,7 @@ function priceMatch(type, value, condition) {
   if (!value) {
     return false;
   }
-
-  if (type === "min" && (value.min >= condition || value.max >= condition)) {
+  if (type === "min" && value.min >= condition) {
     return true;
   }
   if (type === "max" && value.max <= condition) {
@@ -107,8 +104,8 @@ function tagToggle(arr, val) {
  */
 Template.searchModal.onCreated(function () {
   this.state = new ReactiveDict();
-  filterItems = [{vendor: []}, {min: undefined}, {max: undefined}, {score: undefined}];
-  emptyFilter = [{vendor: []}, {min: undefined}, {max: undefined}, {score: undefined}];
+  filterItems = [{ vendor: [] }, { min: undefined }, { max: undefined }, { score: undefined }];
+  emptyFilter = [{ vendor: [] }, { min: undefined }, { max: undefined }, { score: undefined }];
   this.state.setDefault({
     initialLoad: true,
     slug: "",
@@ -259,7 +256,7 @@ Template.searchModal.events({
     const key = event.target.parentNode.id;
     const value = event.target.value;
     this.filterItems.forEach((item) => {
-      let itemKey = Object.keys(item).toString();
+      const itemKey = Object.keys(item).toString();
       if (itemKey === key) {
         if (key === "vendor" && !item[itemKey].includes(value)) {
           item[itemKey].push(value);

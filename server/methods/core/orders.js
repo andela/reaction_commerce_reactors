@@ -210,6 +210,28 @@ Meteor.methods({
       }
     });
   },
+/**
+   *
+   * @summary Cancel an Order
+   * @param {Object} order - order object
+   * @param {Object} newComment - new comment object
+   * @return {Object} return updated shipping results
+   */
+  "orders/cancelOrder"(order) {
+    check(order, Object);
+
+    // Update Order
+    return Orders.update(order._id, {
+      $set: {
+        "workflow.status": "canceled"
+      },
+      $addToSet: {
+        "workflow.workflow": "coreOrderWorkflow/canceled"
+      }
+    });
+  },
+
+
   /**
    * orders/shipmentShipped
    *
@@ -960,7 +982,7 @@ Meteor.methods({
    * @return {null} no return value
    */
   "orders/cancelOrder": function (orderId) {
-    check(orderId, String);
+    check(orderId, Object);
 
     if (!Reaction.hasPermission("orders")) {
       throw new Meteor.Error(403, "Access Denied");

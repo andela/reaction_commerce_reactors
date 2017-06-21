@@ -4,11 +4,11 @@ export function products(Api) {
   Api.addCollection(Products);
 
   Api.addRoute("products", { authRequired: false }, {
-    get: () => {
+    get() {
       return Products.find().fetch();
     },
     post: {
-      action: () => {
+      action() {
         if (Products.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,7 +28,7 @@ export function products(Api) {
   });
 
   Api.addRoute("products/:id", { authRequired: false }, {
-    get: () => {
+    get() {
       return Products.findOne(this.urlParams.id);
     },
     delete: {

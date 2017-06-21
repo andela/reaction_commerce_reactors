@@ -8,7 +8,7 @@ export function discounts(Api) {
       return Discounts.find().fetch();
     },
     post: {
-      action: () => {
+      action() {
         if (Discounts.insert(this.request.body)) {
           return {
             status: "success",
@@ -28,12 +28,12 @@ export function discounts(Api) {
   });
 
   Api.addRoute("discounts/:id", { authRequired: false }, {
-    get: () => {
+    get() {
       return Discounts.findOne(this.urlParams.id);
     },
     delete: {
       roleRequired: ["author", "admin"],
-      action: () => {
+      action() {
         if (Discounts.remove(this.urlParams.id)) {
           return { status: "success", data: { message: "Discounts items deleted" } };
         }

@@ -3,6 +3,7 @@ import * as Schemas from "/lib/collections/schemas";
 import { Logger, Reaction } from "/server/api";
 
 
+
 /**
  * Reaction Account Methods
  */
@@ -18,12 +19,25 @@ Meteor.methods({
     return false;
   },
 
-  "accounts/roleOptions": function (userRoles) {
-    check(userRoles, {
-      userId: userId,
-      userRole: userRole
+  "accounts/updateRoles": function (updateRole) {
+    check(updateRole, {
+      userId: String,
+      shopId: String
     });
-    Meteor.users.update(userRoles.userId, {
+    const user = Meteor.users.findOne({ _id: updateRole.userId });
+    if (user.profile.account === "Vendor") {
+      Roles.addUsersToRoles(updateRole.userId, "owner", Roles.GLOBAL_GROUP);
+    }
+    return true;
+  },
+
+  "accounts/roleOption": function (userRoles) {
+    check(userRoles, {
+      email: String,
+      userRole: String
+    });
+    const userId = Meteor.users.findOne({ "emails.address": userRoles.email })._id;
+    Meteor.users.update({ _id: userId }, {
       $set: { "profile.account": userRoles.userRole }
     });
     return userRoles.userRole;
@@ -454,4 +468,6 @@ Meteor.methods({
       return error;
     }
   }
+
+
 });

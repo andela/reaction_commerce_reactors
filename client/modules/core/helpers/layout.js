@@ -18,6 +18,7 @@ import { Template } from "meteor/templating";
 Template.registerHelper("reactionTemplate", function (options) {
   const shopId = options.hash.shopId || Reaction.getShopId();
   // get shop info, defaults to current
+  const user = Meteor.userId();
   const Shop = Collections.Shops.findOne(shopId);
   const reactionTemplates = [];
   // fetch collection from shop.layout configuration

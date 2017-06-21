@@ -66,29 +66,42 @@ Template.loginFormSignUpView.events({
     const newUserData = {
       // username: username,
       email: email,
-      password: password,
-      role: role
+      password: password
     };
+
+    Accounts.createUser(newUserData, function (error) {
+      if (error) {
+        // Show some error message
+        templateInstance.formMessages.set({
+          alerts: [error]
+        });
+      }
+    });
+
     const userRoles = {
-      userId: Meteor.userId(),
-      userRole: newUserData.role
+      email: email,
+      userRole: role
     };
 
     Meteor.call("accounts/roleOption", userRoles, (err, res) => {
       if (err) {
         return err;
       }
-    });
-
-    Accounts.createUser(newUserData, function (error) {
-      console.log(newUserData);
-      if (error) {
-        // Show some error message
-        templateInstance.formMessages.set({
-          alerts: [error]
+      if (userRoles.userRole === "Vendor") {
+        const userId = Meteor.users.findOne({ "emails.address": userRoles.email })._id;
+        // creates a new shop when a vendor user signs up
+        Meteor.call("shop/newVendorShop", userId, (error, response) => {
+          if (error) {
+            alert(error);
+          }
+          const shopId = response;
+          const updateRole = {
+            shopId: shopId,
+            userId: userId
+          };
+          Meteor.call("accounts/updateRoles", updateRole, (error2, res2) => {
+          });
         });
-      } else {
-        // Close dropdown or navigate to page
       }
     });
   }

@@ -80,8 +80,8 @@ export default function () {
   Accounts.onCreateUser((options, user) => {
     const shop = Reaction.getCurrentShop();
     const shopId = shop._id;
-    const defaultVisitorRole =  ["anonymous", "guest", "product", "tag", "index", "cart/checkout", "cart/completed"];
-    const defaultRoles =  ["guest", "account/profile", "product", "tag", "index", "cart/checkout", "cart/completed"];
+    const defaultVisitorRole = ["anonymous", "guest", "product", "tag", "index", "cart/checkout", "cart/completed"];
+    const defaultRoles = ["guest", "account/profile", "product", "tag", "index", "cart/checkout", "cart/completed"];
     const roles = {};
     const additionals = {
       profile: Object.assign({}, options && options.profile)
@@ -100,12 +100,16 @@ export default function () {
           user.profile.lang = currentUser.profile.lang;
         }
       }
+      Meteor.call('fetch_user', Meteor.userId(), (res, err) => {
 
+      });
       // if we don't have user.services we're an anonymous user
       if (!user.services) {
         roles[shopId] = shop.defaultVisitorRole || defaultVisitorRole;
       } else {
+        // checks if user is a vendor and assigns the correct roles to user
         roles[shopId] = shop.defaultRoles || defaultRoles;
+
         // also add services with email defined to user.emails[]
         for (const service in user.services) {
           if (user.services[service].email) {
@@ -178,8 +182,8 @@ export default function () {
       Meteor.users.update({
         _id: options.user._id
       }, update, {
-        multi: true
-      });
+          multi: true
+        });
       // debug info
       Logger.debug("removed anonymous role from user: " +
         options.user._id);

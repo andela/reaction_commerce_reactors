@@ -56,6 +56,46 @@ Meteor.methods({
     return shop._id;
   },
 
+  "shop/newVendorShop": function (vendorId) {
+    check(vendorId, String);
+    let shop = {};
+    // must have owner access to create new shops
+    // if (!Reaction.hasOwnerAccess()) {
+    //   throw new Meteor.Error(403, "Access Denied");
+    // }
+
+    const currentUser = vendorId;
+    // clone the current shop
+    shop = Collections.Shops.findOne(Reaction.getShopId());
+    // if we don't have any shop data, use fixture
+
+    if (!currentUser) {
+      throw new Meteor.Error("Unable to create shop with specified user");
+    }
+
+    // identify a shop admin
+    const userId = vendorId;
+    const adminRoles = Roles.getRolesForUser(currentUser, Reaction.getShopId());
+    // ensure unique id and shop name
+    shop._id = Random.id();
+    shop.name = "New Shop";
+
+    // check(shop, Schemas.Shop);
+    try {
+      Collections.Shops.insert(shop);
+    } catch (error) {
+      return Logger.error("Failed to shop/createShop", sanitizedError);
+    }
+    // we should have created new shop, or errored
+    Logger.info("Created shop: ", shop._id);
+    Roles.addUsersToRoles([currentUser, userId], adminRoles, shop._id);
+    Meteor.users.update(vendorId, {
+      $set: { "profile.shopId": shop._id }
+    });
+    return shop._id;
+  },
+
+
   /**
    * shop/getLocale
    * @summary determine user's countryCode and return locale object
@@ -195,10 +235,10 @@ Meteor.methods({
       shopId: shopId,
       name: "core"
     }, {
-      fields: {
-        settings: 1
-      }
-    });
+        fields: {
+          settings: 1
+        }
+      });
 
     // update Shops.currencies[currencyKey].rate
     // with current rates from Open Exchange Rates
@@ -546,10 +586,10 @@ Meteor.methods({
     return Collections.Tags.update({
       _id: tagId
     }, {
-      $set: {
-        isTopLevel: false
-      }
-    });
+        $set: {
+          isTopLevel: false
+        }
+      });
   },
 
   /**
@@ -568,10 +608,10 @@ Meteor.methods({
         }
       }
     }, {
-      fields: {
-        defaultWorkflows: true
-      }
-    });
+        fields: {
+          defaultWorkflows: true
+        }
+      });
     return shopWorkflows;
   },
   /**
@@ -593,10 +633,10 @@ Meteor.methods({
       "_id": Reaction.getShopId(),
       "languages.i18n": language
     }, {
-      $set: {
-        "languages.$.enabled": enabled
-      }
-    });
+        $set: {
+          "languages.$.enabled": enabled
+        }
+      });
   },
 
   /**
@@ -627,26 +667,26 @@ Meteor.methods({
         "_id": Reaction.getShopId(),
         "brandAssets.type": "navbarBrandImage"
       }, {
-        $set: {
-          "brandAssets.$": {
-            mediaId: asset.mediaId,
-            type: asset.type
+          $set: {
+            "brandAssets.$": {
+              mediaId: asset.mediaId,
+              type: asset.type
+            }
           }
-        }
-      });
+        });
     }
 
     // Otherwise we insert a new brand asset reference
     return Collections.Shops.update({
       _id: Reaction.getShopId()
     }, {
-      $push: {
-        brandAssets: {
-          mediaId: asset.mediaId,
-          type: asset.type
+        $push: {
+          brandAssets: {
+            mediaId: asset.mediaId,
+            type: asset.type
+          }
         }
-      }
-    });
+      });
   },
 
   /*
@@ -684,7 +724,7 @@ Meteor.methods({
       shop.layout[i].layout = newLayout;
     }
     return Collections.Shops.update(shopId, {
-      $set: {layout: shop.layout}
+      $set: { layout: shop.layout }
     });
   }
 });

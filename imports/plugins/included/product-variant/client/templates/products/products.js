@@ -56,7 +56,7 @@ Template.products.onCreated(function () {
     let tags = {}; // this could be shop default implementation needed
 
     if (tag) {
-      tags = {tags: [tag._id]};
+      tags = { tags: [tag._id] };
     }
 
     // if we get an invalid slug, don't return all products
@@ -73,20 +73,33 @@ Template.products.onCreated(function () {
     const queryParams = Object.assign({}, tags, Reaction.Router.current().queryParams);
     this.subscribe("Products", scrollLimit, queryParams);
 
+    const user = Meteor.users.findOne({
+      _id: Meteor.userId()
+    });
+
+    product = {
+      type: "simple",
+      vendorShop: Meteor.users.findOne({ _id: Meteor.userId() }).profile.shopId
+    };
     // we are caching `currentTag` or if we are not inside tag route, we will
     // use shop name as `base` name for `positions` object
+    let shopDetails ={};
+    const account = Meteor.users.findOne({ _id: Meteor.userId() }).profile.account;
+    if (account === "Vendor") {
+      shopDetails = {
+        ancestors: [],
+        vendorShop: Meteor.users.findOne({ _id: Meteor.userId() }).profile.shopId
+      };
+    } else {
+      shopDetails = {
+        ancestors: []
+      };
+    }
     const currentTag = ReactionProduct.getTag();
-    const productCursor = Products.find({
-      ancestors: []
-      // keep this, as an example
-      // type: { $in: ["simple"] }
-    }, {
-      sort: {
-        [`positions.${currentTag}.position`]: 1,
-        [`positions.${currentTag}.createdAt`]: 1,
-        createdAt: 1
-      }
-    });
+    const productCursor = Products.find(shopDetails);
+    // keep this, as an example
+    // type: { $in: ["simple"] }
+
 
     const products = productCursor.map((product) => {
       return applyProductRevision(product);
